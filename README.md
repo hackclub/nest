@@ -1,8 +1,12 @@
-# Nest (Working Title, Likely To Change) - Revamp of Hack As a Service ([v1](https://github.com/hackclub/hack-as-a-service), [v2](https://github.com/hack-as-a-service))
-
-Working title for Hack Club HQ's revamp of #hack-as-a-service. Hack Club tilde server, anyone?
+# Nest (Working Title, Likely To Change)
 
 Goal: Free backend hosting provided by Hack Club HQ for every teenager in the world, but especially Hack Clubbers.
+
+_Revamp of Hack As a Service ([v1](https://github.com/hackclub/hack-as-a-service), [v2](https://github.com/hack-as-a-service))_
+
+---
+
+Working title for Hack Club HQ's revamp of #hack-as-a-service. Hack Club tilde server, anyone?
 
 [@benharri](https://github.com/benharri) leading the project.
 
