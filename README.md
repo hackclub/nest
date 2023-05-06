@@ -19,3 +19,5 @@ This needs to serve 3 types of teenagers:
 2. I have deployed backend services to places like Railway, but am deeply frustrated with their limits because I am a teenager and I don't have a credit card or income to pay for the paid tiers. I can't even sign up for Heroku because I don't have a credit card. I like giving a Procfile or Dockerfile and need a place to host it with a Postgres database that is reliable and won't go down. I don't need it to be "production grade", this is more for personal projects or semi-professional projects that don't have high volume. I need some kind of secrets management for environment variables.
 
 3. I am a homelab guru, highly technical, "do you know that I run Arch / NixOS?", strongly opinioned on distros, watches DistroTube, etc. I don't use vim, I use neovim. I don't use neovim, I use a custom editor that I wrote for myself in Rust! I usually deploy my own services on my homelab, but it constantly goes down so I want something more reliable for my Slack and Discord bots / etc.
+
+This means that Nest will need to host not just applications and websites, but also other services, especially databases.
