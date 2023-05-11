@@ -1,10 +1,10 @@
-# Nest (Working Title, Likely To Change)
+# Hack As A Service
 
 Goal: Free backend hosting provided by Hack Club HQ for every teenager in the world, but especially Hack Clubbers.
 
 Basic problem for us to solve: many teenagers literally can't deploy any backend services right now because they don't have credit cards or income and most hosting free tiers have disappeared (looking at you Heroku 😔). We want to change that! As a public good!
 
-_Revamp of Hack As a Service ([v1](https://github.com/hackclub/hack-as-a-service), [v2](https://github.com/hack-as-a-service))_
+_Revamp of Hack As a Service ([v0](https://github.com/hackclub/hack-as-a-service-v0), [v1](https://github.com/hack-as-a-service))_
 
 ---
 
