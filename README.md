@@ -14,7 +14,7 @@ Working title for Hack Club HQ's revamp of #hack-as-a-service. Hack Club tilde s
 
 This needs to serve 3 types of teenagers:
 
-1. I know how to write HTML and CSS and just wrote my first ever backend and need to host it. Completely unfamiliar with SSH, Linux, and traditional deployments through flows like Heroku. Probably has heard of Vercel for frontend hosting. Likely coding on repl.it.
+1. I know how to write HTML and CSS and just wrote my first ever backend and need to host it. Completely unfamiliar with SSH, Linux, and traditional deployments through flows like Heroku. Probably has heard of Vercel for frontend hosting. Likely coding on repl.it. I do not know what a port or a reverse proxy is.
 
 2. I have deployed backend services to places like Railway, but am deeply frustrated with their limits because I am a teenager and I don't have a credit card or income to pay for the paid tiers. I can't even sign up for Heroku because I don't have a credit card. I like giving a Procfile or Dockerfile and need a place to host it with a Postgres database that is reliable and won't go down. I don't need it to be "production grade", this is more for personal projects or semi-professional projects that don't have high volume. I need some kind of secrets management for environment variables. I know what a port is, but I don't know what a reverse proxy is.
 
