@@ -19,3 +19,90 @@ This needs to serve 3 types of teenagers:
 2. I have deployed backend services to places like Railway, but am deeply frustrated with their limits because I am a teenager and I don't have a credit card or income to pay for the paid tiers. I can't even sign up for Heroku because I don't have a credit card. I like giving a Procfile or Dockerfile and need a place to host it with a Postgres database that is reliable and won't go down. I don't need it to be "production grade", this is more for personal projects or semi-professional projects that don't have high volume. I need some kind of secrets management for environment variables. I know what a port is, but I don't know what a reverse proxy is.
 
 3. I am a homelab guru, highly technical, "do you know that I run Arch / NixOS?", strongly opinioned on distros, watches DistroTube, etc. I don't use vim, I use neovim. I don't use neovim, I use a custom editor that I wrote for myself in Rust! I usually deploy my own services on my homelab, but it constantly goes down so I want something more reliable for my Slack and Discord bots / etc. I know what a reverse proxy is and have strong opinions around them.
+
+---
+
+## Proxmox
+
+### installation
+
+basic installation over plain debian
+https://pve.proxmox.com/wiki/Install_Proxmox_VE_on_Debian_11_Bullseye
+
+### proxmox networking
+
+network configs derived from:
+https://community.hetzner.com/tutorials/install-and-configure-proxmox_ve
+
+`sysctl -w net.ipv4.ip_forward=1`
+`sysctl -w net.ipv6.conf.all.forwarding=1`
+
+#### proxmox host `/etc/network/interfaces`
+```
+source /etc/network/interfaces.d/*
+
+auto lo
+iface lo inet loopback
+iface lo inet6 loopback
+
+auto eno1
+iface eno1 inet static
+        address 78.46.86.74/27
+        gateway 78.46.86.65
+        up route add -net 78.46.86.64 netmask 255.255.255.224 gw 78.46.86.65 dev eno1
+iface eno1 inet6 static
+        address 2a01:4f8:120:144a::2/128
+        gateway fe80::1
+
+auto vmbr0
+iface vmbr0 inet static
+        address 78.46.86.74/32
+        bridge-ports none
+        bridge-stp off
+        bridge-fd 0
+        pre-up brctl addbr vmbr0
+        up ip route add 188.40.159.192/29 dev vmbr0
+        down ip route del 188.40.159.192/29 dev vmbr0
+        post-down brctl delbr vmbr0
+
+iface vmbr0 inet6 static
+        address 2a01:4f8:120:144a::2/64
+```
+The important bits here are sysctl forwarding and routing our guest subnet to vmbr0.
+
+#### debian guest config
+
+Subnet:	188.40.159.192/29
+
+```
+auto ens18
+iface ens18 inet static
+    address 188.40.159.192/32
+    # or address 162.55.142.X/32
+    gateway 78.46.86.74
+
+iface ens18 inet6 static
+    address 2a01:4f8:120:144a::x/64
+    gateway 2a01:4f8:120:144a::2
+
+```
+
+#### `/etc/apt/sources.list`
+```
+deb http://mirror.hetzner.de/debian/packages bullseye main
+deb http://mirror.hetzner.de/debian/packages bullseye-updates main
+deb http://mirror.hetzner.de/debian/packages bullseye-backports main
+deb http://mirror.hetzner.de/debian/security bullseye-security main
+
+deb http://security.debian.org bullseye-security main
+```
+
+#### `/etc/resolv.conf`
+```
+nameserver 213.133.100.100
+nameserver 213.133.98.98
+nameserver 213.133.99.99
+nameserver 2a01:4f8:0:1::add:1010
+nameserver 2a01:4f8:0:1::add:9999
+nameserver 2a01:4f8:0:1::add:9898
+```
