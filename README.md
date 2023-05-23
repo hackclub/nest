@@ -6,7 +6,103 @@ Basic problem for us to solve: many teenagers literally can't deploy any backend
 
 _Revamp of Hack As a Service ([v0](https://github.com/hackclub/hack-as-a-service-v0), [v1](https://github.com/hack-as-a-service))_
 
+# 6 Week Success / Launch (mid to late June)
+
+- 10 people running with a subdomain of hackclub.app with their own apps (ex. zrl.hackclub.app)
+- Supports static and backend hosting (using PORT file)
+- Available domains of USER.hackclub.app (auto DNS), APP.USER.hackclub.app (auto DNS), and custom domains
+- Weekly working calls in public
+- Signup flow to create an account in #hack-as-a-service-signup
+
+### User experience
+
+Main URL is hackclub.app
+
+    $ ssh zrl@hackclub.app
+
+https://zrl.hackclub.app
+
+Hosting a static site:
+
+    $ ssh zrl@hackclub.com
+    
+    # There is a folder called "public" auto created in every user account
+    
+    # For your main site
+    $ cd public
+    $ mkdir zrl.hackclub.app
+    $ cd zrl.hackclub.app
+    $ cat "Hello, world!" > index.html
+    $ curl https://zrl.hackclub.app -> "Hello, world!"
+    
+    # For sub-sites
+    $ cd public
+    $ mkdir my-static-site.zrl.hackclub.app
+    $ cd my-static-site.zrl.hackclub.app
+    $ cat "Hello, subdomain!" > index.html
+    $ curl https://my-static-site.zrl.hackclub.app -> "Hello, subdomain!"
+    
+    # For non-hackclub.app domains
+    $ cd public
+    $ mkdir zachlatta.com
+    $ cd zachlatta.com
+    $ cat "Hello, different website!" > index.html
+    $ curl https://zachlatta.com -> "Hello, different website!"
+    
+For dynamic sites:
+
+    $ ssh zrl@hackclub.app
+    
+    # For your main site
+    $ cd public
+    $ mkdir zrl.hackclub.app
+    $ generate-port-file
+    
+    Generating... done! Please have your web server listen on port 43829.
+    
+    If you're not sure how to do this, please Google "how to change port" for your framework.
+    
+    Common examples:
+
+      Ruby on Rails: $ rails serve -P 43829
+      
+      Many Node.js servers: $ PORT=43829 node index.js
+
+    If you ever forget which port, you can run `cat ~/pub/zrl.hackclub.app/PORT` to remind you that the port for zrl.hackclub.app is 43829.
+    
+    You can get more help on this at https://hackclub.app/backend-hosting.
+    
+    $ daemonize (systemd unit generator)
+
+      what is the command to run your application?
+      > PORT=43829 node index.js
+      > mariadb
+    ~/.config/systemd/user/zrl.hackclub.app
+      systemctl --user status|stop|restart|start zrl.hackclub.app
+      haas='systemctl --user'
+      
+    $ haas start
+    $ haas ls
+    helpful error messages / healthcheck ping
+    
+    $ curl https://zrl.hackclub.app -> Backend service returns reply
+    
+    ## The above steps also work for foo.zrl.hackclub.app and zachlatta.com ##
+
 ---
+
+shell account on hackclub.app
+cli to find open port (over 1024, not in `/home/*/PORT`)
+`~/pub/my.custom.domain`
+PORT file -> proxy_pass
+inotify service `/home/*/pub/*/PORT` adjust configs and reload
+SOCKET `~/pub/site/SOCKET`
+deny all .env and .git paths
+caddy?
+signup
+write(1) if you are trying to use a subdomain that doesn't match your username
+
+
 
 Working title for Hack Club HQ's revamp of #hack-as-a-service. Hack Club tilde server, anyone?
 
