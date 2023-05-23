@@ -76,8 +76,9 @@ For dynamic sites:
 
       what is the command to run your application?
       > PORT=43829 node index.js
+      does your app have any dependencies?
       > mariadb
-    ~/.config/systemd/user/zrl.hackclub.app
+      ~/.config/systemd/user/zrl.hackclub.app generated
       systemctl --user status|stop|restart|start zrl.hackclub.app
       haas='systemctl --user'
       
@@ -166,6 +167,8 @@ iface vmbr0 inet6 static
 ```
 The important bits here are sysctl forwarding and routing our guest subnet to vmbr0.
 
+Also need to `systemctl disable --now rpcbind.socket` per Hetzner rules.
+
 #### debian guest config
 
 Subnet:	188.40.159.192/29
@@ -202,3 +205,5 @@ nameserver 2a01:4f8:0:1::add:1010
 nameserver 2a01:4f8:0:1::add:9999
 nameserver 2a01:4f8:0:1::add:9898
 ```
+
+
