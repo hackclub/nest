@@ -6,7 +6,7 @@ Basic problem for us to solve: many teenagers literally can't deploy any backend
 
 _Revamp of Hack As a Service ([v0](https://github.com/hackclub/hack-as-a-service-v0), [v1](https://github.com/hack-as-a-service))_
 
-# 6 Week Success / Launch (mid to late June)
+# Initial Set of Goals
 
 - 10 people running with a subdomain of hackclub.app with their own apps (ex. zrl.hackclub.app)
 - Supports static and backend hosting (using PORT file)
