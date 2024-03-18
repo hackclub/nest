@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres
+    container_name: nest_sql
+    restart: always
+    environment:
+      POSTGRES_USER:
+      POSTGRES_DB: nest_bot
+      POSTGRES_PASSWORD:
+    volumes:
+      - ./dbdata:/var/lib/postgresql/data
+    ports:
+      - "8747:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL:
+      PGADMIN_DEFAULT_PASSWORD:
+    ports:
+      - "5050:80"

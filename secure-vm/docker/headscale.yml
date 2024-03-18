@@ -1,0 +1,21 @@
+services:
+  headscale:
+    container_name: headscale
+    image: headscale/headscale:latest
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:8089:8069
+    volumes:
+      - ./container-config:/etc/headscale
+      - ./container-data:/var/lib/headscale
+      - ./socket:/var/run/headscale/
+    entrypoint: headscale serve
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - ext-network
+
+networks:
+  ext-network:
+    name: ext-network
+    external: true
