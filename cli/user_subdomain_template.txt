@@ -1,0 +1,5 @@
+http://<subdomain>.samuel.hackclub.app {
+	bind unix/.<subdomain>.webserver.sock|777
+
+	# Add your Caddy directives here!
+}
