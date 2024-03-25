@@ -1,4 +1,4 @@
-<subdomain>.samuel.hackclub.app {
+<subdomain>.<nest_user>.hackclub.app {
 	reverse_proxy unix//home/samuel/.<subdomain>.webserver.sock {
 		health_status 2xx
 		health_interval 5s
