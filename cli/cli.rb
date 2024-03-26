@@ -2,6 +2,7 @@
 
 require "thor"
 require "etc"
+require "socket"
 
 module NestCLI
   class Subdomain < Thor
@@ -24,6 +25,16 @@ module NestCLI
   class Nest < Thor
     desc "subdomain SUBCOMMAND ...ARGS", "manage your nest subdomains"
     subcommand "subdomain", Subdomain
+
+    desc "get_port", "Get an open port to use for your app"
+    def get_port()
+      # Hack - binding to port 0 will force the kernel to assign an open port, which we can then read
+      s = Socket.new Socket::AF_INET, Socket::SOCK_STREAM
+      s.bind Addrinfo.tcp("127.0.0.1", 0)
+      port = s.local_address.ip_port
+      puts "Port #{port} is free to use!"
+    end
+
     def self.exit_on_failure?
       return true
     end
