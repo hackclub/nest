@@ -19,12 +19,36 @@ if grep $FULL_SUBDOMAIN /etc/caddy/Caddyfile &> /dev/null; then
 	exit 1
 fi
 
+# Set temp Caddyfiles
+cat /etc/caddy/Caddyfile > /tmp/root_caddyfile
+cat /home/$NEST_USER/Caddyfile > /tmp/user_caddyfile
+
 # Append configurations
 NEW_ROOT_BLOCK="$(sed "s/<nest_user>/$NEST_USER/g" /usr/local/nest-cli/root_subdomain_template.txt | sed "s/<subdomain>/$SUBDOMAIN/g")"
-echo "$NEW_ROOT_BLOCK" >> /etc/caddy/Caddyfile
+echo "$NEW_ROOT_BLOCK" >> /tmp/root_caddyfile
 
 NEW_USER_BLOCK="$(sed "s/<nest_user>/$NEST_USER/g" /usr/local/nest-cli/user_subdomain_template.txt | sed "s/<subdomain>/$SUBDOMAIN/g")"
-echo "$NEW_USER_BLOCK" >> /home/$NEST_USER/Caddyfile
+echo "$NEW_USER_BLOCK" >> /tmp/user_caddyfile
+
+# Validate Caddyfiles
+if ! caddy validate --config /tmp/root_caddyfile &> /dev/null; then
+	echo "Error in root Caddyfile! Please contact the Nest admins (@nestadmins) in #nest"
+	exit 1
+fi
+
+if ! caddy validate --config /tmp/user_caddyfile &> /dev/null; then
+	echo "Error in user Caddyfile! Please contact the Nest admins (@nestadmins) in #nest"
+	exit 1
+fi
+
+# Save Caddyfiles
+cat /tmp/root_caddyfile > /etc/caddy/Caddyfile
+cat /tmp/user_caddyfile > /home/$NEST_USER/Caddyfile
+rm /tmp/root_caddyfile /tmp/user_caddyfile
+
+# Format Caddyfiles
+caddy fmt --overwrite /etc/caddy/Caddyfile
+caddy fmt --overwrite /home/$NEST_USER/Caddyfile
 
 # Reload Caddy instances
 systemctl reload caddy
