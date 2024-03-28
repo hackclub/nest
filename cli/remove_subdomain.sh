@@ -26,7 +26,7 @@ cat /etc/caddy/Caddyfile > /tmp/root_caddyfile
 sed -i "/^$FULL_SUBDOMAIN {/,/^    }/d" /tmp/root_caddyfile
 
 # Validate Caddyfile
-if ! caddy validate --config /tmp/root_caddyfile &> /dev/null; then
+if ! caddy validate --config /tmp/root_caddyfile --adapter caddyfile &> /dev/null; then
 	echo "Error in root Caddyfile! Please contact the Nest admins (@nestadmins) in #nest"
 	exit 1
 fi
