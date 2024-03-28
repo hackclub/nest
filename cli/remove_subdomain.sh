@@ -31,7 +31,7 @@ if ! caddy validate --config /tmp/root_caddyfile &> /dev/null; then
 	exit 1
 fi
 
-# Save Caddyfiles
+# Save Caddyfile
 cat /tmp/root_caddyfile > /etc/caddy/Caddyfile
 rm /tmp/root_caddyfile
 
