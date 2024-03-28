@@ -19,8 +19,21 @@ if ! grep $FULL_SUBDOMAIN /etc/caddy/Caddyfile &> /dev/null; then
 	exit 1
 fi
 
+# Set temp Caddyfile
+cat /etc/caddy/Caddyfile > /tmp/root_caddyfile
+
 # Remove configuration
-sed -i "/^$FULL_SUBDOMAIN {/,/^    }/d" /etc/caddy/Caddyfile
+sed -i "/^$FULL_SUBDOMAIN {/,/^    }/d" /tmp/root_caddyfile
+
+# Validate Caddyfile
+if ! caddy validate --config /tmp/root_caddyfile &> /dev/null; then
+	echo "Error in root Caddyfile! Please contact the Nest admins (@nestadmins) in #nest"
+	exit 1
+fi
+
+# Save Caddyfiles
+cat /tmp/root_caddyfile > /etc/caddy/Caddyfile
+rm /tmp/root_caddyfile
 
 # Reload Caddy instance
 systemctl reload caddy
