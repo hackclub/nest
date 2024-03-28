@@ -35,6 +35,9 @@ fi
 cat /tmp/root_caddyfile > /etc/caddy/Caddyfile
 rm /tmp/root_caddyfile
 
+# Format Caddyfile
+caddy fmt --overwrite /etc/caddy/Caddyfile
+
 # Reload Caddy instance
 systemctl reload caddy
 

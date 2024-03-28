@@ -46,6 +46,10 @@ cat /tmp/root_caddyfile > /etc/caddy/Caddyfile
 cat /tmp/user_caddyfile > /home/$NEST_USER/Caddyfile
 rm /tmp/root_caddyfile /tmp/user_caddyfile
 
+# Format Caddyfiles
+caddy fmt --overwrite /etc/caddy/Caddyfile
+caddy fmt --overwrite /home/$NEST_USER/Caddyfile
+
 # Reload Caddy instances
 systemctl reload caddy
 systemctl --user -M $NEST_USER@ reload caddy
