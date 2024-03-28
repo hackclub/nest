@@ -24,10 +24,10 @@ cat /etc/caddy/Caddyfile > /tmp/root_caddyfile
 cat /home/$NEST_USER/Caddyfile > /tmp/user_caddyfile
 
 # Append configurations
-NEW_ROOT_BLOCK="$(sed "s/<nest_user>/$NEST_USER/g" /usr/local/nest-cli/root_subdomain_template.txt | sed "s/<subdomain>/$SUBDOMAIN/g")"
+NEW_ROOT_BLOCK="$(sed "s/<nest_user>/$NEST_USER/g" /usr/local/nest/cli/root_subdomain_template.txt | sed "s/<subdomain>/$SUBDOMAIN/g")"
 echo "$NEW_ROOT_BLOCK" >> /tmp/root_caddyfile
 
-NEW_USER_BLOCK="$(sed "s/<nest_user>/$NEST_USER/g" /usr/local/nest-cli/user_subdomain_template.txt | sed "s/<subdomain>/$SUBDOMAIN/g")"
+NEW_USER_BLOCK="$(sed "s/<nest_user>/$NEST_USER/g" /usr/local/nest/cli/user_subdomain_template.txt | sed "s/<subdomain>/$SUBDOMAIN/g")"
 echo "$NEW_USER_BLOCK" >> /tmp/user_caddyfile
 
 # Validate Caddyfiles
