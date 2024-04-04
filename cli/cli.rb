@@ -7,16 +7,26 @@ require "socket"
 module NestCLI
   class Subdomain < Thor
     include Thor::Actions
-    desc "add <name>", "Add subdomain <name>.youruser to the Caddyfile"
+    desc "add <name>", "Add subdomain <name>.youruser.hackclub.app to the Caddyfile"
     def add(name)
       run "sudo /usr/local/nest/cli/add_subdomain.sh #{name}"
     end
-    
-    desc "remove <name>", "Remove subdomain <name>.youruser from the Caddyfile"
+
+    desc "remove <name>", "Remove subdomain <name>.youruser.hackclub.app from the Caddyfile"
     def remove(name)
       run "sudo /usr/local/nest/cli/remove_subdomain.sh #{name}"
     end
-    
+
+    desc "add42 <name>", "Add subdomain <name>.youruser.hackclub.dn42 to the Caddyfile"
+    def add42(name)
+      run "sudo /usr/local/nest/cli/add42_subdomain.sh #{name}"
+    end
+
+    desc "remove42 <name>", "Remove subdomain <name>.youruser.hackclub.dn42 from the Caddyfile"
+    def remove42(name)
+      run "sudo /usr/local/nest/cli/remove42_subdomain.sh #{name}"
+    end
+
     def self.exit_on_failure?
       return true
     end
