@@ -1,4 +1,7 @@
 <subdomain>.<nest_user>.hackclub.dn42 {
+	tls {
+		ca https://acme.burble.dn42/v1/dn42/acme/directory
+	}
 	reverse_proxy unix//home/<nest_user>/.<subdomain>.dn42.webserver.sock {
 		health_status 2xx
 		health_interval 5s
