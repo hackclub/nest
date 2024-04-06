@@ -1,0 +1,6 @@
+http://<subdomain>.<nest_user>.hackclub.dn42 {
+	bind unix/.<subdomain>.dn42.webserver.sock|777
+
+	# Add your Caddy directives here!
+}
+
