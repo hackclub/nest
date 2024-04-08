@@ -153,7 +153,7 @@ The network configuration for the Secure VM can be found in [the networking.nix 
 
 With the exception of Nest Bot, all services run on the Secure VM in Docker containers, configured within a Docker Compose file contained within the `/opt/docker` directory on the Secure VM.
 
-### Nest Botx
+### Nest Bot
 
 Nest Bot handles Nest account creation and management from Slack for easy access to users. Its code is at [cskartikey/nest-bot](https://github.com/cskartikey/nest-bot). Since it needs to run commands on the Nest VM, it runs there, under the `nest-internal` user and inside a `tmux` session named `nest-bot`. The repo is cloned in `/home/nest-internal/nest-bot`.
 
@@ -240,3 +240,11 @@ $wgFavicon = '/skins/common/nest-logo.png';
 ```
 
 The Docker compose configuration uses a custom MediaWiki image to add extensions (PluggableAuth and OpenIDConnect) and skins (Citizen). Files for the custom Docker image are in `/opt/docker/mediawiki/nest-mediawiki` - Dockerfile contents are in [Dockerfile](/secure-vm/docker/mediawiki/Dockerfile).
+
+## Nest CLI
+
+The Nest CLI is a collection of tools for Nest users. At the moment, its core use is in allowing users to edit the global Caddyfile and add their own domains. It also includes a command for getting a random port that you can bind your services to.
+
+Nest CLI is written in Ruby using Thor (with the help of some bash scripts), and is located in the [cli](/cli/) directory. On the Nest VM, this Nest repo (including the Nest CLI) is cloned in the `/usr/local/nest` directory.
+
+Nest CLI requires the `/var/nest-cli` directory to be created.
