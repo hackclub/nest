@@ -1,0 +1,6 @@
+http://<domain> {
+	bind unix/.<domain>.webserver.sock|777
+
+	# Add your Caddy directives here!
+}
+
