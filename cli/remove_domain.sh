@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Strip the subdomain of whitespace
+# Strip the domain of whitespace
 FULL_DOMAIN=$(echo "$1" | xargs)
 
 # "who am i" responds correctly even with sudo
@@ -11,7 +11,7 @@ if [ "$NEST_USER" = "root" ]; then
 	exit 1
 fi
 
-# Check for existance of subdomain
+# Check for existance of domain
 if ! grep $FULL_DOMAIN /etc/caddy/Caddyfile &> /dev/null; then
 	echo "You don't have this domain ($FULL_DOMAIN)!"
 	exit 1

@@ -29,7 +29,7 @@ if [ "$NEEDED_CNAME" != "$REAL_CNAME" ]; then
 	exit 1 
 fi
 
-# Check for existance of subdomain
+# Check for existance of domain
 if grep $DOMAIN /etc/caddy/Caddyfile &> /dev/null; then
 	echo "You already have this custom domain ($DOMAIN)!"
 	exit 1
