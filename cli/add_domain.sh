@@ -19,7 +19,7 @@ if [ "$NEST_USER" = "root" ]; then
 	exit 1
 fi
 
-NEEDED_CNAME="$USER.hackclub.app."
+NEEDED_CNAME="$NEST_USER.hackclub.app."
 REAL_CNAME=$(dig +short -t CNAME "$DOMAIN")
 
 REAL_CNAME=${REAL_CNAME:-"None"} # Weird hack to get "None" printed instead of a blank line
