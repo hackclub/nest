@@ -11,7 +11,7 @@ if [ "$NEST_USER" = "root" ]; then
 	exit 1
 fi
 
-# Check for existance of domain
+# Check for existence of domain
 if ! grep $FULL_DOMAIN /etc/caddy/Caddyfile &> /dev/null; then
 	echo "You don't have this domain ($FULL_DOMAIN)!"
 	exit 1

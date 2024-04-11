@@ -13,7 +13,7 @@ fi
 
 FULL_SUBDOMAIN="$SUBDOMAIN.$NEST_USER.hackclub.app"
 
-# Check for existance of subdomain
+# Check for existence of subdomain
 if ! grep $FULL_SUBDOMAIN /etc/caddy/Caddyfile &> /dev/null; then
 	echo "You don't have this subdomain ($FULL_SUBDOMAIN)!"
 	exit 1
