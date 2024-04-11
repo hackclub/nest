@@ -32,9 +32,29 @@ module NestCLI
     end
   end
 
+  class Domain < Thor
+    include Thor::Actions
+    desc "add <name>", "Add a custom domain to the Caddyfile"
+    def add(name)
+      run "sudo /usr/local/nest/cli/add_domain.sh #{name}"
+    end
+
+    desc "remove <name>", "Remove a custom domain from the Caddyfile"
+    def remove(name)
+      run "sudo /usr/local/nest/cli/remove_domain.sh #{name}"
+    end
+
+    def self.exit_on_failure?
+      return true
+    end
+  end
+
   class Nest < Thor
     desc "subdomain SUBCOMMAND ...ARGS", "manage your nest subdomains"
     subcommand "subdomain", Subdomain
+
+    desc "domain SUBCOMMAND ...ARGS", "manage your nest custom domains"
+    subcommand "domain", Domain
 
     desc "get_port", "Get an open port to use for your app"
     def get_port()
