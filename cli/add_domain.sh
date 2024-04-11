@@ -3,6 +3,12 @@
 # Strip the subdomain of whitespace
 DOMAIN=$(echo "$1" | xargs)
 
+# Validate the domain
+if ! grep -P '^((?![0-9]+$)(?!.*-$)(?!-)[a-zA-Z0-9-]{1,63}\.?)+$' <<< $DOMAIN &> /dev/null; then
+    echo "Invalid domain!"
+    exit 1
+fi
+
 # "who am i" responds correctly even with sudo
 NEST_USER=$(who am i | awk '{print $1}')
 
