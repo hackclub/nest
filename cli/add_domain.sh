@@ -19,7 +19,7 @@ if [ "$NEST_USER" = "root" ]; then
 	exit 1
 fi
 
-NEEDED_CNAME="$USER.hackclub.app"
+NEEDED_CNAME="$USER.hackclub.app."
 REAL_CNAME=$(dig +short -t CNAME "$DOMAIN")
 
 REAL_CNAME=${REAL_CNAME:-"None"} # Weird hack to get "None" printed instead of a blank line
@@ -31,7 +31,7 @@ fi
 
 # Check for existance of subdomain
 if grep $DOMAIN /etc/caddy/Caddyfile &> /dev/null; then
-	echo "You already have this subdomain ($DOMAIN)!"
+	echo "You already have this custom domain ($DOMAIN)!"
 	exit 1
 fi
 
