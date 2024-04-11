@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Strip the subdomain of whitespace
+# Strip the domain of whitespace
 FULL_DOMAIN=$(echo "$1" | xargs)
 
 # "who am i" responds correctly even with sudo
@@ -11,9 +11,16 @@ if [ "$NEST_USER" = "root" ]; then
 	exit 1
 fi
 
-# Check for existance of subdomain
+# Check for existence of domain
 if ! grep $FULL_DOMAIN /etc/caddy/Caddyfile &> /dev/null; then
-	echo "You don't have this domain ($FULL_DOMAIN)!"
+	echo "This domain ($FULL_DOMAIN) isn't in the Caddyfile!"
+	exit 1
+fi
+
+# Check for user ownership of domain (JANK ALERT)
+DOMAIN_BLOCK="$(grep -Pzo "(?s)$FULL_DOMAIN {.*?}\n" /etc/caddy/Caddyfile)"
+if ! grep "/home/$NEST_USER/" <<< $DOMAIN_BLOCK &> /dev/null; then
+	echo "You don't own this domain ($FULL_DOMAIN)!"
 	exit 1
 fi
 

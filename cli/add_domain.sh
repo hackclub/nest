@@ -3,6 +3,12 @@
 # Strip the subdomain of whitespace
 DOMAIN=$(echo "$1" | xargs)
 
+# Validate the domain
+if ! grep -P '^((?![0-9]+$)(?!.*-$)(?!-)[a-zA-Z0-9-]{1,63}\.?)+$' <<< $DOMAIN &> /dev/null; then
+    echo "Invalid domain!"
+    exit 1
+fi
+
 # "who am i" responds correctly even with sudo
 NEST_USER=$(who am i | awk '{print $1}')
 
@@ -19,7 +25,7 @@ if [ "$NEST_USER" = "root" ]; then
 	exit 1
 fi
 
-NEEDED_CNAME="$USER.hackclub.app."
+NEEDED_CNAME="$NEST_USER.hackclub.app."
 REAL_CNAME=$(dig +short -t CNAME "$DOMAIN")
 
 REAL_CNAME=${REAL_CNAME:-"None"} # Weird hack to get "None" printed instead of a blank line
@@ -29,7 +35,7 @@ if [ "$NEEDED_CNAME" != "$REAL_CNAME" ]; then
 	exit 1 
 fi
 
-# Check for existance of subdomain
+# Check for existance of domain
 if grep $DOMAIN /etc/caddy/Caddyfile &> /dev/null; then
 	echo "You already have this custom domain ($DOMAIN)!"
 	exit 1
