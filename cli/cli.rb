@@ -72,7 +72,8 @@ module NestCLI
 
     desc "domain SUBCOMMAND ...ARGS", "manage your nest custom domains"
     subcommand "domain", Domain
-    desc "setup SUBCOMMAND ...ARGS", "set something up on your nest account"
+    desc "setup SUBCOMMAND ...ARGS", "setup a tool to use on nest"
+    subcommand "setup", Setup
 
     desc "get_port", "Get an open port to use for your app"
     def get_port()
