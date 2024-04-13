@@ -50,6 +50,8 @@ module NestCLI
   end
 
   class Nest < Thor
+    include Thor::Actions
+
     desc "subdomain SUBCOMMAND ...ARGS", "manage your nest subdomains"
     subcommand "subdomain", Subdomain
 
@@ -63,6 +65,20 @@ module NestCLI
       s.bind Addrinfo.tcp("127.0.0.1", 0)
       port = s.local_address.ip_port
       puts "Port #{port} is free to use!"
+    end
+
+    desc "resources", "See your Nest resource usage and limits"
+    def resources()
+      diskUsage = (Float(run("quota  | tail -n 1 | awk '{print $2}'", { capture: true, verbose: false })) / (1024 * 1024)).round(2)
+      diskLimit = (Float(run("quota  | tail -n 1 | awk '{print $4}'", { capture: true, verbose: false })) / (1024 * 1024)).round(2)
+
+      puts "Disk usage: #{diskUsage} GB used out of #{diskLimit} GB limit"
+
+      id = `id -u`.strip
+      memoryUsage = (Float(File.read("/sys/fs/cgroup/user.slice/user-#{id}.slice/memory.current")) / (1024 * 1024 * 1024)).round(2)
+      memoryLimit = (Float(File.read("/sys/fs/cgroup/user.slice/user-#{id}.slice/memory.max")) / (1024 * 1024 * 1024)).round(2)
+
+      puts "Memory usage: #{memoryUsage} GB used out of #{memoryLimit} GB limit"
     end
 
     def self.exit_on_failure?
