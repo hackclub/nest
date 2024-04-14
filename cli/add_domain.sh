@@ -33,10 +33,10 @@ REAL_CNAME=${REAL_CNAME:-"None"} # Weird hack to get "None" printed instead of a
 if [ "$NEEDED_CNAME" != "$REAL_CNAME" ]; then
 	echo "The domain $DOMAIN does not have the correct CNAME. Expected: $NEEDED_CNAME, Actual: $REAL_CNAME"
 	echo "Falling back to TXT record checking..."
-	NEST_DOMAIN_VERIFICATION=$(dig +short -t TXT nest_domain_verification.$DOMAIN | tr -d '"')
+	NEST_DOMAIN_VERIFICATION=$(dig +short -t TXT _nest_domain_verification.$DOMAIN | tr -d '"')
 	NEST_DOMAIN_VERIFICATION=${NEST_DOMAIN_VERIFICATION:-"None"}
-	if [ "$NEST_DOMAIN_VERIFICATION" != "$USER" ]; then
-		echo "The domain $DOMAIN does not have the correct TXT record. Expected: $USER, Actual: $NEST_DOMAIN_VERIFICATION"
+	if [ "$NEST_DOMAIN_VERIFICATION" != "$NEST_USER" ]; then
+		echo "The domain $DOMAIN does not have the correct TXT record. Expected: $NEST_USER, Actual: $NEST_DOMAIN_VERIFICATION"
 		exit 1
 	else
 		echo "TXT record verification succeeded."
