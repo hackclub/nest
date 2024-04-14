@@ -5,6 +5,6 @@ NEST_USER=$(who am i | awk '{print $1}')
 
 NAME="${NEST_USER}_$1"
 
-sudo -u postgres createdb -O $NEST_USER $NAME
+createdb -O $NEST_USER "$NAME"
 
 echo $'Postgres database "$NAME" created successfully!'

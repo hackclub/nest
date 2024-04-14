@@ -53,7 +53,7 @@ module NestCLI
     include Thor::Actions
     desc "create <name>", "Create a new Postgres database"
     def create(name)
-      run "sudo /usr/local/nest/cli/create_db.sh #{name}"
+      run "sudo -u postgres /usr/local/nest/cli/create_db.sh #{name}"
     end
 
     def self.exit_on_failure?
