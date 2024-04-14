@@ -74,7 +74,7 @@ module NestCLI
 
       puts "Disk usage: #{diskUsage} GB used out of #{diskLimit} GB limit"
 
-      id = `id -u`.strip
+      id = Process.uid
       memoryUsage = (Float(File.read("/sys/fs/cgroup/user.slice/user-#{id}.slice/memory.current")) / (1024 * 1024 * 1024)).round(2)
       memoryLimit = (Float(File.read("/sys/fs/cgroup/user.slice/user-#{id}.slice/memory.max")) / (1024 * 1024 * 1024)).round(2)
 
