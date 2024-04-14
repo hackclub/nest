@@ -49,12 +49,31 @@ module NestCLI
     end
   end
 
+  class Setup < Thor
+    include Thor::Actions
+    desc "docker", "Set up rootless docker, so you can run docker containers"
+    def docker()
+      run "dockerd-rootless-setuptool.sh install"
+      run "sed -i '/^ExecStart/ s/$/ --exec-opt native.cgroupdriver=cgroupfs /' ~/.config/systemd/user/docker.service"
+      run "systemctl --user daemon-reload"
+      run "systemctl --user enable docker"
+      run "systemctl --user restart docker"
+      run "docker context use rootless"
+      puts "Successfully configured docker."
+    end
+    def self.exit_on_failure?
+      return true
+    end
+  end
+
   class Nest < Thor
     desc "subdomain SUBCOMMAND ...ARGS", "manage your nest subdomains"
     subcommand "subdomain", Subdomain
 
     desc "domain SUBCOMMAND ...ARGS", "manage your nest custom domains"
     subcommand "domain", Domain
+    desc "setup SUBCOMMAND ...ARGS", "setup a tool to use on nest"
+    subcommand "setup", Setup
 
     desc "get_port", "Get an open port to use for your app"
     def get_port()
