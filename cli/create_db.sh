@@ -1,4 +1,4 @@
-#1/bin/bash
+#!/bin/bash
 
 # "who am i" responds correctly even with sudo
 NEST_USER=$(who am i | awk '{print $1}')
