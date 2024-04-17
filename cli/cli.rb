@@ -49,6 +49,18 @@ module NestCLI
     end
   end
 
+  class DB < Thor
+    include Thor::Actions
+    desc "create <name>", "Create a new Postgres database"
+    def create(name)
+      run "sudo -u postgres /usr/local/nest/cli/create_db.sh #{name}"
+    end
+
+    def self.exit_on_failure?
+      return true
+    end
+  end
+
   class Setup < Thor
     include Thor::Actions
     desc "docker", "Set up rootless docker, so you can run docker containers"
@@ -74,6 +86,9 @@ module NestCLI
     subcommand "domain", Domain
     desc "setup SUBCOMMAND ...ARGS", "setup a tool to use on nest"
     subcommand "setup", Setup
+
+    desc "db SUBCOMMAND ...ARGS", "manage your nest postgres databases"
+    subcommand "db", DB
 
     desc "get_port", "Get an open port to use for your app"
     def get_port()
