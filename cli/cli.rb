@@ -69,8 +69,9 @@ module NestCLI
 
     desc "resources", "See your Nest resource usage and limits"
     def resources()
-      diskUsage = (Float(run("quota  | tail -n 1 | awk '{print $2}'", { capture: true, verbose: false })) / (1024 * 1024)).round(2)
-      diskLimit = (Float(run("quota  | tail -n 1 | awk '{print $4}'", { capture: true, verbose: false })) / (1024 * 1024)).round(2)
+      quota = run("quota", { capture: true, verbose: false })
+      diskUsage = ((quota.split("\n")[-1].split(/\s+/)[2].to_f) / (1024 * 1024)).round(2)
+      diskLimit = ((quota.split("\n")[-1].split(/\s+/)[3].to_f) / (1024 * 1024)).round(2)
 
       puts "Disk usage: #{diskUsage} GB used out of #{diskLimit} GB limit"
 
