@@ -7,4 +7,4 @@ NAME="${NEST_USER}_$1"
 
 createdb -O $NEST_USER "$NAME"
 
-echo $'Postgres database "$NAME" created successfully!'
+echo "Postgres database '$NAME' created successfully!"
