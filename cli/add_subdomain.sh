@@ -25,6 +25,12 @@ if grep $FULL_SUBDOMAIN /etc/caddy/Caddyfile &> /dev/null; then
 	exit 1
 fi
 
+# Check for Caddyfile symlink
+if readlink /home/$NEST_USER/Caddyfile &> /dev/null; then
+	echo "Symlinked Caddyfiles are not supported."
+	exit 1
+fi
+
 # Set temp Caddyfiles
 cat /etc/caddy/Caddyfile > /var/nest-cli/root_caddyfile
 cat /home/$NEST_USER/Caddyfile > /var/nest-cli/user_caddyfile

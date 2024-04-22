@@ -41,6 +41,12 @@ if grep "^$DOMAIN {$" /etc/caddy/Caddyfile &> /dev/null; then
 	exit 1
 fi
 
+# Check for Caddyfile symlink
+if readlink /home/$NEST_USER/Caddyfile &> /dev/null; then
+	echo "Symlinked Caddyfiles are not supported."
+	exit 1
+fi
+
 # Set temp Caddyfiles
 cat /etc/caddy/Caddyfile > /tmp/root_caddyfile
 cat /home/$NEST_USER/Caddyfile > /tmp/user_caddyfile
