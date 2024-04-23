@@ -35,7 +35,7 @@ It runs NixOS 23.05. it's configured with 4 CPU cores and 6 GiB of RAM. Configur
 
 The Backup VM runs the [Proxmox Backup Server](https://pbs.proxmox.com/wiki/index.php/Main_Page). Daily jobs are configured in Proxmox to backup the Nest VM and Secure VM to this storage.
 
-For storage, 500GB has been purchased from [rsync.net](https://rsync.net). It is mounted on the Backup VM using SSHFS at `/mnt/rsync`, which is the directory that PBS is configured to backup to.
+For storage, 500GB has been purchased from [rsync.net](https://rsync.net). It is mounted on the Backup VM using SSHFS at `/backup/rsync`, which is the directory that PBS is configured to backup to.
 
 ## Networking
 
