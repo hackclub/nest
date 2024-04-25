@@ -8,7 +8,7 @@ module NestCLI
   class Subdomain < Thor
     include Thor::Actions
     desc "add <name>", "Add subdomain <name>.youruser.hackclub.app to the Caddyfile"
-    option :no_validate, :type => :boolean
+    option :no_validate, :type => :boolean, :desc => "Skip validation of your user Caddyfile. Useful if you have custom Caddy plugins not available in the system Caddy installtion."
     def add(name)
       run "sudo /usr/local/nest/cli/add_subdomain.sh #{name} #{options[:no_validate] ? "no_validate" : ""}"
     end
@@ -19,7 +19,7 @@ module NestCLI
     end
 
     desc "add42 <name>", "Add subdomain <name>.youruser.hackclub.dn42 to the Caddyfile"
-    option :no_validate, :type => :boolean
+    option :no_validate, :type => :boolean, :desc => "Skip validation of your user Caddyfile. Useful if you have custom Caddy plugins not available in the system Caddy installtion."
     def add42(name)
       run "sudo /usr/local/nest/cli/add42_subdomain.sh #{name} #{options[:no_validate] ? "no_validate" : ""}"
     end
