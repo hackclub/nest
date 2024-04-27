@@ -64,9 +64,11 @@ if ! caddy validate --config /tmp/root_caddyfile --adapter caddyfile &> /dev/nul
 	exit 1
 fi
 
-if ! caddy validate --config /tmp/user_caddyfile --adapter caddyfile &> /dev/null; then
-	echo "Error in user Caddyfile! Please contact the Nest admins (@nestadmins) in #nest"
-	exit 1
+if [ "$2" != "no_validate" ]; then
+	if ! caddy validate --config /var/nest-cli/user_caddyfile --adapter caddyfile &> /dev/null; then
+		echo "Error in user Caddyfile! Please contact the Nest admins (@nestadmins) in #nest"
+		exit 1
+	fi
 fi
 
 # Save Caddyfiles
