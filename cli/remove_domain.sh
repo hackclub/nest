@@ -25,20 +25,20 @@ if ! grep "/home/$NEST_USER/" <<< $DOMAIN_BLOCK &> /dev/null; then
 fi
 
 # Set temp Caddyfile
-cat /etc/caddy/Caddyfile > /tmp/root_caddyfile
+cat /etc/caddy/Caddyfile > /var/nest-cli/root_caddyfile
 
 # Remove configuration
-sed -i "/^$FULL_DOMAIN {/,/^    }/d" /tmp/root_caddyfile
+sed -i "/^$FULL_DOMAIN {/,/^    }/d" /var/nest-cli/root_caddyfile
 
 # Validate Caddyfile
-if ! caddy validate --config /tmp/root_caddyfile --adapter caddyfile &> /dev/null; then
+if ! caddy validate --config /var/nest-cli/root_caddyfile --adapter caddyfile &> /dev/null; then
 	echo "Error in root Caddyfile! Please contact the Nest admins (@nestadmins) in #nest"
 	exit 1
 fi
 
 # Save Caddyfile
-cat /tmp/root_caddyfile > /etc/caddy/Caddyfile
-rm /tmp/root_caddyfile
+cat /var/nest-cli/root_caddyfile > /etc/caddy/Caddyfile
+rm /var/nest-cli/root_caddyfile
 
 # Format Caddyfile
 caddy fmt --overwrite /etc/caddy/Caddyfile
