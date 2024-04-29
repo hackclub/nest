@@ -293,6 +293,10 @@ At the moment, it is setup to monitor 5 services:
 - Nest DB
 - oauth.hackclub.app
 
+### Vaultwarden
+
+[Vaultwarden](https://github.com/dani-garcia/vaultwarden) has been setup on the Secure VM to manage shared passwords, secrets, and failsafes for the Nest Admins. Vaultwarden has its Docker compose configuration at `/opt/docker/vaultwarden/compose.yml` - contents are in [compose.yml](/secure-vm/docker/vaultwarden/compose.yml). Users are manually managed by Vaultwarden as it does not fully support LDAP/OIDC.
+
 ## Nest CLI
 
 The Nest CLI is a collection of tools for Nest users. At the moment, its core use is in allowing users to edit the global Caddyfile and add their own domains. It also includes a command for getting a random port that you can bind your services to.
@@ -310,4 +314,4 @@ These failsafes are:
 - Shared TOTP token for root@pam on the Proxmox Web UI 
 - A multi-use, non-expiring preauth token for Headscale
 
-These failsafes should be stored safely and securely by all Nest admins, and they are only to be used in case of emergency to ensure proper security and auditing.
+These failsafes should be stored safely and securely by all Nest admins (now through [Vaultwarden](#vaultwarden)), and they are only to be used in case of emergency to ensure proper security and auditing.
