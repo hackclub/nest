@@ -35,7 +35,16 @@ It runs NixOS 23.05. it's configured with 4 CPU cores and 6 GiB of RAM. Configur
 
 The Backup VM runs the [Proxmox Backup Server](https://pbs.proxmox.com/wiki/index.php/Main_Page). Daily jobs are configured in Proxmox to backup the Nest VM and Secure VM to this storage.
 
-For storage, 500GB has been purchased from [rsync.net](https://rsync.net). It is mounted on the Backup VM using SSHFS at `/backup/rsync`, which is the directory that PBS is configured to backup to.
+For storage, 500GB has been purchased from [rsync.net](https://rsync.net).
+
+PBS has a single datastore configured, with the path `/backup/rsync`. In order to get it to function properly, there was a bit of a hacky workaround. The steps are:
+- create two directories, ex. `eventualDatastore` and `tempMount`
+- create a PBS datastore at `eventualDatastore` and mount the rsync.net storage using sshfs at `tempMount`
+- Run `systemctl stop proxmox-backup-proxy.service proxmox-backup.service`
+- copy `.chunks` and `.lock` from `eventualDatastore` to `tempMount` (don't use cp, it's slow! use rsync or rclone instead)
+- `rm -rf eventualDatastore`
+- Unmount `tempMount` and mount it back at `eventualDatastore`
+- Restart `proxmox-backup-proxy.service` and `proxmox-backup.service`
 
 ## Networking
 
