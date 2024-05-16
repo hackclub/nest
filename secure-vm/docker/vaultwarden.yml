@@ -1,0 +1,8 @@
+version: "3.8"
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    ports: 
+      - "127.0.0.1:7080:80"
+    volumes:
+      - ./vw-data:/data/
