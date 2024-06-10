@@ -1,0 +1,27 @@
+{
+  "name": "nest-bot",
+  "version": "1.0.0",
+  "description": "Slack bot for managing your Nest user!",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "tsc && node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hackclub/nest.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hackclub/nest/issues"
+  },
+  "homepage": "https://github.com/hackclub/nest#readme",
+  "dependencies": {
+    "@slack/bolt": "^3.18.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
