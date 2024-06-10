@@ -18,10 +18,12 @@
   },
   "homepage": "https://github.com/hackclub/nest#readme",
   "dependencies": {
+    "@prisma/client": "^5.15.0",
     "@slack/bolt": "^3.18.0",
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
+    "prisma": "^5.15.0",
     "typescript": "^5.4.5"
   }
 }
