@@ -2,7 +2,7 @@
   "name": "nest-bot",
   "version": "1.0.0",
   "description": "Slack bot for managing your Nest user!",
-  "main": "index.js",
+  "main": "dist/index.js",
   "type": "module",
   "scripts": {
     "start": "tsc && node dist/index.js"

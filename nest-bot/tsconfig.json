@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es2016",
     "module": "nodenext",
+    "rootDir": "src",
     "outDir": "dist",
     "esModuleInterop": true,
     "moduleResolution": "nodenext",
