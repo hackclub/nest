@@ -92,6 +92,15 @@ app.view("register_user", async ({ ack, view, body, client }) => {
   }
 
   // Username validations
+  if (username.toLowerCase() !== username) {
+    ack({
+      errors: {
+        username: "Username must be lowercase",
+      },
+      response_action: "errors",
+    });
+    return;
+  }
 
   // DNS label validation
   if (username.match(/^(?![0-9]+$)(?!.*-$)(?!-)[a-zA-Z0-9-]{1,63}$/)) {
