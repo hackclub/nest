@@ -20,11 +20,6 @@ export function approve(app: Slack.App) {
     const adminUserId = body.user.id;
     const nestUserId = body.state!.values.approve.approve.value!;
 
-    await client.chat.postMessage({
-      channel: nestUserId,
-      text: "Your request for Nest has been approved!",
-    });
-
     const msgBlocks = body.message!.blocks;
     msgBlocks[2] = {
       type: "section",
@@ -103,6 +98,16 @@ export function approve(app: Slack.App) {
       return;
     }
 
+    console.log(`Password set for ${username}`);
+
+    // Delay 5 minutes to allow time for caching
+    await new Promise((resolve) => setTimeout(resolve, 1000 * 60 * 5));
+
+    await client.chat.postMessage({
+      channel: nestUserId,
+      text: "Your request for Nest has been approved!",
+    });
+
     await client.chat.postMessage({
       channel: nestUserId,
       blocks: markdown_message(
@@ -110,8 +115,6 @@ export function approve(app: Slack.App) {
       ),
       text: `Your password for your Nest account is ${password}. Please continue through our Quickstart guide at https://guides.hackclub.app/index.php/Quickstart#Creating_an_Account.`,
     });
-
-    console.log(`Password set for ${username}`);
 
     // Initialize user on Nest VM
     add_root_caddyfile_config(username);
