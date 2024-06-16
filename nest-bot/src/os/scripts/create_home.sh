@@ -1,7 +1,10 @@
 #!/bin/bash
 
+echo "Running create_home.sh"
+
 # Init home directory
 shopt -s dotglob
+mkdir /home/$1
 cp -r /etc/skel/* /home/$1
 
 # Generate Caddy config

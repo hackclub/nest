@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Running setup.sh"
+
 # Refresh LDAP
 sss_cache -u $1
 
