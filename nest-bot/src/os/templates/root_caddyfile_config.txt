@@ -1,0 +1,21 @@
+<username>.hackclub.app {
+  reverse_proxy unix//home/<username>/.webserver.sock {
+    health_status 2xx
+    health_interval 5s
+    health_timeout 60s
+  }
+  handle_errors {
+    @502 expression {err.status_code} == 502
+    handle @502 {
+      respond * 502 {
+        body "This site is either down or does not exist.
+If this site really does exist, please make sure your Caddy is running. Try systemctl --user start caddy. It is also possible you have a config issue, if so, please reach out to us on the slack #nest.
+"
+      }
+    }
+    respond "{err.status_code} | {err.status_text} (on {re.host.1})" {
+      close
+    }
+  }
+}
+

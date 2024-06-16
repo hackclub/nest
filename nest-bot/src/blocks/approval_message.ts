@@ -25,6 +25,7 @@ export default function approval_message(
       type: "actions",
       elements: [
         {
+          block_id: "approve",
           type: "button",
           text: {
             type: "plain_text",
@@ -32,10 +33,11 @@ export default function approval_message(
             text: "Approve",
           },
           style: "primary",
-          value: "approve",
-          action_id: "approve_action",
+          value: slack_user,
+          action_id: "approve",
         },
         {
+          block_id: "deny",
           type: "button",
           text: {
             type: "plain_text",
@@ -43,8 +45,8 @@ export default function approval_message(
             text: "Deny",
           },
           style: "danger",
-          value: "deny",
-          action_id: "deny_action",
+          value: slack_user,
+          action_id: "deny",
         },
       ],
     },
