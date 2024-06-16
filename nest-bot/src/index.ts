@@ -3,6 +3,7 @@ import Slack from "@slack/bolt";
 import * as events from "./events/index.js";
 import * as actions from "./actions/index.js";
 import * as views from "./views/index.js";
+import populate_users from "./util/populate_users.js";
 
 import "dotenv/config";
 
@@ -25,6 +26,10 @@ for (const [name, action] of Object.entries(actions)) {
 for (const [name, view] of Object.entries(views)) {
   view(app);
   console.log(`Registered view: ${name}`);
+}
+
+if (process.env.POPULATE_USERS === "true") {
+  populate_users();
 }
 
 (async () => {
