@@ -2,7 +2,7 @@ import { prisma } from "./prisma.js";
 
 export default async function populate_users() {
   const usersRes = await fetch(
-    `https://identity.hackclub.app/api/v3/core/users`,
+    `https://identity.hackclub.app/api/v3/core/users/`,
     {
       headers: {
         Authorization: `Bearer ${process.env.AUTHENTIK_API_KEY}`,
@@ -11,7 +11,7 @@ export default async function populate_users() {
   );
 
   if (!usersRes.ok) {
-    console.error("Failed to fetch users from Authentik");
+    console.error(`Failed to fetch users from Authentik (HTTP code ${usersRes.status})`);
     return;
   }
 

@@ -18,7 +18,8 @@ export function approve(app: Slack.App) {
     }
 
     const adminUserId = body.user.id;
-    const nestUserId = body.state!.values.actions.approve.value!;
+    // @ts-expect-error
+    const nestUserId = body.actions[0].value;
 
     const msgBlocks = body.message!.blocks;
     msgBlocks[2] = {
@@ -48,7 +49,7 @@ export function approve(app: Slack.App) {
     const password = randomBytes(20).toString("base64url");
 
     const createRes = await fetch(
-      "https://identity.hackclub.app/api/v3/core/users",
+      "https://identity.hackclub.app/api/v3/core/users/",
       {
         method: "POST",
         headers: {
@@ -71,7 +72,7 @@ export function approve(app: Slack.App) {
     );
 
     if (!createRes.ok) {
-      console.error(`Failed to create user ${username} in Authentik`);
+      console.error(`Failed to create user ${username} in Authentik (HTTP code ${createRes.status})`);
       return;
     }
 
@@ -80,7 +81,7 @@ export function approve(app: Slack.App) {
     const pk = (await createRes.json()).pk;
 
     const passwordRes = await fetch(
-      `https://identity.hackclub.app/api/v3/core/users/${pk}/set_password`,
+      `https://identity.hackclub.app/api/v3/core/users/${pk}/set_password/`,
       {
         method: "POST",
         headers: {
@@ -94,7 +95,7 @@ export function approve(app: Slack.App) {
     );
 
     if (!passwordRes.ok) {
-      console.error(`Failed to set password for user ${username} in Authentik`);
+      console.error(`Failed to set password for user ${username} in Authentik (HTTP code ${passwordRes.status})`);
       return;
     }
 
