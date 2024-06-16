@@ -11,7 +11,7 @@ export function deny(app: Slack.App) {
     }
 
     const adminUserId = body.user.id;
-    const nestUserId = body.state!.values.deny.deny.value!;
+    const nestUserId = body.state!.values.actions.deny.value!;
 
     const msgBlocks = body.message!.blocks;
 

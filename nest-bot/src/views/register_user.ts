@@ -1,7 +1,7 @@
 import Slack from "@slack/bolt";
 
 import { prisma } from "../util/prisma.js";
-import reserved_usernames from "../reserved_usernames.json";
+import reserved_usernames from "../reserved_usernames.json" with { type: "json" };
 import unapproved_home from "../blocks/unapproved_home.js";
 import approval_message from "../blocks/approval_message.js";
 
@@ -32,7 +32,7 @@ export function register_user(app: Slack.App) {
     }
 
     // DNS label validation
-    if (username.match(/^(?![0-9]+$)(?!.*-$)(?!-)[a-zA-Z0-9-]{1,63}$/)) {
+    if (!username.match(/^(?![0-9]+$)(?!.*-$)(?!-)[a-zA-Z0-9-]{1,63}$/)) {
       ack({
         errors: {
           username: "Invalid username - must be a valid DNS label",

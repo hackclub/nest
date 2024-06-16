@@ -18,7 +18,7 @@ export function approve(app: Slack.App) {
     }
 
     const adminUserId = body.user.id;
-    const nestUserId = body.state!.values.approve.approve.value!;
+    const nestUserId = body.state!.values.actions.approve.value!;
 
     const msgBlocks = body.message!.blocks;
     msgBlocks[2] = {

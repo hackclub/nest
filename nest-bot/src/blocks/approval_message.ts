@@ -23,9 +23,9 @@ export default function approval_message(
     },
     {
       type: "actions",
+      block_id: "actions",
       elements: [
         {
-          block_id: "approve",
           type: "button",
           text: {
             type: "plain_text",
@@ -37,7 +37,6 @@ export default function approval_message(
           action_id: "approve",
         },
         {
-          block_id: "deny",
           type: "button",
           text: {
             type: "plain_text",
