@@ -4,7 +4,8 @@ export default function approval_message(
   username: string,
   email: string,
   ssh_key: string,
-  description: string
+  description: string,
+  joined: string
 ) {
   return [
     {
@@ -18,7 +19,7 @@ export default function approval_message(
       type: "section",
       text: {
         type: "mrkdwn",
-        text: `*Full Name:*\n${name}\n*Username:*\n${username}\n*Email:* ${email}\n*SSH Public Key:* \`${ssh_key}\`\n*Description:* ${description}`,
+        text: `*Full Name:*\n${name}\n*Username:*\n${username}\n*Email:* ${email}\n*SSH Public Key:* \`${ssh_key}\`\n*Description:* ${description}\n*Joined:* ${joined}`,
       },
     },
     {
