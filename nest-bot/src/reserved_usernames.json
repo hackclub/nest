@@ -1,12 +1,21 @@
 [
   "cockpit",
+  "gotify",
+  "gotontfy",
   "guides",
   "identity",
+  "lg",
   "mail",
+  "nest-bot",
+  "ntfy",
+  "oauth",
+  "postfix",
+  "preview",
   "prometheus",
   "secure",
   "sheetparty",
   "sshws",
+  "status",
   "ts",
   "www"
 ]
