@@ -9,8 +9,7 @@ import "dotenv/config";
 
 const app = new Slack.App({
   token: process.env.SLACK_BOT_TOKEN,
-  appToken: process.env.SLACK_APP_TOKEN,
-  socketMode: true,
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
 });
 
 for (const [name, event] of Object.entries(events)) {
@@ -33,7 +32,7 @@ if (process.env.POPULATE_USERS === "true") {
 }
 
 (async () => {
-  await app.start();
+  await app.start(process.env.PORT ?? 3000);
 
   console.log("Nest Bot is running!");
 })();
