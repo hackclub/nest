@@ -60,7 +60,7 @@ export default function Nav() {
 
         <a
           href="https://guides.hackclub.app/index.php/Quickstart"
-          className="hover:bg-HCBlue ml-auto mt-4 rounded-lg bg-HCPurple px-2 py-1.5 font-dm-mono text-base font-medium text-white transition-all duration-300 hover:scale-110 hover:shadow-lg md:mt-0 md:text-lg lg:text-xl"
+          className="mt-4 rounded-lg bg-HCPurple px-2 py-1.5 font-dm-mono text-base font-medium text-white transition-all duration-300 hover:scale-110 hover:shadow-lg md:mt-0 md:text-lg lg:text-xl"
         >
           Join Nest!
         </a>

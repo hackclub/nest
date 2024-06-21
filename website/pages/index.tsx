@@ -2,6 +2,7 @@ import Nav from "@/components/nav";
 import Hero from "@/components/hero";
 import Showcase from "@/components/showcase";
 import Info from "@/components/info";
+import Footer from "@/components/footer";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <Hero />
       <Showcase />
       <Info />
+      <Footer />
     </main>
   );
 }
