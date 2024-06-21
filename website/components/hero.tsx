@@ -1,6 +1,6 @@
 export default function Hero() {
   return (
-    <section className="grid grid-cols-3 p-32">
+    <section className="grid grid-cols-3 p-32 gap-x-10 place-items-center">
       <div className="text-white font-dm-mono flex flex-col justify-start items-start gap-y-5">
         <p className="text-4xl font-medium">
           <span className="text-HCPurple">Nest</span>, a free Linux server from{" "}
@@ -27,6 +27,26 @@ export default function Hero() {
             Read the Docs -&gt;
           </a>
         </div>
+      </div>
+      <div className="bg-gray-900 rounded-lg col-span-2 px-5 py-10 text-white font-dm-mono w-full">
+        <p className="text-4xl font-medium text-HCPurple">
+          $ <span className="text-white">ssh</span> hackclub.app
+        </p>
+        <pre>{`
+ __________________    website@nest 
+< Welcome to Nest! >   ----------- 
+ ------------------    OS: Debian GNU/Linux 12 (bookworm) x86_64 
+          \\            Host: KVM/QEMU (Standard PC (i440FX + PIIX, 1996) pc-i440fx-8.1) 
+           \\           Kernel: 6.1.0-21-amd64 
+            \\  __      Uptime: 22 days, 2 hours, 1 min 
+              / _)     Packages: 1448 (dpkg), 104 (nix-user), 51 (nix-default) 
+     _.----._/ /       Shell: bash 5.2.15 
+    /         /        Resolution: 1280x800 
+ __/ (| | (  |         Terminal: /dev/pts/88 
+/__.-'|_|--|_|         CPU: 13th Gen Intel i5-13500 (20) @ 2.496GHz 
+                       GPU: 00:02.0 Vendor 1234 Device 1111 
+                       Memory: 26666MiB / 52203MiB 
+		`}</pre>
       </div>
     </section>
   );
