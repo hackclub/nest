@@ -72,7 +72,9 @@ export function approve(app: Slack.App) {
     );
 
     if (!createRes.ok) {
-      console.error(`Failed to create user ${username} in Authentik (HTTP code ${createRes.status})`);
+      console.error(
+        `Failed to create user ${username} in Authentik (HTTP code ${createRes.status})`
+      );
       return;
     }
 
@@ -95,7 +97,9 @@ export function approve(app: Slack.App) {
     );
 
     if (!passwordRes.ok) {
-      console.error(`Failed to set password for user ${username} in Authentik (HTTP code ${passwordRes.status})`);
+      console.error(
+        `Failed to set password for user ${username} in Authentik (HTTP code ${passwordRes.status})`
+      );
       return;
     }
 
@@ -115,6 +119,15 @@ export function approve(app: Slack.App) {
         `Your password for your Nest account is \`${password}\`. Please continue through our Quickstart guide at https://guides.hackclub.app/index.php/Quickstart#Creating_an_Account.`
       ),
       text: `Your password for your Nest account is ${password}. Please continue through our Quickstart guide at https://guides.hackclub.app/index.php/Quickstart#Creating_an_Account.`,
+    });
+
+    const userGroup = await client.usergroups.users.list({
+      usergroup: "S05RNTN07SN", // @birds group
+    });
+
+    await client.usergroups.users.update({
+      usergroup: "S05RNTN07SN", // @birds group
+      users: [...(userGroup.users ?? []), nestUserId].join(","),
     });
 
     // Initialize user on Nest VM
