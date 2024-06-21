@@ -5,8 +5,8 @@ import { FaHome, FaSignal, FaBook } from "react-icons/fa";
 
 export default function Nav() {
   return (
-    <nav className="flex flex-wrap justify-between items-center px-16 py-4">
-      <div className="flex gap-x-4 text-white md:gap-x-12 lg:gap-x-20 font-dm-mono text-base md:text-lg lg:text-2xl items-center self-end font-medium">
+    <nav className="flex flex-wrap items-center justify-between px-16 py-4">
+      <div className="flex items-center gap-x-4 self-end font-dm-mono text-base font-medium text-white md:gap-x-12 md:text-lg lg:gap-x-20 lg:text-2xl">
         {/* Animated Orpheus because why not */}
         <Link href={"https://hackclub.com/"}>
           <motion.div
@@ -31,34 +31,34 @@ export default function Nav() {
         </Link>
 
         <Link
-          className="flex items-center hover:text-HCBlue hover:underline"
+          className="hover:text-HCBlue flex items-center hover:underline"
           href={"/"}
         >
           <FaHome className="mr-1" /> Home
         </Link>
         <Link
-          className="flex items-center hover:text-HCBlue hover:underline"
+          className="hover:text-HCBlue flex items-center hover:underline"
           href={"https://guides.hackclub.app/"}
         >
           <FaBook className="mr-1" /> Wiki
         </Link>
         <Link
-          className="flex items-center hover:text-HCBlue hover:underline"
+          className="hover:text-HCBlue flex items-center hover:underline"
           href={"https://status.hackclub.app/"}
         >
           <FaSignal className="mr-1" /> Status
         </Link>
       </div>
 
-      <div className="flex gap-x-10 justify-start items-center">
+      <div className="flex items-center justify-start gap-x-10">
         <a
           href="https://identity.hackclub.app"
-          className="border-2 rounded-lg border-HCPurple font-dm-mono font-medium text-HCPurple py-1.5 px-8 text-base md:text-lg lg:text-xl hover:bg-HCPurple hover:text-white transition-all hover:scale-110 duration-300 mt-4 md:mt-0"
+          className="mt-4 rounded-lg border-2 border-HCPurple px-8 py-1.5 font-dm-mono text-base font-medium text-HCPurple transition-all duration-300 hover:scale-110 hover:bg-HCPurple hover:text-white md:mt-0 md:text-lg lg:text-xl"
         >
           Login
         </a>
 
-        <button className="bg-HCPurple py-1.5 px-2 rounded-lg text-base md:text-lg lg:text-xl font-dm-mono font-medium text-white ml-auto mt-4 md:mt-0 hover:bg-HCBlue hover:shadow-lg transition-all duration-300 hover:scale-110">
+        <button className="hover:bg-HCBlue ml-auto mt-4 rounded-lg bg-HCPurple px-2 py-1.5 font-dm-mono text-base font-medium text-white transition-all duration-300 hover:scale-110 hover:shadow-lg md:mt-0 md:text-lg lg:text-xl">
           Join Nest!
         </button>
       </div>

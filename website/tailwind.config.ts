@@ -14,13 +14,14 @@ const config: Config = {
       //     "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       // },
       colors: {
-        'HCRed': '#ec3750',
-        'HCPurple': '#a633d6',
-        'HCOrange': '#ff8c37',
-        'bg': "#03001C"
+        HCRed: "#ec3750",
+        HCPurple: "#a633d6",
+        HCOrange: "#ff8c37",
+        bg: "#03001C",
       },
       fontFamily: {
-        'dm-mono': ['var(--font-dm-mono)']}
+        "dm-mono": ["var(--font-dm-mono)"],
+      },
     },
   },
   plugins: [],

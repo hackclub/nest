@@ -5,8 +5,8 @@ export default function Hero() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <section className="grid grid-cols-3 p-32 gap-x-20 place-items-center">
-      <div className="text-white font-dm-mono flex flex-col justify-start items-start gap-y-5">
+    <section className="grid grid-cols-3 place-items-center gap-x-20 p-32">
+      <div className="flex flex-col items-start justify-start gap-y-5 font-dm-mono text-white">
         <p className="text-4xl font-medium">
           <span className="text-HCPurple">Nest</span>, a free Linux server from{" "}
           <a href="https://hackclub.com" className="text-HCRed underline">
@@ -17,17 +17,17 @@ export default function Hero() {
           Host Discord bots, apps, websites, try out basic computer networking,
           chat with others and more!
         </p>
-        <div className="flex justify-start items-center gap-x-5">
+        <div className="flex items-center justify-start gap-x-5">
           <a
             href="https://guides.hackclub.app/index.php/Quickstart"
-            className="bg-HCPurple py-1.5 px-2 rounded-lg text-base md:text-lg lg:text-xl font-dm-mono font-medium text-white ml-auto mt-4 md:mt-0 hover:bg-HCBlue hover:shadow-lg transition-all duration-300 hover:scale-110"
+            className="hover:bg-HCBlue ml-auto mt-4 rounded-lg bg-HCPurple px-2 py-1.5 font-dm-mono text-base font-medium text-white transition-all duration-300 hover:scale-110 hover:shadow-lg md:mt-0 md:text-lg lg:text-xl"
           >
             Join Nest!
           </a>
 
           <a
             href="https://guides.hackclub.app/index.php/Main_Page"
-            className="border-2 rounded-lg border-HCPurple font-dm-mono font-medium text-HCPurple py-1.5 px-2 text-base md:text-lg lg:text-xl hover:bg-HCPurple hover:text-white transition-all hover:scale-110 duration-300 mt-4 md:mt-0"
+            className="mt-4 rounded-lg border-2 border-HCPurple px-2 py-1.5 font-dm-mono text-base font-medium text-HCPurple transition-all duration-300 hover:scale-110 hover:bg-HCPurple hover:text-white md:mt-0 md:text-lg lg:text-xl"
           >
             Read the Docs -&gt;
           </a>
@@ -36,11 +36,11 @@ export default function Hero() {
       <div
         className={`${
           isExpanded ? "bg-gray-900" : "self-start"
-        } rounded-lg col-span-2 px-5 py-10 flex flex-col gap-x-10 text-white font-dm-mono w-full`}
+        } col-span-2 flex w-full flex-col gap-x-10 rounded-lg px-5 py-10 font-dm-mono text-white`}
       >
         <div className="flex gap-x-5">
           <button
-            className={`text-4xl font-medium text-HCPurple self-start`}
+            className={`self-start text-4xl font-medium text-HCPurple`}
             disabled={isExpanded}
             onClick={() => setIsExpanded(true)}
           >
@@ -49,7 +49,7 @@ export default function Hero() {
           <div
             className={`${
               isExpanded ? "opacity-0" : "opacity-100"
-            } transition-all duration-300 flex gap-x-3 self-start`}
+            } flex gap-x-3 self-start transition-all duration-300`}
           >
             <Image src={"/arrow.svg"} alt="nest logo" width={85} height={85} />
             <p className="text-2xl font-medium">click me!</p>
