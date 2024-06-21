@@ -1,6 +1,11 @@
+import { useState } from "react";
+import Image from "next/image";
+
 export default function Hero() {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
-    <section className="grid grid-cols-3 p-32 gap-x-10 place-items-center">
+    <section className="grid grid-cols-3 p-32 gap-x-20 place-items-center">
       <div className="text-white font-dm-mono flex flex-col justify-start items-start gap-y-5">
         <p className="text-4xl font-medium">
           <span className="text-HCPurple">Nest</span>, a free Linux server from{" "}
@@ -28,11 +33,33 @@ export default function Hero() {
           </a>
         </div>
       </div>
-      <div className="bg-gray-900 rounded-lg col-span-2 px-5 py-10 text-white font-dm-mono w-full">
-        <p className="text-4xl font-medium text-HCPurple">
-          $ <span className="text-white">ssh</span> hackclub.app
-        </p>
-        <pre>{`
+      <div
+        className={`${
+          isExpanded ? "bg-gray-900" : "self-start"
+        } rounded-lg col-span-2 px-5 py-10 flex flex-col gap-x-10 text-white font-dm-mono w-full`}
+      >
+        <div className="flex gap-x-5">
+          <button
+            className={`text-4xl font-medium text-HCPurple self-start`}
+            disabled={isExpanded}
+            onClick={() => setIsExpanded(true)}
+          >
+            $ <span className="text-white">ssh</span> hackclub.app
+          </button>
+          <div
+            className={`${
+              isExpanded ? "opacity-0" : "opacity-100"
+            } transition-all duration-300 flex gap-x-3 self-start`}
+          >
+            <Image src={"/arrow.svg"} alt="nest logo" width={85} height={85} />
+            <p className="text-2xl font-medium">click me!</p>
+          </div>
+        </div>
+        <pre
+          className={`${
+            isExpanded ? "opacity-100" : "opacity-0"
+          } transition-all duration-300`}
+        >{`
  __________________    website@nest 
 < Welcome to Nest! >   ----------- 
  ------------------    OS: Debian GNU/Linux 12 (bookworm) x86_64 
