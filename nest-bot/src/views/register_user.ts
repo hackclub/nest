@@ -100,10 +100,6 @@ export function register_user(app: Slack.App) {
       },
     });
 
-    const info = await client.users.info({
-      user: body.user.id,
-    });
-
     await client.chat.postMessage({
       channel: "C05VBD1B7V4", // private #nest-registration channel id
       blocks: approval_message(
@@ -112,9 +108,7 @@ export function register_user(app: Slack.App) {
         username,
         email,
         ssh_key,
-        description,
-        // @ts-expect-error
-        info.user?.profile?.start_date
+        description
       ),
       text: `<@${body.user.id}> is requesting an approval for Nest`,
     });
