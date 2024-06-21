@@ -17,6 +17,7 @@ const config: Config = {
         'HCRed': '#ec3750',
         'HCPurple': '#a633d6',
         'HCOrange': '#ff8c37',
+        'bg': "#03001C"
       },
       fontFamily: {
         'dm-mono': ['var(--font-dm-mono)']}
