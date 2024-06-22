@@ -1,13 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { FaHome, FaSignal, FaBook } from "react-icons/fa";
+import { FaHome, FaServer, FaBook } from "react-icons/fa";
+
+const navItems = [
+  { href: "/", icon: <FaHome className="mr-2" />, text: "Home" },
+  { href: "https://guides.hackclub.app/", icon: <FaBook className="mr-2" />, text: "Wiki" },
+  { href: "https://status.hackclub.app/", icon: <FaServer className="mr-2" />, text: "Status" },
+];
 
 export default function Nav() {
   return (
-    <nav className="flex flex-wrap items-center justify-between px-16 py-4">
-      <div className="flex items-center gap-x-4 self-end font-dm-mono text-base font-medium text-white md:gap-x-12 md:text-lg lg:gap-x-20 lg:text-2xl">
-        {/* Animated Orpheus because why not */}
+    <nav className="flex items-center justify-between px-4 py-4 md:px-16 relative">
+      <div className="absolute left-4 top-1/2 transform -translate-y-1/2 flex items-center gap-x-4">
         <Link href={"https://hackclub.com/"}>
           <motion.div
             initial={{ y: "-100%" }}
@@ -20,47 +25,39 @@ export default function Nav() {
               alt="hc logo"
               width={125}
               height={125}
-              className="-my-4"
+              className="mb-1"
             />
           </motion.div>
         </Link>
+      </div>
 
-        {/* Nest Logo */}
+      <div className="ml-24 md:ml-32 flex items-center justify-center gap-x-4 md:gap-x-12 font-dm-mono text-base font-medium text-white md:text-lg lg:text-2xl">
         <Link className="flex-shrink-0" href={"/"}>
           <Image src={"/nest.svg"} alt="nest logo" width={85} height={85} />
         </Link>
 
-        <Link
-          className="hover:text-HCBlue flex items-center hover:underline"
-          href={"/"}
-        >
-          <FaHome className="mr-1" /> Home
-        </Link>
-        <Link
-          className="hover:text-HCBlue flex items-center hover:underline"
-          href={"https://guides.hackclub.app/"}
-        >
-          <FaBook className="mr-1" /> Wiki
-        </Link>
-        <Link
-          className="hover:text-HCBlue flex items-center hover:underline"
-          href={"https://status.hackclub.app/"}
-        >
-          <FaSignal className="mr-1" /> Status
-        </Link>
+        {navItems.map((item, index) => (
+          <Link
+            key={index}
+            className="hover:text-HCBlue flex items-center hover:underline"
+            href={item.href}
+          >
+            {item.icon} {item.text}
+          </Link>
+        ))}
       </div>
 
-      <div className="flex items-center justify-start gap-x-10">
+      <div className="flex items-center justify-end gap-x-4 md:gap-x-10">
         <a
           href="https://identity.hackclub.app"
-          className="mt-4 rounded-lg border-2 border-HCPurple px-8 py-1.5 font-dm-mono text-base font-medium text-HCPurple transition-all duration-300 hover:scale-110 hover:bg-HCPurple hover:text-white md:mt-0 md:text-lg lg:text-xl"
+          className="rounded-lg border-2 border-HCPurple px-4 py-1.5 md:px-8 font-dm-mono text-base font-medium text-HCPurple transition-all duration-300 hover:scale-110 hover:bg-HCPurple hover:text-white md:text-lg lg:text-xl"
         >
           Login
         </a>
 
         <a
           href="https://guides.hackclub.app/index.php/Quickstart"
-          className="mt-4 rounded-lg bg-HCPurple px-2 py-1.5 font-dm-mono text-base font-medium text-white transition-all duration-300 hover:scale-110 hover:shadow-lg md:mt-0 md:text-lg lg:text-xl"
+          className="rounded-lg bg-HCPurple px-4 py-1.5 md:px-2 font-dm-mono text-base font-medium text-white transition-all duration-300 hover:scale-110 hover:shadow-lg md:text-lg lg:text-xl"
         >
           Join Nest!
         </a>
