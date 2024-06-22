@@ -23,6 +23,7 @@ The Nest VM is the VM that users will access and host their stuff on. It runs De
 #### Resource Limits
 
 Every user on Nest has resource limits setup to prevent abuse of Nest and to make sure there's enough resources for everyone. The default limits are:
+
 - 50% (total) CPU time
 - 2GB memory
 - 15GB disk
@@ -32,6 +33,7 @@ CPU time and memory are configured through systemd & cgroups. These default limi
 Note that to apply changes to either the CPU time or memory limits, you must run `systemctl daemon-reload`.
 
 Disk space limits are configured through `quota`. The following command is run by Nest Bot to set the default disk space limit:
+
 ```sh
 setquota -u <user> 15G 15G 0 0 /
 ```
@@ -54,6 +56,7 @@ The Backup VM runs the [Proxmox Backup Server](https://pbs.proxmox.com/wiki/inde
 For storage, 500GB has been purchased from [rsync.net](https://rsync.net).
 
 PBS has a single datastore configured, with the path `/backup/rsync`. In order to get it to function properly, there was a bit of a hacky workaround. The steps are:
+
 - create two directories, ex. `eventualDatastore` and `tempMount`
 - create a PBS datastore at `eventualDatastore` and mount the rsync.net storage using sshfs at `tempMount`
 - Run `systemctl stop proxmox-backup-proxy.service proxmox-backup.service`
@@ -184,6 +187,7 @@ The network configuration for the Secure VM can be found in [the networking.nix 
 ### Backup VM network config
 
 `/etc/network/interfaces`:
+
 ```
 auto lo
 iface lo inet loopback
@@ -299,7 +303,7 @@ The Docker compose configuration uses a custom MediaWiki image to add extensions
 
 ### Nest Bot
 
-Nest Bot handles Nest account creation and management from Slack for easy access to users. Its code is at [cskartikey/nest-bot](https://github.com/cskartikey/nest-bot). Since it needs to run commands on the Nest VM, it runs there, under the `nest-internal` user and inside a `tmux` session named `nest-bot`. The repo is cloned in `/home/nest-internal/nest-bot`.
+Nest Bot handles Nest account creation and management from Slack for easy access to users. Its code is in the directory [nest-bot](/nest-bot/). Since it needs to run commands on the Nest VM, it runs there, under the `nest-internal` user and inside a `tmux` session named `nest-bot`. This repo is cloned in `/home/nest-internal/nest`.
 
 Nest Bot's database runs on the Secure VM. The Docker compose configuration for it is in `/opt/docker/nest-bot/compose.yml` - contents are in [nest-bot.yml](/secure-vm/docker/nest-bot.yml).
 
@@ -312,6 +316,7 @@ Nest Bot's database runs on the Secure VM. The Docker compose configuration for 
 [Uptime Kuma](https://github.com/louislam/uptime-kuma) monitors Nest's services and infrastructure, and alerts in Slack (#nest-meta channel) when anything goes down. It's setup on a Docker container on the Nest VM (so that it can monitor Nest VM Docker containers), in `/root/uptime`.
 
 At the moment, it is setup to monitor 5 services:
+
 - Authentik
 - bird-lg
 - bird-lgproxy
@@ -335,8 +340,9 @@ Nest CLI requires the `/var/nest-cli` directory to be created.
 The Nest admins take great care to make sure that all Nest services are as secure as possible, which involves using proper authentication and firewalls when appropriate. However, this relies upon critical services such as Authentik and Headscale, meaning that Nest admins could be prevented from fixing issues if such services go down. For this reason, a series of failsafes has been created to ensure that force reboots are never required.
 
 These failsafes are:
+
 - Access to root@proxmox and root@secure-vm through SSH keys and cryptograhically random passwords.
-- Shared TOTP token for root@pam on the Proxmox Web UI 
+- Shared TOTP token for root@pam on the Proxmox Web UI
 - A multi-use, non-expiring preauth token for Headscale
 
 These failsafes should be stored safely and securely by all Nest admins (now through [Vaultwarden](#vaultwarden)), and they are only to be used in case of emergency to ensure proper security and auditing.
