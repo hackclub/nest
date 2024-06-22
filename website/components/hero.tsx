@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Image from "next/image";
-
+import { FaArrowRight } from "react-icons/fa";
 export default function Hero() {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -27,9 +27,9 @@ export default function Hero() {
 
           <a
             href="https://guides.hackclub.app/index.php/Main_Page"
-            className="mt-4 rounded-lg border-2 border-HCPurple px-2 py-1.5 font-dm-mono text-base font-medium text-HCPurple transition-all duration-300 hover:scale-110 hover:bg-HCPurple hover:text-white md:mt-0 md:text-lg lg:text-xl"
+            className="mt-4 rounded-lg border-2 border-HCPurple px-2 py-1.5 font-dm-mono text-base font-medium text-HCPurple transition-all duration-300 hover:scale-110 hover:bg-HCPurple hover:text-white md:mt-0 md:text-lg lg:text-xl flex items-center"
           >
-            Read the Docs -&gt;
+            Read the Docs <FaArrowRight className="ml-2 mt-1"/>
           </a>
         </div>
       </div>
