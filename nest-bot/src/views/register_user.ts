@@ -86,17 +86,7 @@ export function register_user(app: Slack.App) {
       });
       return;
     }
-    const verifyRequest = await fetch(`https://hackverify.hackclub.app/check/id/${body.user.id}?apiKey=${process.env.HACKVERIFY_API_KEY}`)
-    const verificationStatus = await verifyRequest.json()
-    if (!verificationStatus.verified) {
-      ack({
-        errors: {
-          username: "Please verify that you are a student at https://forms.hackclub.com/eligibility",
-        },
-        response_action: "errors",
-      });
-      return;
-    }
+
     ack();
 
     await prisma.users.create({
