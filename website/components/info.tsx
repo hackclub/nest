@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { GoCpu } from "react-icons/go";
-import { FaMemory } from "react-icons/fa";
+import { BsMemory, BsNvme, BsHddNetwork } from "react-icons/bs";
 export default function Info() {
   const [component, setComponent] = useState<
     "Linux" | "Services" | "Community" | null
@@ -91,11 +91,11 @@ export default function Info() {
   }
 
   return (
-    <section className="flex flex-col items-center justify-start gap-y-3 font-dm-mono text-white px-4">
+    <section className="flex flex-col items-center justify-start gap-y-3 font-dm-mono text-white px-4 py-10 lg:py-0">
       <p className="text-4xl font-medium text-center">
         What makes <span className="text-HCPurple">Nest</span> a nest?
       </p>
-      <p className="max-w-4xl lg:text-center text-xl">
+      <p className="max-w-4xl lg:text-center lg:text-xl">
         Nest is a{" "}
         <a
           href="https://www.hetzner.com/dedicated-rootserver/ex44/"
@@ -106,12 +106,33 @@ export default function Info() {
         dedicated server, located in Helsinki, Finland. Users share a{" "}
         <span className="italic">virtual machine</span> on the server.
       </p>
-      <div>
-        <div className="flex items-center   ">
-          <FaMemory className="text-5xl" />
+      <div className="flex flex-col self-start gap-y-2 lg:hidden">
+        <div className="flex">
+          <GoCpu className="text-5xl" />
           <div className="ml-2 mt-2">
-            <div className="font-bold">Memory</div>
+            <div className="font">Processor</div>
+            <div className="text-xs">i5-13500</div>
+          </div>
+        </div>
+        <div className="flex">
+          <BsMemory className="text-5xl" />
+          <div className="ml-2 mt-2">
+            <div className="font">Memory</div>
             <div className="text-xs">64 GB DDR4 Ram</div>
+          </div>
+        </div>
+        <div className="flex">
+          <BsNvme className="text-5xl" />
+          <div className="ml-2 mt-2">
+            <div className="font">Disk Space</div>
+            <div className="text-xs">2 * 512 GB NVMe in RAID 1</div>
+          </div>
+        </div>
+        <div className="flex">
+          <BsHddNetwork className="text-5xl" />
+          <div className="ml-2 mt-2">
+            <div className="font-bold">Internet</div>
+            <div className="text-xs">Gigabit uncapped</div>
           </div>
         </div>
       </div>
