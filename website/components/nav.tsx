@@ -33,6 +33,10 @@ export default function Nav() {
           <motion.div
             initial={{ y: "-100%" }}
             animate={{ y: 0 }}
+            whileHover={{
+              rotate: [0, 4, 0],
+              transition: { duration: 1, repeat: Infinity },
+            }}
             transition={{ duration: 1 }}
             className="flex-shrink-0"
           >
