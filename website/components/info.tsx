@@ -1,5 +1,6 @@
 import { useState } from "react";
-
+import { GoCpu } from "react-icons/go";
+import { FaMemory } from "react-icons/fa";
 export default function Info() {
   const [component, setComponent] = useState<
     "Linux" | "Services" | "Community" | null
@@ -90,11 +91,11 @@ export default function Info() {
   }
 
   return (
-    <section className="flex flex-col items-center justify-start gap-y-3 font-dm-mono text-white">
-      <p className="text-4xl font-medium">
+    <section className="flex flex-col items-center justify-start gap-y-3 font-dm-mono text-white px-4">
+      <p className="text-4xl font-medium text-center">
         What makes <span className="text-HCPurple">Nest</span> a nest?
       </p>
-      <p className="max-w-4xl text-center text-xl">
+      <p className="max-w-4xl lg:text-center text-xl">
         Nest is a{" "}
         <a
           href="https://www.hetzner.com/dedicated-rootserver/ex44/"
@@ -105,7 +106,16 @@ export default function Info() {
         dedicated server, located in Helsinki, Finland. Users share a{" "}
         <span className="italic">virtual machine</span> on the server.
       </p>
-      <div className="grid w-full grid-cols-7 px-20 py-10">
+      <div>
+        <div className="flex items-center   ">
+          <FaMemory className="text-5xl" />
+          <div className="ml-2 mt-2">
+            <div className="font-bold">Memory</div>
+            <div className="text-xs">64 GB DDR4 Ram</div>
+          </div>
+        </div>
+      </div>
+      <div className="lg:grid w-full grid-cols-7 px-20 py-10 hidden">
         <pre className="col-span-3 w-min text-sm">{`
 		                       .,,uod8B8bou,,.
               ..,uod8BBBBBBBBBBBBBBBBRPFT?l!i:.
