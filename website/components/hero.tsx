@@ -5,7 +5,7 @@ export default function Hero() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <section className="grid grid-cols-3 place-items-center gap-x-20 p-32">
+    <section className="grid grid-cols-1 grid-rows-1 lg:grid-cols-3 place-items-center lg:gap-x-20 p-4 lg:p-32">
       <div className="flex flex-col items-start justify-start gap-y-5 font-dm-mono text-white">
         <p className="text-4xl font-medium">
           <span className="text-HCPurple">Nest</span>, a free Linux server from{" "}
@@ -32,13 +32,40 @@ export default function Hero() {
             Read the Docs <FaArrowRight className="ml-2 mt-1"/>
           </a>
         </div>
+        <pre className="w-min text-xs lg:hidden">{`
+            ██████████████████████████      
+          ██                        ████    
+        ████████████████████████████  ██    
+        ██                        ██  ██    
+        ██  ████████████████████  ██  ██    
+        ██  ██                ██  ██  ██    
+        ██  ██                ██  ██  ██    
+        ██  ██                ██  ██  ██    
+        ██  ██                ██  ██  ██    
+        ██  ██                ██  ██  ██    
+        ██  ████████████████████  ██  ██    
+        ██                        ██  ██    
+        ████████████████████████████    ████
+      ██                              ██  ██
+    ██████████████████████████████████    ██
+    ██                              ██    ██
+    ██              ████████████    ██    ██
+    ██                      ██      ██    ██
+    ██                              ██    ██
+    ██████████████████████████████████  ██  
+  ██                                  ██    
+██                                  ██      
+████████████████████████████████████        
+
+
+`}</pre>
       </div>
       <div
         className={`${
           isExpanded ? "bg-gray-900" : "self-start"
         } col-span-2 flex w-full flex-col gap-x-10 rounded-lg px-5 py-10 font-dm-mono text-white`}
       >
-        <div className="flex gap-x-5">
+        <div className="lg:flex gap-x-5 hidden">
           <button
             className={`self-start text-4xl font-medium text-HCPurple`}
             disabled={isExpanded}
@@ -58,9 +85,9 @@ export default function Hero() {
         <pre
           className={`${
             isExpanded ? "opacity-100" : "opacity-0"
-          } transition-all duration-300`}
+          } transition-all duration-300 hidden lg:block`}
         >{`
- __________________    website@nest 
+ __________________    orpheus@nest 
 < Welcome to Nest! >   ----------- 
  ------------------    OS: Debian GNU/Linux 12 (bookworm) x86_64 
           \\            Host: KVM/QEMU (Standard PC (i440FX + PIIX, 1996) pc-i440fx-8.1) 

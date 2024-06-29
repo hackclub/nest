@@ -15,12 +15,13 @@ type ProjectCardProps = {
 
 export default function ProjectCard(props: ProjectCardProps) {
   return (
-    <div className="flex w-1/6 flex-col items-center justify-start rounded-lg">
+    <div className="flex w-5/6 lg:w-1/6 flex-col items-center justify-start rounded-lg">
       <Image
         src={props.image}
         width={350}
         height={80}
         alt={`Image of project "${props.title}"`}
+        className="rounded-t-md"
       />
       <div className="flex flex-col items-start justify-start gap-y-2 rounded-lg rounded-t-none border-2 border-t-0 border-HCPurple p-5">
         <div className="flex w-full items-center justify-between">
@@ -29,7 +30,7 @@ export default function ProjectCard(props: ProjectCardProps) {
             <FaGithub size={20} />
           </Link>
         </div>
-        <p>{props.description}</p>
+        <p className="text-sm lg:text-base">{props.description}</p>
         <div className="flex items-center justify-start gap-x-3">
           <Image
             src={props.author.pfp}
