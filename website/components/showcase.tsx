@@ -2,12 +2,12 @@ import ProjectCard from "@/components/projectCard";
 
 export default function Showcase() {
   return (
-    <section className="flex flex-col items-center justify-start gap-y-3 font-dm-mono text-white">
-      <p className="text-4xl font-medium px-4 text-center">
+    <section className="flex flex-col items-center justify-start gap-y-1 2xl:gap-y-3 font-dm-mono text-white ">
+      <p className="lg:text-3xl 2xl:text-4xl font-medium px-4 text-center">
         Join <span className="text-HCPurple">100 other teens</span> using Nest
       </p>
-      <p className="lg:text-xl text-lg p-4 text-center">See what fellow “birds” are hosting on Nest!</p>
-      <div className="flex items-center justify-evenly lg:py-10 flex-col lg:flex-row gap-y-10 lg:gap-y-0">
+      <p className="2xl:text-xl text-lg p-4 text-center">See what fellow “birds” are hosting on Nest!</p>
+      <div className="flex items-center justify-evenly lg:py-10 flex-col lg:flex-row gap-x-7 gap-y-10 lg:gap-y-0">
         <ProjectCard
           title="Denopoll"
           author={{

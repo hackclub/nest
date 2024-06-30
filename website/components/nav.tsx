@@ -13,7 +13,7 @@ const navItems = [
 
 export default function Nav() {
   return (
-    <nav className="flex items-center justify-between px-4 py-4 md:px-16 relative border-b-2 border-violet-500 md:border-transparent md:bg-transparent">
+    <nav className="flex items-center justify-between px-4 py-4 md:px-16 relative border-b-2 border-violet-700 md:border-transparent md:bg-transparent">
       <div className="flex items-center gap-x-4 md:hidden">
         <Link href={"/"}>
           <Image src={"/nest.svg"} alt="nest logo" width={70} height={70} />
@@ -28,7 +28,7 @@ export default function Nav() {
         ))}
       </div>
 
-      <div className="absolute left-4 top-1/2 transform -translate-y-1/2 flex items-center gap-x-4 hidden lg:block">
+      <div className="absolute left-4 top-1/2 transform -translate-y-1/2 items-center gap-x-4 hidden lg:flex">
         <Link href={"https://hackclub.com/"}>
           <motion.div
             initial={{ y: "-100%" }}
@@ -70,14 +70,14 @@ export default function Nav() {
       <div className="hidden lg:flex items-center justify-end gap-x-4 md:gap-x-10">
         <a
           href="https://identity.hackclub.app"
-          className="rounded-lg border-2 border-HCPurple px-4 py-1.5 md:px-8 font-dm-mono text-base font-medium text-HCPurple transition-all duration-300 hover:scale-110 hover:bg-HCPurple hover:text-white md:text-lg lg:text-xl"
+          className="rounded-lg border-2 border-HCPurple py-1 px-4 2xl:py-1.5 lg:px-6 2xl:px-8 font-dm-mono text-base font-medium text-HCPurple transition-all duration-300 hover:scale-110 hover:bg-HCPurple hover:text-white md:text-lg 2xl:text-xl"
         >
           Login
         </a>
 
         <a
           href="https://guides.hackclub.app/index.php/Quickstart"
-          className="rounded-lg bg-HCPurple px-4 py-1.5 md:px-2 font-dm-mono text-base font-medium text-white transition-all duration-300 hover:scale-110 hover:shadow-lg md:text-lg lg:text-xl"
+          className="rounded-lg bg-HCPurple border-2 border-HCPurple px-4 py-1.5 2xl:px-2 font-dm-mono text-base font-medium text-white transition-all duration-300 hover:scale-110 hover:shadow-lg md:text-lg 2xl:text-xl"
         >
           Join Nest!
         </a>
