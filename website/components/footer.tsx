@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="flex flex-col items-center justify-start gap-y-3 font-dm-mono text-white px-4 py-2 lg:px-10 lg:pb-4 border-t-2 border-violet-950">
+    <footer className="flex flex-col items-center justify-start gap-y-3 border-t-2 border-violet-950 px-4 py-2 font-dm-mono text-white lg:px-10 lg:pb-4">
       {/* <p className="lg:text-3xl 2xl:text-4xl font-medium hidden lg:block">Ready to get started?</p>
       <a
           href="https://guides.hackclub.app/index.php/Quickstart"
@@ -8,7 +8,7 @@ export default function Footer() {
         >
           Join Nest!
         </a> */}
-      <p className="lg:py-0 lg:px-0 lg:mt-5 maw-w-4xl 2xl:max-w-5xl text-center text-xs lg:text-lg 2xl:text-xl font-medium">
+      <p className="maw-w-4xl text-center text-xs font-medium lg:mt-5 lg:px-0 lg:py-0 lg:text-lg 2xl:max-w-5xl 2xl:text-xl">
         Nest is a project by{" "}
         <a href="https://hackclub.com" className="underline">
           Hack Club

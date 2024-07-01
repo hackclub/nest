@@ -91,8 +91,8 @@ export default function Info() {
   }
 
   return (
-    <section className="flex flex-col items-center justify-start gap-y-3 font-dm-mono text-white px-4 py-10 lg:py-0 p-4 lg:p-16 2xl:p-32">
-      <p className="text-3xl 2xl:text-4xl font-medium text-center">
+    <section className="flex flex-col items-center justify-start gap-y-3 p-4 px-4 py-10 font-dm-mono text-white lg:p-16 lg:py-0 2xl:p-32">
+      <p className="text-center text-3xl font-medium 2xl:text-4xl">
         What makes <span className="text-HCPurple">Nest</span> a nest?
       </p>
       <p className="max-w-4xl lg:text-center lg:text-lg 2xl:text-xl">
@@ -106,7 +106,7 @@ export default function Info() {
         dedicated server, located in Helsinki, Finland. Users share a{" "}
         <span className="italic">virtual machine</span> on the server.
       </p>
-      <div className="flex flex-col self-start gap-y-2 lg:hidden">
+      <div className="flex flex-col gap-y-2 self-start lg:hidden">
         <div className="flex">
           <GoCpu className="text-5xl" />
           <div className="ml-2 mt-2">
@@ -136,7 +136,7 @@ export default function Info() {
           </div>
         </div>
       </div>
-      <div className="lg:grid w-full grid-cols-7 px-20 py-10 hidden">
+      <div className="hidden w-full grid-cols-7 px-20 py-10 lg:grid">
         <pre className="col-span-3 w-min text-sm">{`
 		                       .,,uod8B8bou,,.
               ..,uod8BBBBBBBBBBBBBBBBRPFT?l!i:.
