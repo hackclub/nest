@@ -33,7 +33,7 @@ export default function Hero() {
           </a>
         </div>
         <pre className="font-mono text-xs lg:hidden px-2 ">{`
-                                                 ▓▓▓▓▓▓                                          
+                                        ▓▓▓▓▓▓                                          
                                     ▓▓▓▓░░░░░░▓▓▓▓                                      
                                 ▓▓▓▓░░░░░░░░░░░░▒▒▓▓██                                  
                             ▒▒▒▒▓▓▒▒░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒                              
@@ -79,20 +79,7 @@ export default function Hero() {
                                   ████░░░░░░░░░░░░░░░░░░░░████                          
                                       ████░░░░░░░░░░░░████                              
                                           ▓▓▓▓░░░░▓▓██                                  
-                                          ░░░░▓▓▓▓░░                                    
-
-
-
-
-
-
-
-
-
-
-
-
-        `}</pre>
+                                          ░░░░▓▓▓▓░░                                    `}</pre>
       </div>
       <div
         className={`${
