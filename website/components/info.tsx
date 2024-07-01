@@ -92,7 +92,7 @@ export default function Info() {
 
   return (
     <section className="flex flex-col items-center justify-start gap-y-3 font-dm-mono text-white px-4 py-10 lg:py-0 p-4 lg:p-16 2xl:p-32">
-      <p className="lg:text-3xl 2xl:text-4xl font-medium text-center">
+      <p className="text-3xl 2xl:text-4xl font-medium text-center">
         What makes <span className="text-HCPurple">Nest</span> a nest?
       </p>
       <p className="max-w-4xl lg:text-center lg:text-lg 2xl:text-xl">

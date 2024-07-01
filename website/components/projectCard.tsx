@@ -23,7 +23,7 @@ export default function ProjectCard(props: ProjectCardProps) {
         alt={`Image of project "${props.title}"`}
         className="rounded-t-md"
       />
-      <div className="flex flex-col items-start justify-start gap-y-2 rounded-lg rounded-t-none border-[.1vw] border-t-0 border-violet-600 p-5">
+      <div className="flex flex-col items-start justify-start gap-y-2 rounded-lg rounded-t-none border-[.1vw] border-t-0 border-violet-950 p-5">
         <div className="flex w-full items-center justify-between">
           <p className="text-lg 2xl:text-xl font-medium">{props.title}</p>
           <Link href={props.repo}>
