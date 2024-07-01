@@ -32,7 +32,7 @@ export default function Hero() {
             Read the Docs <FaArrowRight className="ml-2 mt-1" />
           </a>
         </div>
-        {/* <pre className="w-min text-xs lg:hidden px-2">{`
+        <pre className="text-xs lg:hidden px-2">{`
             ██████████████████████████      
           ██                        ████    
         ████████████████████████████  ██    
@@ -58,7 +58,7 @@ export default function Hero() {
 ████████████████████████████████████        
 
 
-`}</pre> */}
+`}</pre>
       </div>
       <div
         className={`${isExpanded ? "bg-gray-900" : "self-start"
