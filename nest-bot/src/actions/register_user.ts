@@ -29,10 +29,12 @@ export function register_user(app: Slack.App) {
       redirect: "follow"
     })).text()
 
-    if (!verificationResponse.includes("Eligible L1") || !verificationResponse.includes("Eligible L2")) return await app.client.chat.postMessage({
+    if (!verificationResponse.includes("Eligible L1") || !verificationResponse.includes("Eligible L2")) {
+return await app.client.chat.postMessage({
     channel: body.user.id,
     text: "Before you can sign up for nest, you'll need to verify that you are a student with Hack Club. Please see https://forms.hackclub.com/eligibility for more details."
   })
+}
     await client.views.open({
       trigger_id: body.trigger_id,
       view: register_form(
