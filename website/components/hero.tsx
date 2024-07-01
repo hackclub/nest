@@ -32,7 +32,7 @@ export default function Hero() {
             Read the Docs <FaArrowRight className="ml-2 mt-1" />
           </a>
         </div>
-        <pre className="font-mono text-[4px] lg:hidden mx-16">{`
+        <pre className="font-mono text-[6px] lg:hidden px-8">{`
                                         ▓▓▓▓▓▓                                          
                                     ▓▓▓▓░░░░░░▓▓▓▓                                      
                                 ▓▓▓▓░░░░░░░░░░░░▒▒▓▓██                                  
