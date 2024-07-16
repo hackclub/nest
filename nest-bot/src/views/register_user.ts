@@ -1,4 +1,5 @@
 import Slack from "@slack/bolt";
+import sshpk from "sshpk";
 
 import { prisma } from "../util/prisma.js";
 import reserved_usernames from "../reserved_usernames.json" with { type: "json" };
@@ -73,11 +74,21 @@ export function register_user(app: Slack.App) {
     }
 
     // SSH key validation
-    if (
-      !ssh_key.match(
-        /ssh-(ed25519|rsa|dss|ecdsa) AAAA(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=|[A-Za-z0-9+\/]{4})( [^@]+@[^@]+)?/
-      )
-    ) {
+    let key: sshpk.Key;
+    try {
+      key = sshpk.parseKey(ssh_key);
+    } catch {
+      ack({
+        errors: {
+          ssh_key: "Invalid SSH key",
+        },
+        response_action: "errors",
+      });
+      return;
+    }
+
+    // @ts-expect-error
+    if (sshpk.Key.isKey(key) === false) {
       ack({
         errors: {
           ssh_key: "Invalid SSH key",
@@ -94,7 +105,7 @@ export function register_user(app: Slack.App) {
         slack_user_id: body.user.id,
         name,
         email,
-        ssh_public_key: ssh_key,
+        ssh_public_key: key.toString("ssh"),
         description,
         tilde_username: username,
       },
