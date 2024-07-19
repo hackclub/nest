@@ -19,7 +19,7 @@ export function edit_shell(app: Slack.App) {
 
         ack();
 
-        const { name, email, ssh_public_key, tilde_username } =
+        const { name, email, ssh_public_key, tilde_username, pk } =
             (await prisma.users.findUnique({
                 where: {
                     slack_user_id: body.user.id,
@@ -30,8 +30,35 @@ export function edit_shell(app: Slack.App) {
                     is_approved: true,
                     ssh_public_key: true,
                     email: true,
+                    pk: true,
                 },
             })) ?? {};
+
+        // update the user's shell
+        const updateRes = await fetch(
+            "https://identity.hackclub.app/api/v3/core/users/" + pk,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.AUTHENTIK_API_KEY}`,
+                },
+                body: JSON.stringify({
+                    username: tilde_username,
+                    name,
+                    atributes: {
+                        loginShell: shell,
+                    },
+                }),
+            }
+        );
+
+        if (!updateRes.ok) {
+            console.error(
+                `Failed to update user ${tilde_username}'s shell "${shell}" in Authentik (HTTP code ${updateRes.status})`
+            );
+            return;
+        }
 
         await client.views.publish({
             user_id: body.user.id,
