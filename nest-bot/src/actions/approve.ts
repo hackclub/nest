@@ -145,6 +145,7 @@ export function approve(app: Slack.App) {
       },
       data: {
         is_approved: true,
+        pk,
       },
     });
   });

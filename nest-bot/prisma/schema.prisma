@@ -9,6 +9,7 @@ datasource db {
 
 model users {
   id             Int       @id @default(autoincrement())
+  pk             Int?      @unique @db.Integer
   slack_user_id  String    @unique @db.VarChar(255)
   tilde_username String    @unique @db.VarChar(255)
   name           String?   @db.VarChar(255)
