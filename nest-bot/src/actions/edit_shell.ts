@@ -12,7 +12,8 @@ export function edit_shell(app: Slack.App) {
 
     await client.views.open({
       trigger_id: body.trigger_id,
-      view: shell_input(),
+      // @ts-expect-error - bolt types are wrong
+      view: shell_input(body.actions[0].value),
     });
   });
 }
