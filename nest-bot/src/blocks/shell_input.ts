@@ -5,7 +5,7 @@ export default function email_input(shell: string) {
     .split("\n")
     .filter(line => !/^\s*#/.test(line) && !/^\s*$/.test(line) && line !== shell)
     .map(line => line.trim())
-    .map(line => line.replace(/^\/usr\//, ""))
+    .map(line => line.replace(/^\/usr\//, "/"))
     .filter((value, index, self) => self.indexOf(value) === index);
 
   return {
