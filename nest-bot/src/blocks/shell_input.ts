@@ -2,7 +2,7 @@ import fs from "node:fs";
 
 export default function email_input(shell: string) {
   // get all the current shells from /etc/shells excluding any commented out lines and empty lines also exclude the shell frem the list if found
-  const shells = fs.readFileSync("/etc/shells", "utf8").split("\n").filter(line => !/^\s*#/.test(line) && !/^\s*$/.test(line) && line !== shell);
+  const shells = fs.readFileSync("/etc/shells", "utf8").split("\n").filter(line => !/^\s*#/.test(line) && !/^\s*$/.test(line) && line !== shell).map(line => line.trim());
 
   return {
     type: "modal" as const,
