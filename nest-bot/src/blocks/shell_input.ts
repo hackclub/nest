@@ -1,12 +1,7 @@
-import fs from "node:fs";
+import getShells from "../util/get_shells.js";
 
-export default function email_input(shell: string) {
-  const shells = fs.readFileSync("/etc/shells", "utf8")
-    .split("\n")
-    .filter(line => !/^\s*#/.test(line) && !/^\s*$/.test(line) && line !== shell)
-    .map(line => line.trim())
-    .map(line => line.replace(/^\/usr\//, "/"))
-    .filter((value, index, self) => self.indexOf(value) === index);
+export default async function shell_input(shell: string) {
+  const shells = await getShells(shell);
 
   return {
     type: "modal" as const,
