@@ -1,7 +1,7 @@
 import getShells from "../util/get_shells.js";
 
 (async () => {
-    const shells = await getShells("/bin/bash", "shells");
+    const shells = await getShells("/bin/bash", "src/tests/shells");
     const properShells = ["/bin/sh", "/bin/bash", "/bin/rbash", "/bin/dash", "/usr/bin/tmux", "/bin/zsh", "/bin/csh",
         "/bin/ksh93", "/bin/rksh93", "/usr/bin/fish", "/bin/tcsh", "/usr/bin/screen"
     ];
