@@ -1,0 +1,22 @@
+# /etc/shells: valid login shells
+/bin/sh
+/bin/bash
+/usr/bin/bash
+/bin/rbash
+/usr/bin/rbash
+/bin/dash
+/usr/bin/dash
+/usr/bin/tmux
+/usr/bin/sh
+/bin/zsh
+/usr/bin/zsh
+/bin/csh
+/usr/bin/csh
+/bin/ksh93
+/usr/bin/ksh93
+/bin/rksh93
+/usr/bin/rksh93
+/usr/bin/fish
+/bin/tcsh
+/usr/bin/tcsh
+/usr/bin/screen

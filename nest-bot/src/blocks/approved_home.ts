@@ -2,7 +2,8 @@ export default function approved_home(
   name: string,
   username: string,
   email: string,
-  ssh_key: string
+  ssh_key: string,
+  shell: string
 ) {
   return {
     type: "home" as const,
@@ -84,6 +85,26 @@ export default function approved_home(
       {
         type: "divider",
       },
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `*Current Shell:* \`${shell}\``,
+        },
+        accessory: {
+          type: "button",
+          text: {
+            type: "plain_text",
+            text: "Edit",
+            emoji: true,
+          },
+          value: shell,
+          action_id: "edit_shell",
+        },
+      },
+      {
+        type: "divider",
+      }
     ],
   };
 }

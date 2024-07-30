@@ -6,6 +6,8 @@ import approved_home from "../blocks/approved_home.js";
 import unapproved_home from "../blocks/unapproved_home.js";
 import unregistered_home from "../blocks/unregistered_home.js";
 
+import get_user_shell from "../util/get_user_shell.js";
+
 export async function app_home_opened(app: Slack.App) {
   app.event("app_home_opened", async ({ event, client }) => {
     const user = event.user;
@@ -23,10 +25,18 @@ export async function app_home_opened(app: Slack.App) {
         },
       })) ?? {};
 
+    const shell = await get_user_shell(tilde_username!);
+
     if (name && is_approved) {
       await client.views.publish({
         user_id: user,
-        view: approved_home(name, tilde_username!, email!, ssh_public_key!),
+        view: approved_home(
+          name,
+          tilde_username!,
+          email!,
+          ssh_public_key!,
+          shell,
+        ),
       });
     } else if (name && !is_approved) {
       await client.views.publish({
