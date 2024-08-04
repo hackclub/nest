@@ -5,16 +5,17 @@ import approved_home from "../blocks/approved_home.js";
 
 export function edit_shell(app: Slack.App) {
     app.view("edit_shell", async ({ ack, body, view, client }) => {
-        const shell = view.state.values.shell_new.shell_new_input.value;
+        const shell = view.state.values.shell_new.shell_new_input.selected_option?.value;
 
         // shell validation for stuff like /bin/bash or /bin/zsh
-        if (shell) {
+        if (!shell) {
             ack({
                 response_action: "errors",
                 errors: {
                     email_new: "Invalid shell.",
                 },
             });
+            return;
         }
 
         ack();
