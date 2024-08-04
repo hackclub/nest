@@ -105,8 +105,8 @@ export function approve(app: Slack.App) {
 
     console.log(`Password set for ${username}`);
 
-    // Delay 5 minutes to allow time for caching
-    await new Promise((resolve) => setTimeout(resolve, 1000 * 60 * 5));
+    // Delay 6 minutes to allow time for caching
+    await new Promise((resolve) => setTimeout(resolve, 1000 * 60 * 6));
 
     await client.chat.postMessage({
       channel: nestUserId,
