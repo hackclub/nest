@@ -45,7 +45,6 @@ export function edit_shell(app: Slack.App) {
             }
         );
         const userJson = await userRes.json();
-        const groups = userJson.groups;
 
         // update the user's shell
         const updateRes = await fetch(
@@ -59,8 +58,9 @@ export function edit_shell(app: Slack.App) {
                 body: JSON.stringify({
                     username: tilde_username,
                     name,
-                    groups,
+                    groups: userJson.groups,
                     attributes: {
+                        ...userJson.attributes,
                         loginShell: shell,
                     },
                 }),

@@ -21,6 +21,13 @@ export default async function shell_input(shell: string) {
         },
       },
       {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: "Select a new shell for your account. Note that it may take up to 5 minutes for the changes to take effect after submitting.",
+        },
+      },
+      {
         type: "input",
         block_id: "shell_new",
         element: {
