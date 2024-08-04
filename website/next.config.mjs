@@ -5,7 +5,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "cloud-7f25asys7-hack-club-bot.vercel.app",
+        hostname: "cloud-*-hack-club-bot.vercel.app",
         port: "",
         pathname: "/**",
       },
