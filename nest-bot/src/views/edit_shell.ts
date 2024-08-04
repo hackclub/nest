@@ -37,7 +37,7 @@ export function edit_shell(app: Slack.App) {
 
         // update the user's shell
         const updateRes = await fetch(
-            "https://identity.hackclub.app/api/v3/core/users/" + pk,
+            `https://identity.hackclub.app/api/v3/core/users/${pk}/`,
             {
                 method: "PUT",
                 headers: {
