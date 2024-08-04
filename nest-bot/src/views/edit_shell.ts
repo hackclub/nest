@@ -35,6 +35,18 @@ export function edit_shell(app: Slack.App) {
                 },
             })) ?? {};
 
+        // get groups of user
+        const userRes = await fetch(
+            `https://identity.hackclub.app/api/v3/core/users/${pk}/`,
+            {
+                headers: {
+                    Authorization: `Bearer ${process.env.AUTHENTIK_API_KEY}`,
+                },
+            }
+        );
+        const userJson = await userRes.json();
+        const groups = userJson.groups;
+
         // update the user's shell
         const updateRes = await fetch(
             `https://identity.hackclub.app/api/v3/core/users/${pk}/`,
@@ -47,7 +59,8 @@ export function edit_shell(app: Slack.App) {
                 body: JSON.stringify({
                     username: tilde_username,
                     name,
-                    atributes: {
+                    groups,
+                    attributes: {
                         loginShell: shell,
                     },
                 }),
