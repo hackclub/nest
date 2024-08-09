@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { FaGithub } from "react-icons/fa";
+import { FaCode } from "react-icons/fa";
 
 import type { Project } from "@/types/project";
 
@@ -18,7 +18,7 @@ export default function ProjectCard(props: Project) {
         <div className="flex w-full items-center justify-between">
           <p className="text-lg font-medium 2xl:text-xl">{props.name}</p>
           <Link href={props.repo}>
-            <FaGithub size={20} />
+            <FaCode size={20} />
           </Link>
         </div>
         <p className="text-sm 2xl:text-base">{props.description}</p>
