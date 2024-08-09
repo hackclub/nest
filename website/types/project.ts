@@ -5,4 +5,5 @@ export type Project = {
   authorName: string;
   authorPfp: string;
   image: string;
+  featured: boolean;
 };
