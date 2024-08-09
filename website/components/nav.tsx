@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { FaHome, FaServer, FaBook } from "react-icons/fa";
+import { FaHome, FaServer, FaBook, FaTools } from "react-icons/fa";
 import { FaGithub } from "react-icons/fa6";
 
 const navItems = [
@@ -9,6 +9,11 @@ const navItems = [
     href: "/",
     icon: <FaHome className="hidden text-2xl md:mr-2 md:block" />,
     text: "Home",
+  },
+  {
+    href: "/projects",
+    icon: <FaTools className="text-xl sm:mr-0 md:mr-2" />,
+    text: "Projects",
   },
   {
     href: "https://guides.hackclub.app/",
