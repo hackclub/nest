@@ -14,7 +14,12 @@ export const getStaticProps = async () => {
     process.env.AIRTABLE_BASE!,
   );
 
-  const projects = await base.table("Showcase").select({}).all();
+  const projects = await base
+    .table("Showcase")
+    .select({
+      filterByFormula: "{Show}",
+    })
+    .all();
 
   return {
     props: {
