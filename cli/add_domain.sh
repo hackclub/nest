@@ -47,7 +47,7 @@ if [ "$NEEDED_CNAME" != "$REAL_CNAME" ]; then
 	NEEDED_TXT="nest-verification=$HASH"
 	REAL_TXT=$(dig +short -t TXT "$DOMAIN")
 
-	if !(echo "$REAL_TXT" | grep -q "$NEEDED_TXT"); then
+	if ! (echo "$REAL_TXT" | grep -q "$NEEDED_TXT"); then
 		echo "Add the following TXT record to $DOMAIN and then retry. (You might have to wait a bit for the record to propagate!)"
 		echo "nest-verification=$HASH"
 		exit 1
