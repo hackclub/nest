@@ -31,8 +31,27 @@ REAL_CNAME=$(dig +short -t CNAME "$DOMAIN")
 REAL_CNAME=${REAL_CNAME:-"None"} # Weird hack to get "None" printed instead of a blank line
 
 if [ "$NEEDED_CNAME" != "$REAL_CNAME" ]; then
-    echo "The domain $DOMAIN does not have the correct CNAME. Expected: $NEEDED_CNAME, Actual: $REAL_CNAME"   
-	exit 1 
+	NEEDED_A="37.27.51.34"
+	NEEDED_AAAA="2a01:4f9:3081:399c::4"
+
+	REAL_A=$(dig +short -t A "$DOMAIN")
+	REAL_AAAA=$(dig +short -t AAAA "$DOMAIN")
+
+	if [ "$REAL_A" != "$NEEDED_A" ] || [ "$REAL_AAAA" != "$NEEDED_AAAA" ]; then
+		echo "The domain $DOMAIN does not have the correct CNAME or A/AAAA. Check valid records at https://guides.hackclub.app/index.php/Subdomains_and_Custom_Domains."
+		exit 1
+	fi
+
+	HASH=$(echo "$DOMAIN;$NEST_USER" | md5sum | awk '{print $1}')
+
+	NEEDED_TXT="nest-verification=$HASH"
+	REAL_TXT=$(dig +short -t TXT "$DOMAIN")
+
+	if ! (echo "$REAL_TXT" | grep -q "$NEEDED_TXT"); then
+		echo "Add the following TXT record to $DOMAIN and then retry. (You might have to wait a bit for the record to propagate!)"
+		echo "nest-verification=$HASH"
+		exit 1
+	fi
 fi
 
 # Check for existance of domain
