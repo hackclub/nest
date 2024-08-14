@@ -35,7 +35,6 @@ export default function App({ Component, pageProps }: AppProps) {
           property="og:title"
           content="Nest - a free Linux server from Hack Club"
         />
-        <meta property="og:image" content="/nest.svg" />
       </Head>
       <Component {...pageProps} />
     </div>
