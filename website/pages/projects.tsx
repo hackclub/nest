@@ -1,6 +1,7 @@
 import Airtable from "airtable";
 import { Masonry } from "masonic";
 import { useState, useEffect } from "react";
+import Head from "next/head";
 
 import Nav from "@/components/nav";
 import ProjectCard from "@/components/projectCard";
@@ -33,6 +34,8 @@ export const getStaticProps = async () => {
         featured: p.get("Featured") ?? false,
       })) as Project[],
     },
+    // Revalidate every hour
+    revalidate: 60 * 60,
   };
 };
 
@@ -47,6 +50,11 @@ export default function Projects(
 
   return (
     <main className="min-h-screen overflow-hidden bg-bg font-dm-mono text-white">
+      <Head>
+        <title key="title">Nest - Projects</title>
+        <meta key="meta-title" name="title" content="Nest - Projects" />
+        <meta key="og:title" property="og:title" content="Nest - Projects" />
+      </Head>
       <Nav />
       <p className="my-8 px-2 text-center text-3xl font-medium lg:px-4 2xl:text-4xl">
         Nest Projects
