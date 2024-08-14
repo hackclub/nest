@@ -33,6 +33,8 @@ export const getStaticProps = async () => {
         featured: p.get("Featured"),
       })) as Project[],
     },
+    // Revalidate every hour
+    revalidate: 60 * 60,
   };
 };
 
