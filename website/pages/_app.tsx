@@ -26,6 +26,8 @@ export default function App({ Component, pageProps }: AppProps) {
           content="Nest is a free Linux server for high-schoolers to host their projects on, from Hack Club."
         />
         <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="keywords" content="hack club,nest,linux,server" />
 
         <meta name="apple-mobile-web-app-title" content="Nest" />
 
