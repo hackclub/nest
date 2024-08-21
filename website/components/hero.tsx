@@ -8,7 +8,8 @@ export default function Hero() {
     <section className="grid grid-cols-1 grid-rows-1 place-items-center p-4 lg:grid-cols-3 lg:gap-x-20 lg:p-16 2xl:p-32">
       <div className="mb-6 flex flex-col items-start justify-start gap-y-5 font-dm-mono text-white 2xl:mb-32">
         <p className="text-3xl font-medium 2xl:text-4xl">
-          <span className="text-HCPurple">Nest</span>, a free Linux server from{" "}
+          <span className="text-HCPurpleText">Nest</span>, a free Linux server
+          from{" "}
           <a href="https://hackclub.com" className="text-HCRed underline">
             Hack Club
           </a>
@@ -27,12 +28,12 @@ export default function Hero() {
 
           <a
             href="https://guides.hackclub.app/index.php/Main_Page"
-            className="mt-4 flex items-center rounded-lg border-2 border-HCPurple px-2 py-1.5 font-dm-mono text-base font-medium text-HCPurple transition-all duration-300 hover:scale-110 hover:bg-HCPurple hover:text-white md:mt-0 md:text-base 2xl:text-xl"
+            className="text-HCPurpleText mt-4 flex items-center rounded-lg border-2 border-HCPurple px-2 py-1.5 font-dm-mono text-base font-medium transition-all duration-300 hover:scale-110 hover:bg-HCPurple hover:text-white md:mt-0 md:text-base 2xl:text-xl"
           >
             Read the Docs <FaArrowRight className="ml-2 mt-1" />
           </a>
         </div>
-        <pre className="font-mono text-[4px] lg:hidden px-10">{`
+        <pre className="px-10 font-mono text-[4px] lg:hidden">{`
                                         ▓▓▓▓▓▓                                          
                                     ▓▓▓▓░░░░░░▓▓▓▓                                      
                                 ▓▓▓▓░░░░░░░░░░░░▒▒▓▓██                                  
@@ -88,7 +89,7 @@ export default function Hero() {
       >
         <div className="gap-x-5 lg:flex">
           <button
-            className={`self-start font-medium text-HCPurple lg:text-3xl 2xl:text-4xl`}
+            className={`text-HCPurpleText self-start font-medium lg:text-3xl 2xl:text-4xl`}
             disabled={isExpanded}
             onClick={() => setIsExpanded(true)}
           >

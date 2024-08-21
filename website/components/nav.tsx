@@ -93,7 +93,7 @@ export default function Nav() {
       <div className="hidden items-center justify-end gap-x-4 md:gap-x-10 lg:flex">
         <a
           href="https://identity.hackclub.app"
-          className="rounded-lg border-2 border-HCPurple px-4 py-1 font-dm-mono text-base font-medium text-HCPurple transition-all duration-300 hover:scale-110 hover:bg-HCPurple hover:text-white md:text-lg lg:px-6 2xl:px-8 2xl:py-1.5 2xl:text-xl"
+          className="text-HCPurpleText rounded-lg border-2 border-HCPurple px-4 py-1 font-dm-mono text-base font-medium transition-all duration-300 hover:scale-110 hover:bg-HCPurple hover:text-white md:text-lg lg:px-6 2xl:px-8 2xl:py-1.5 2xl:text-xl"
         >
           Login
         </a>
