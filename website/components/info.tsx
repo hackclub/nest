@@ -93,13 +93,13 @@ export default function Info() {
   return (
     <section className="flex flex-col items-center justify-start gap-y-3 p-4 px-4 py-10 font-dm-mono text-white lg:p-16 lg:py-0 2xl:p-32">
       <p className="text-center text-3xl font-medium 2xl:text-4xl">
-        What makes <span className="text-HCPurple">Nest</span> a nest?
+        What makes <span className="text-HCPurpleText">Nest</span> a nest?
       </p>
       <p className="max-w-4xl lg:text-center lg:text-lg 2xl:text-xl">
         Nest is a{" "}
         <a
           href="https://www.hetzner.com/dedicated-rootserver/ex44/"
-          className="text-HCPurple underline"
+          className="text-HCPurpleText underline"
         >
           Hetzner EX44
         </a>{" "}
@@ -171,19 +171,19 @@ export default function Info() {
 		`}</pre>
         <div className="col-span-1 flex w-min flex-col items-center justify-start gap-y-10 pt-20 text-xl">
           <button
-            className={component === "Linux" ? "font-medium" : "opacity-50"}
+            className={component === "Linux" ? "font-medium" : "opacity-75"}
             onClick={() => setComponent("Linux")}
           >
             Linux
           </button>
           <button
-            className={component === "Services" ? "font-medium" : "opacity-50"}
+            className={component === "Services" ? "font-medium" : "opacity-75"}
             onClick={() => setComponent("Services")}
           >
             Services
           </button>
           <button
-            className={component === "Community" ? "font-medium" : "opacity-50"}
+            className={component === "Community" ? "font-medium" : "opacity-75"}
             onClick={() => setComponent("Community")}
           >
             Community

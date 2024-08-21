@@ -16,6 +16,8 @@ const config: Config = {
       colors: {
         HCRed: "#ec3750",
         HCPurple: "#a633d6",
+        // For accessibility & contrast
+        HCPurpleText: "#C57BE5",
         HCOrange: "#ff8c37",
         bg: "#03001C",
       },

@@ -8,7 +8,8 @@ export default function Showcase(props: { projects: Project[] }) {
   return (
     <section className="flex flex-col items-center justify-start gap-y-1 font-dm-mono text-white 2xl:gap-y-3">
       <p className="px-2 text-center text-3xl font-medium lg:px-4 2xl:text-4xl">
-        Join <span className="text-HCPurple">100 other teens</span> using Nest
+        Join <span className="text-HCPurpleText">100 other teens</span> using
+        Nest
       </p>
       <p className="p-4 text-center text-lg 2xl:text-xl">
         See what fellow “birds” are hosting on Nest!
@@ -20,7 +21,7 @@ export default function Showcase(props: { projects: Project[] }) {
       </div>
       <Link
         href="/projects"
-        className="mt-4 flex items-center rounded-lg border-2 border-HCPurple px-2 py-1.5 font-dm-mono text-base font-medium text-HCPurple transition-all duration-300 hover:scale-110 hover:bg-HCPurple hover:text-white md:mt-0 md:text-base 2xl:text-xl"
+        className="text-HCPurpleText mt-4 flex items-center rounded-lg border-2 border-HCPurple px-2 py-1.5 font-dm-mono text-base font-medium transition-all duration-300 hover:scale-110 hover:bg-HCPurple hover:text-white md:mt-0 md:text-base 2xl:text-xl"
       >
         See all projects
       </Link>
