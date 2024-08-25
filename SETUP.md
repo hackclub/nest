@@ -24,13 +24,22 @@ The Nest VM is the VM that users will access and host their stuff on. It runs De
 
 Every user on Nest has resource limits setup to prevent abuse of Nest and to make sure there's enough resources for everyone. The default limits are:
 
-- 50% (total) CPU time
-- 2GB memory
-- 15GB disk
+- 50% (total, technically it's 1000% since there's 20 cores) CPU time
+- 2GB memory (2GB high, 3GB max)
+- 15GB disk (hard quota)
 
-CPU time and memory are configured through systemd & cgroups. These default limits are defined in `/etc/systemd/system/user-.slice.d/50-memory.conf`, and can be overridden for users in `/etc/systemd/system/user-<id>.slice.d/50-memory.conf`.
+CPU time and memory are configured through SystemD & CGroups. These default limits are defined in `/etc/systemd/system/user-.slice.d/limit.conf`, and can be overridden for users in `/etc/systemd/system/user-<id>.slice.d/limit.conf`. User overrides override the **entire** configuration - so if you want to increase the max memory for a user, you must specify the high memory and CPU quota in the file as well.
 
-Note that to apply changes to either the CPU time or memory limits, you must run `systemctl daemon-reload`.
+`/etc/systemd/system/user-.slice.d/limit.conf`:
+```
+[Slice]
+MemoryHigh=2G
+MemoryMax=3G
+CPUQuota=1000%
+```
+(see https://www.freedesktop.org/software/systemd/man/latest/systemd.resource-control.html and https://www.kernel.org/doc/Documentation/cgroup-v2.txt for reference)
+
+Note that to apply changes to either the CPU time or memory limits, you must run `systemctl daemon-reload`. You can verify that a limit is applied by checking the appropriate file in `/sys/fs/cgroup/user.slice/user-<id>.slice` (ex. memory.max for MemoryMax).
 
 Disk space limits are configured through `quota`. The following command is run by Nest Bot to set the default disk space limit:
 
