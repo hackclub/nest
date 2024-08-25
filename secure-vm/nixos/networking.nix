@@ -18,8 +18,8 @@
     nameservers = [ "9.9.9.9" ];
     firewall = { 
       trustedInterfaces = [ "tailscale0" "docker0" "br-3b81356e7490" ];
-      allowedTCPPorts = [ 443 80 8747 config.services.tailscale.port ];
-      allowedUDPPorts = [ 443 80 ];
+      allowedTCPPorts = [ 443 80 8747 47176 config.services.tailscale.port 5601];
+      allowedUDPPorts = [ 443 80];
       extraCommands = ''
         iptables -A nixos-fw -p tcp --source 37.27.51.33/32 --dport 389 -j nixos-fw-accept
         iptables -A nixos-fw -p tcp --source 37.27.51.33/32 --dport 636 -j nixos-fw-accept

@@ -14,11 +14,11 @@ It runs with the following specs:
 
 ## Proxmox
 
-The server runs [Proxmox VE](https://www.proxmox.com/en/proxmox-virtual-environment/overview) 8.1.3 over [Debian](https://www.debian.org/) 12 Bookworm. It has 3 VMs: the Secure VM (ID `secure`, #102), the Nest VM (ID `nest` #103), and the Backup VM (ID `backup`, #104).
+The server runs [Proxmox VE](https://www.proxmox.com/en/proxmox-virtual-environment/overview) 8.1.3 over [Debian](https://www.debian.org/) 12 Bookworm. It has 2 VMs: the Secure VM (ID `secure`, #102) and the Nest VM (ID `nest` #103).
 
 ### Nest VM
 
-The Nest VM is the VM that users will access and host their stuff on. It runs Debian 12 Bookworm. It's configured with all 8 CPU cores and 52 GiB of RAM.
+The Nest VM is the VM that users will access and host their stuff on. It runs Debian 12 Bookworm. It's configured with all 20 CPU threads, 52 GiB of RAM, and 650GB of storage.
 
 #### Resource Limits
 
@@ -43,37 +43,25 @@ setquota -u <user> 15G 15G 0 0 /
 The Secure VM is the VM that hosts all critical Nest services:
 
 - [Authentik](https://goauthentik.io/) (https://identity.hacklub.app)
+- [Guides](https://www.mediawiki.org/wiki/MediaWiki) (https://guides.hackclub.app)
+- Nest Bot's database
+
+In addition to some admin-only services:
 - [Headscale](https://headscale.net/)
-- [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) (https://guides.hackclub.app)
-- Nest Bot DB
+- [Vaultwarden](https://github.com/dani-garcia/vaultwarden)
+- [Wazuh](https://wazuh.com/)
 
-It runs NixOS 23.05. it's configured with 4 CPU cores and 6 GiB of RAM. Configuration files can be found in [the secure-vm directory](/secure-vm/).
-
-### Backup VM
-
-The Backup VM runs the [Proxmox Backup Server](https://pbs.proxmox.com/wiki/index.php/Main_Page). Daily jobs are configured in Proxmox to backup the Nest VM and Secure VM to this storage.
-
-For storage, 500GB has been purchased from [rsync.net](https://rsync.net).
-
-PBS has a single datastore configured, with the path `/backup/rsync`. In order to get it to function properly, there was a bit of a hacky workaround. The steps are:
-
-- create two directories, ex. `eventualDatastore` and `tempMount`
-- create a PBS datastore at `eventualDatastore` and mount the rsync.net storage using sshfs at `tempMount`
-- Run `systemctl stop proxmox-backup-proxy.service proxmox-backup.service`
-- copy `.chunks` and `.lock` from `eventualDatastore` to `tempMount` (don't use cp, it's slow! use rsync or rclone instead)
-- `rm -rf eventualDatastore`
-- Unmount `tempMount` and mount it back at `eventualDatastore`
-- Restart `proxmox-backup-proxy.service` and `proxmox-backup.service`
+It runs NixOS 23.05. it's configured with 20 CPU cores and 8 GiB of RAM. Configuration files can be found in [the secure-vm directory](/secure-vm/).
 
 ## Networking
 
-The Nest server has 3 IPV4 addresses:
+The Nest server has 3 IPv4 addresses:
 
 - `37.27.51.33` (Secure VM)
 - `37.27.51.34` (Nest VM)
 - `37.27.51.35` (Proxmox)
 
-as well as an IPV6 subnet, `2a01:4f9:3081:399c::/64`. IPv6 addresses are the subnet + the last digit of their IPv4 address, for simplicity. Exceptions are Proxmox (::2) and the Backup VM, which does not have an IPv4 address and only has its ::6 IPv6 address.
+as well as an IPv6 subnet, `2a01:4f9:3081:399c::/64`. IPv6 addresses are the subnet + the last digit of their IPv4 address, for simplicity. Exceptions are Proxmox (::2) and the Backup VM, which does not have an IPv4 address and only has its ::6 IPv6 address.
 
 DNS is configured through [hackclub/dns](https://github.com/hackclub/dns/blob/main/hackclub.app.yaml).
 A tailnet, coordinated through a Headscale instance on the Secure VM, is used to access Proxmox and the Secure VM. All other inbound traffic is blocked on these hosts, as seen in the firewall configurations below.
@@ -127,7 +115,6 @@ iface vmbr0 inet static
 iface vmbr0 inet6 static
         up ip -6 route add 2a01:4f9:3081:399c::3/64 dev vmbr0
         up ip -6 route add 2a01:4f9:3081:399c::4/64 dev vmbr0
-        up ip -6 route add 2a01:4f9:3081:399c::6/64 dev vmbr0
 ```
 
 `ufw status verbose`:
@@ -208,17 +195,18 @@ iface ens18 inet6 static
 
 ## Nest Services
 
-With the exception of Gotify, Nest Bot, Prometheus/node_exporter, and Uptime Kuma, all services run on the Secure VM in Docker containers, configured within a Docker Compose file contained within the `/opt/docker` directory on the Secure VM.
+With the exception of Gotify, Nest Bot, Prometheus/node_exporter, Forgejo, and Uptime Kuma, all services run on the Secure VM in Docker containers, configured within a Docker Compose file contained within the `/opt/docker` directory on the Secure VM.
 
 ### Authentik
 
-All authentication and user management for Nest is done through Nest's identity provider, Authentik, which runs in a Docker Compose project on the Secure VM (`/opt/docker/authentik`). The Docker Compose file is downloaded directory from Authentik. Authentik is configured with 5 providers:
+All authentication and user management for Nest is done through Nest's identity provider, Authentik, which runs in a Docker Compose project on the Secure VM (`/opt/docker/authentik`). The Docker Compose file is downloaded directory from Authentik. Authentik is configured with 6 providers:
 
 - Headscale OIDC
 - LDAP
 - MediaWiki OIDC
 - Proxmox OIDC
 - Uptime Kuma
+- Provider for Forgejo
 
 and their respective applications. The LDAP provider is bound to an LDAP outpost (ak-outpost-ldap), managed by Authentik through a local Docker connection.
 
@@ -247,6 +235,10 @@ LDAP Details:
 
 // todo
 
+### Forgejo
+
+Forgejo (https://forgejo.org/) is Nest's public Git server, available at https://git.hackclub.app. It's on the Nest VM inside `/srv/git/forgejo`, running as the `git` user.
+
 ### Gotify
 
 Gotify is setup on the Nest VM to handle notifications from services such as Proxmox, in a Docker container in `/root/gotify`. It is in the process of being moved to the Secure VM. It is available at https://gotify.hackclub.app
@@ -264,42 +256,14 @@ oidc:
   scope: ["openid", "profile"]
 ```
 
-### MediaWiki
+### Guides
 
-MediaWiki is used for all of Nest's documentation, with the exception of this document. It's maintained and written by Nest admins and the community, and contains guides and help for anyone using Nest. It is available at https://guides.hackclub.app. MediaWiki has its Docker compose configuration at `/opt/docker/mediawiki/compose.yml` - contents are in [compose.yml](/secure-vm/docker/mediawiki/compose.yml). MediaWiki's `LocalSettings.php` has the following appended to the auto-generated settings:
+https://guides.hackclub.app (MediaWiki) is used for all of Nest's documentation, with the exception of this document. It's maintained and written by Nest admins and the community, and contains guides and help for anyone using Nest. MediaWiki has its Docker compose configuration at `/opt/docker/guides/compose.yml` - contents are in [compose.yml](/secure-vm/docker/guides/compose.yml).
 
-```
-$wgGroupPermissions['*']['createaccount'] = false;
-$wgGroupPermissions['sysop']['createaccount'] = true;
 
-wfLoadExtension( 'PluggableAuth' );
-wfLoadExtension( 'OpenIDConnect' );
+The Docker compose configuration uses a custom FrankenPHP image to host the PHP application, located in `/opt/docker/guides/mediawiki`. The Dockerfile contents are in [Dockerfile](/secure-vm/docker/guides/Dockerfile), and the Caddyfile configuration is in [Caddyfile](/secure-vm/docker/guides/Caddyfile).
 
-$wgGroupPermissions['*']['autocreateaccount'] = true;
-
-$wgPluggableAuth_Config[] = [
-  'plugin' => 'OpenIDConnect',
-  'buttonLabelMessage' => 'Login with Nest',
-  'data' => [
-    'providerURL' => 'https://identity.hackclub.app/application/o/mediawiki/',
-    'clientID' => '',
-    'clientsecret' => ''
-  ],
-  'groupsyncs' => [[
-    'type' => 'mapped',
-    'map' => [
-      'sysop' => [ 'groups' => 'admins' ],
-      'bureaucrat' => ['groups' => 'admins' ]
-    ]
-  ]]
-];
-
-wfLoadSkin('Citizen');
-$wgDefaultSkin = 'Citizen';
-$wgFavicon = '/skins/common/nest-logo.png';
-```
-
-The Docker compose configuration uses a custom MediaWiki image to add extensions (PluggableAuth and OpenIDConnect) and skins (Citizen). Files for the custom Docker image are in `/opt/docker/mediawiki/nest-mediawiki` - Dockerfile contents are in [Dockerfile](/secure-vm/docker/mediawiki/Dockerfile).
+MediaWiki's configuration file is also documented here at [LocalSettings.php](/secure-vm/docker/guides/mediawiki/LocalSettings.php).
 
 ### Nest Bot
 
@@ -315,13 +279,14 @@ Nest Bot's database runs on the Secure VM. The Docker compose configuration for 
 
 [Uptime Kuma](https://github.com/louislam/uptime-kuma) monitors Nest's services and infrastructure, and alerts in Slack (#nest-meta channel) when anything goes down. It's setup on a Docker container on the Nest VM (so that it can monitor Nest VM Docker containers), in `/root/uptime`.
 
-At the moment, it is setup to monitor 5 services:
+At the moment, it is setup to monitor 6 services:
 
 - Authentik
+- Nest Postgres
+- sshd
+- Forgejo
 - bird-lg
 - bird-lgproxy
-- Nest DB
-- oauth.hackclub.app
 
 ### Vaultwarden
 

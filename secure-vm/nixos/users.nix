@@ -1,6 +1,6 @@
 {pkgs, lib, ...}:
 { 
-  security.pam.enableSSHAgentAuth = true;
+  security.pam.sshAgentAuth.enable = true;
   security.pam.services.sshd = {
     makeHomeDir = true;
     text = lib.mkDefault (

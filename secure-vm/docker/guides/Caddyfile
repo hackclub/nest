@@ -1,0 +1,13 @@
+{
+	# Enable FrankenPHP
+	frankenphp
+	admin off
+}
+
+http://guides.hackclub.app {
+	root /app/public
+	# Enable compression (optional)
+	encode zstd br gzip
+	# Execute PHP files in the current directory and serve assets
+	php_server
+}

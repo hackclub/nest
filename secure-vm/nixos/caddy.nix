@@ -15,5 +15,11 @@
     virtualHosts."guides.hackclub.app".extraConfig = ''
       reverse_proxy localhost:8080
     '';
+    virtualHosts."[fd7a:115c:a1e0::2]:7081".extraConfig = ''
+      reverse_proxy localhost:7080
+    '';
+    virtualHosts."wazuh.hackclub.app".extraConfig = ''
+      reverse_proxy localhost:5602
+    '';
   };  
 }

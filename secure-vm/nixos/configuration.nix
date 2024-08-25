@@ -31,6 +31,11 @@
     pkgs.openldap
     pkgs.unzip
     pkgs.zip
+    git
+    busybox
+    docker-compose 
+
+    pkgs.php
   ];
 
   # Enable the OpenSSH daemon.
@@ -40,6 +45,10 @@
        AuthenticationMethods publickey
     '';
   };
+
+  users.users.root.openssh.authorizedKeys.keys = [
+    # admin keys
+  ];
 
   services.tailscale.enable = true;
   programs.htop.enable = true;
@@ -59,4 +68,8 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
 
+  # Set vm.max_map_count
+  boot.kernel.sysctl = {
+    "vm.max_map_count" = 262144; # Set your desired value here
+  };
 }

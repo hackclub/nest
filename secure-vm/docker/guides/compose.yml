@@ -1,0 +1,35 @@
+services:
+  php:
+    image: dunglas/frankenphp
+    # uncomment the following line if you want to use a custom Dockerfile
+    build: .
+    # uncomment the following line if you want to run this in a production environment
+    restart: always
+    ports:
+      - "8080:80" # HTTP
+    volumes:
+      - ./mediawiki:/app/public
+      - caddy_data:/data
+      - caddy_config:/config
+      #network_mode: host
+    # comment the following line in production, it allows to have nice human-readable logs in dev
+    #tty: true
+  database:
+    image: mariadb
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      # @see https://phabricator.wikimedia.org/source/mediawiki/browse/master/includes/DefaultSettings.php
+      MYSQL_DATABASE: my_wiki
+      MYSQL_USER: wikiuser
+      MYSQL_PASSWORD:
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+    volumes:
+      - db:/var/lib/mysql
+
+# Volumes needed for Caddy certificates and configuration
+volumes:
+  caddy_data:
+  caddy_config:
+  db:
