@@ -114,7 +114,7 @@ module NestCLI
 
       id = Process.uid
       memoryUsage = (Float(File.read("/sys/fs/cgroup/user.slice/user-#{id}.slice/memory.current")) / (1024 * 1024 * 1024)).round(2)
-      memoryLimit = (Float(File.read("/sys/fs/cgroup/user.slice/user-#{id}.slice/memory.max")) / (1024 * 1024 * 1024)).round(2)
+      memoryLimit = (Float(File.read("/sys/fs/cgroup/user.slice/user-#{id}.slice/memory.high")) / (1024 * 1024 * 1024)).round(2)
 
       puts "Memory usage: #{memoryUsage} GB used out of #{memoryLimit} GB limit"
     end
