@@ -13,12 +13,11 @@ export function approve(app: Slack.App) {
   app.action("approve", async ({ ack, body, client }) => {
     ack();
 
-    if (body.type !== "block_actions") {
+    if (body.type !== "block_actions" || !("value" in body.actions[0])) {
       return;
     }
 
     const adminUserId = body.user.id;
-    // @ts-expect-error
     const nestUserId = body.actions[0].value;
 
     const msgBlocks = body.message!.blocks;

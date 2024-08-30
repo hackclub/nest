@@ -24,6 +24,7 @@
     "sshpk": "^1.18.0"
   },
   "devDependencies": {
+    "@types/node": "^22.5.1",
     "@types/sshpk": "^1.17.4",
     "prisma": "^5.15.0",
     "typescript": "^5.4.5"
