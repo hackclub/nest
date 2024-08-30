@@ -2,7 +2,7 @@ import Slack from "@slack/bolt";
 
 import { prisma } from "../util/prisma.js";
 import approved_home from "../blocks/approved_home.js";
-import get_user_shell from "../util/get_user_shell.js";
+import get_user_shell from "../os/get_user_shell.js";
 
 export function edit_full_name(app: Slack.App) {
   app.view("edit_full_name", async ({ ack, body, view, client }) => {

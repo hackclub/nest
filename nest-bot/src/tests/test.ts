@@ -1,4 +1,4 @@
-import getShells from "../util/get_shells.js";
+import getShells from "../os/get_shells.js";
 
 (async () => {
     const shells = await getShells("/bin/bash", "src/tests/shells");

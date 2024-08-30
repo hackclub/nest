@@ -1,4 +1,4 @@
-import getShells from "../util/get_shells.js";
+import getShells from "../os/get_shells.js";
 
 export default async function shell_input(shell: string) {
   const shells = await getShells(shell);
