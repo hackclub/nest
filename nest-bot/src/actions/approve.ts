@@ -59,9 +59,6 @@ export function approve(app: Slack.App) {
           username,
           name: user?.name,
           email: user?.email,
-          attributes: {
-            sshPublicKey: user?.ssh_public_key,
-          },
           is_active: true,
           path: "users",
           groups: ["c844feff-89b0-45cb-8204-8fc47afbd348"], // nest-users group
