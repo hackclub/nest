@@ -40,7 +40,7 @@ export function edit_email(app: Slack.App) {
         user.tilde_username,
         user.email!,
         user.ssh_public_key,
-        shell
+        shell,
       ),
     });
   });

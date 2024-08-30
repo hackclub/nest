@@ -64,12 +64,12 @@ export function approve(app: Slack.App) {
           groups: ["c844feff-89b0-45cb-8204-8fc47afbd348"], // nest-users group
           type: "internal",
         }),
-      }
+      },
     );
 
     if (!createRes.ok) {
       console.error(
-        `Failed to create user ${username} in Authentik (HTTP code ${createRes.status})`
+        `Failed to create user ${username} in Authentik (HTTP code ${createRes.status})`,
       );
       return;
     }
@@ -89,12 +89,12 @@ export function approve(app: Slack.App) {
         body: JSON.stringify({
           password,
         }),
-      }
+      },
     );
 
     if (!passwordRes.ok) {
       console.error(
-        `Failed to set password for user ${username} in Authentik (HTTP code ${passwordRes.status})`
+        `Failed to set password for user ${username} in Authentik (HTTP code ${passwordRes.status})`,
       );
       return;
     }
@@ -112,7 +112,7 @@ export function approve(app: Slack.App) {
     await client.chat.postMessage({
       channel: nestUserId,
       blocks: markdown_message(
-        `Your password for your Nest account is \`${password}\`. Please continue through our Quickstart guide at https://guides.hackclub.app/index.php/Quickstart#Creating_an_Account.`
+        `Your password for your Nest account is \`${password}\`. Please continue through our Quickstart guide at https://guides.hackclub.app/index.php/Quickstart#Creating_an_Account.`,
       ),
       text: `Your password for your Nest account is ${password}. Please continue through our Quickstart guide at https://guides.hackclub.app/index.php/Quickstart#Creating_an_Account.`,
     });

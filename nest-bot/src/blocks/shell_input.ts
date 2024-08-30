@@ -36,22 +36,22 @@ export default async function shell_input(shell: string) {
           placeholder: {
             type: "plain_text",
             text: shell,
-            emoji: true
+            emoji: true,
           },
           options: [
             {
               text: {
                 type: "plain_text",
                 text: shell,
-                emoji: true
+                emoji: true,
               },
               value: shell,
             },
-            ...shells.map(shell => ({
+            ...shells.map((shell) => ({
               text: {
                 type: "plain_text",
                 text: shell,
-                emoji: true
+                emoji: true,
               },
               value: shell,
             })),

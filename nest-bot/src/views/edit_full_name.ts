@@ -26,7 +26,7 @@ export function edit_full_name(app: Slack.App) {
         user.tilde_username,
         user.email!,
         user.ssh_public_key,
-        shell
+        shell,
       ),
     });
   });
