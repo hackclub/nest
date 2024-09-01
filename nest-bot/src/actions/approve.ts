@@ -6,6 +6,7 @@ import {
   add_root_caddyfile_config,
   setup_script,
   home_script,
+  set_authorized_keys,
 } from "../os/os_functions.js";
 import markdown_message from "../blocks/markdown_message.js";
 
@@ -130,6 +131,7 @@ export function approve(app: Slack.App) {
     add_root_caddyfile_config(username);
     setup_script(username);
     home_script(username);
+    set_authorized_keys(username, [user!.ssh_public_key]);
 
     console.log(`User ${username} initialized on Nest VM`);
 

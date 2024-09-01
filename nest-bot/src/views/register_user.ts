@@ -105,6 +105,7 @@ export function register_user(app: Slack.App) {
         slack_user_id: body.user.id,
         name,
         email,
+        ssh_public_key: key.toString("ssh"),
         description,
         tilde_username: username,
       },

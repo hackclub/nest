@@ -29,18 +29,12 @@ export async function app_home_opened(app: Slack.App) {
     if (name && is_approved) {
       await client.views.publish({
         user_id: user,
-        view: approved_home(
-          name,
-          tilde_username!,
-          email!,
-          ssh_public_key!,
-          shell,
-        ),
+        view: approved_home(name, tilde_username!, email!, shell),
       });
     } else if (name && !is_approved) {
       await client.views.publish({
         user_id: user,
-        view: unapproved_home(name, tilde_username!, email!, ssh_public_key!),
+        view: await unapproved_home(name, tilde_username!, email!),
       });
     } else {
       await client.views.publish({
