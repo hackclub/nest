@@ -88,7 +88,7 @@ export default function approved_home(
             emoji: true,
           },
           value: username,
-          action_id: "edit-ssh-keys",
+          action_id: "edit_ssh_keys",
         },
       },
       {
