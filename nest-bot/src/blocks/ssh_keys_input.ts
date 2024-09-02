@@ -33,12 +33,12 @@ export default async function ssh_keys_input(user: string) {
         type: "divider",
       },
       ...keys.map((key) => {
-        const [type, data, comment] = key.split(" ");
+        const [type, data, ...comment] = key.split(" ");
         return {
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `\`${type} ${data.substring(0, 9)}...${data.substring(data.length - 9, data.length)} ${comment}\``,
+            text: `\`${type} ${data.substring(0, 9)}...${data.substring(data.length - 9, data.length)} ${comment.join(" ")}\``,
           },
           accessory: {
             type: "button",
