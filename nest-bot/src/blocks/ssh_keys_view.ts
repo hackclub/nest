@@ -48,7 +48,7 @@ export default async function ssh_keys_input(user: string) {
               emoji: true,
             },
             style: "danger",
-            value: JSON.stringify({ action: "delete", key }),
+            value: JSON.stringify({ user, ssh_key: key }),
             action_id: "delete_ssh_key",
           },
         };

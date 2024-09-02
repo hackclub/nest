@@ -4,7 +4,7 @@ import {
   set_authorized_keys,
   get_authorized_keys,
 } from "../os/os_functions.js";
-import ssh_keys_input from "../blocks/ssh_keys_input.js";
+import ssh_keys_input from "../blocks/ssh_keys_view.js";
 import { ssh_edit_view_ids } from "../util/ssh_edit_view_ids.js";
 
 export function new_ssh_key(app: Slack.App) {

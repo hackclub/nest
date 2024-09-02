@@ -1,6 +1,6 @@
 import Slack from "@slack/bolt";
 
-import ssh_keys_input from "../blocks/ssh_keys_input.js";
+import ssh_keys_input from "../blocks/ssh_keys_view.js";
 import { ssh_edit_view_ids } from "../util/ssh_edit_view_ids.js";
 
 export function edit_ssh_keys(app: Slack.App) {
