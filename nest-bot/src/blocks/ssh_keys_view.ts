@@ -1,6 +1,6 @@
 import { get_authorized_keys } from "../os/os_functions.js";
 
-export default async function ssh_keys_input(user: string) {
+export default async function ssh_keys_view(user: string) {
   const keys = await get_authorized_keys(user);
 
   return {
