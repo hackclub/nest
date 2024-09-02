@@ -5,7 +5,6 @@ export default async function ssh_keys_view(user: string) {
 
   return {
     type: "modal" as const,
-    callback_id: "ssh_keys_input",
     title: {
       type: "plain_text" as const,
       text: "Nest SSH Keys",
