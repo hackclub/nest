@@ -14,7 +14,7 @@ export function approve(app: Slack.App) {
   app.action("approve", async ({ ack, body, client }) => {
     ack();
 
-    if (body.type !== "block_actions" || !("value" in body.actions[0])) {
+    if (body.type !== "block_actions" || body.actions[0].type !== "button") {
       return;
     }
 
