@@ -6,7 +6,7 @@ import {
 } from "../os/os_functions.js";
 import ssh_keys_input from "../blocks/ssh_keys_input.js";
 
-export function edit_email(app: Slack.App) {
+export function delete_ssh_key(app: Slack.App) {
   app.action("delete_ssh_key", async ({ ack, body, client }) => {
     ack();
 

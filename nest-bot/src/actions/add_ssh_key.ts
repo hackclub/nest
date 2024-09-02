@@ -2,7 +2,7 @@ import Slack from "@slack/bolt";
 
 import new_ssh_key from "../blocks/new_ssh_key.js";
 
-export function edit_email(app: Slack.App) {
+export function add_ssh_key(app: Slack.App) {
   app.action("add_ssh_key", async ({ ack, body, client }) => {
     ack();
 

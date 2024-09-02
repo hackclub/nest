@@ -7,7 +7,7 @@ import {
 import ssh_keys_input from "../blocks/ssh_keys_input.js";
 import { ssh_edit_view_ids } from "../util/ssh_edit_view_ids.js";
 
-export function edit_email(app: Slack.App) {
+export function new_ssh_key(app: Slack.App) {
   app.view("new_ssh_key", async ({ ack, body, view, client }) => {
     const ssh_key = view.state.values.ssh_key_input.new_ssh_key.value ?? "";
     const user = view.private_metadata;

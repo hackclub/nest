@@ -3,7 +3,7 @@ import Slack from "@slack/bolt";
 import ssh_keys_input from "../blocks/ssh_keys_input.js";
 import { ssh_edit_view_ids } from "../util/ssh_edit_view_ids.js";
 
-export function edit_email(app: Slack.App) {
+export function edit_ssh_keys(app: Slack.App) {
   app.action("edit_ssh_keys", async ({ ack, body, client }) => {
     ack();
 
