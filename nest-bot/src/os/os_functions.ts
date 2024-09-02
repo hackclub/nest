@@ -55,6 +55,7 @@ export function set_authorized_keys(user: string, keys: string[]) {
   exec(
     escape(
       "sudo /home/nest-internal/nest/nest-bot/src/os/scripts/set_keys.sh",
+      user,
       keys.join("|"),
     ),
   );
