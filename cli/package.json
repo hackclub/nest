@@ -1,0 +1,12 @@
+{
+  "name": "nestcli",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "bin": {
+    "nest": "./index.js"
+  },
+  "dependencies": {
+    "commander": "^12.1.0"
+  }
+}
