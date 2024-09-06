@@ -86,7 +86,7 @@ db
             console.error("Your database name can only include alphanumeric characters (a-Z, 0-9)")
             process.exit(1)
         }
-        run(`sudo -u postgres /usr/local/nest/cli/helpers/acreate_db.sh ${name}`);
+        run(`sudo -u postgres /usr/local/nest/cli/helpers/create_db.sh ${name}`);
     });
 
 
