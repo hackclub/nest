@@ -4,6 +4,13 @@ const program = new Command();
 const { execSync, spawn } = require('child_process');
 const net = require('net');
 const fs = require('fs');
+const utils = require("./utils")
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+const os = require("os")
+var username = os.userInfo().username
+const isAdmin = !process.getuid() || os.userInfo().username == "nest-internal"
+const validator = require('validator');
 
 function run(command) {
     try {
@@ -29,21 +36,7 @@ program
             server.close();
         });
     });
-program
-    .command('caddy [cmd] [args...]')
-    .description('Manages caddy')
-    .action((cmd, args) => {
-        const yatcmArgs = cmd ? [cmd, ...args] : args;
-        const yatcm = spawn('yatcm', yatcmArgs);
 
-        yatcm.stdout.on('data', (data) => {
-            console.log(data.toString());
-        });
-
-        yatcm.stderr.on('data', (data) => {
-            console.error(data.toString());
-        });
-    });
 program
     .command('resources')
     .description('See your Nest resource usage and limits')
@@ -89,5 +82,79 @@ db
         run(`sudo -u postgres /usr/local/nest/cli/helpers/create_db.sh ${name}`);
     });
 
+const caddy = program.command("caddy")
+caddy
+.command('list')
+    .description('lists all domains you have configured in caddy')
+    .option('--user', 'allows you to add a domain on behalf of a user (requires sudo)')
+    .action(async (options) => {
+        if (options?.user && isAdmin) username = options.user
+        var domains = await utils.getDomains(username)
+        domains = domains.map(domain => `- ${domain.domain} (${domain.proxy})`).join("\n")
+        console.log(domains)
+    });
+caddy
+.command('add <domain>')
+.description('adds a domain to caddy')
+.option('--proxy', 'changes where the domain should be proxied to (advanced)')
+.option('--user', 'allows you to add a domain on behalf of a user (requires sudo)')
+.action(async (domain, options) => {
+    if (options?.user && isAdmin) username = options.user
+    if (!validator.isFQDN(domain)) {
+        console.error("This domain is not a valid domain name. Please choose a valid domain name.")
+        process.exit(1)
+    }
+    if (await utils.domainExists(domain)) {
+        console.error("This domain already has already been taken by you or someone else. Pick another one!")
+        process.exit(1)
+    }
+    if (utils.checkWhitelist(domain, username)) {
+        await prisma.domain.create({
+            data: {
+                domain, username, proxy: options?.proxy || `unix//home/${username}/.${domain}.webserver.sock`
+            }
+        })
+        await utils.reloadCaddy()
+        return console.log(`${domain} added. (${options?.proxy || `unix//home/${username}/.${domain}.webserver.sock`})`)
 
+    }
+    // Proceed as a regular domain
+    if (!await utils.checkVerification(domain, username)) {
+        console.error(`Please set the TXT record for domain-verification to your username (${username}). You can remove it after it is added.`)
+        process.exit(1)
+    }
+    await prisma.domain.create({
+        data: {
+            domain, username, proxy: options?.proxy || `unix//home/${username}/.${domain}.webserver.sock`
+        }
+    })
+    await utils.reloadCaddy()
+    return console.log(`${domain} added. (${options?.proxy || `unix//home/${username}/.${domain}.webserver.sock`})`)
+});
+caddy
+.command('rm <domain>')
+    .description('removes a domain from caddy')
+    .option('--user', 'allows you to add a domain on behalf of a user (requires sudo)')
+    .action(async (domain, options) => {
+        if (options?.user && isAdmin) username = options.user
+        if (!validator.isFQDN(domain)) {
+            console.error("This domain is not a valid domain name. Please choose a valid domain name.")
+            process.exit(1)
+        }
+        if (!await utils.domainExists(domain)) {
+            console.error("This domain is not in Caddy.")
+            process.exit(1)
+        }
+        if (!await utils.domainOwnership(domain, username)) {
+            console.error("You do not own the domain, so you cannot remove it.")
+            process.exit(1)
+        }
+        await prisma.domain.delete({
+            where: {
+                domain, username
+            }
+        })
+        await utils.reloadCaddy()
+        console.log(`${domain} removed.`)
+    });
 program.parse(process.argv);
