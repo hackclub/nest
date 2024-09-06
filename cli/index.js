@@ -16,7 +16,7 @@ function run(command) {
 }
 program
     .name('nest')
-    .description('Yet another tilde caddy manager')
+    .description('A command-line interface for Nest tools and services')
     .version(require("./package.json").version);
 program
     .command('get_port')
