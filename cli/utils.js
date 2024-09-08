@@ -144,8 +144,8 @@ module.exports = {
                                         "health_checks": {
                                             "active": {
                                                 "expect_status": 2,
-                                                "interval": 5000000000,
-                                                "timeout": 60000000000
+                                                "interval": "60s",
+                                                "timeout": "5s"
                                             }
                                         },
                                         "upstreams": [
