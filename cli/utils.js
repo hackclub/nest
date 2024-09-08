@@ -73,6 +73,18 @@ module.exports = {
             }
         })
         var caddy = {
+            admin: {
+                listen: "unix//run/caddy/caddy-admin.sock"
+            },
+            logging: {
+                logs: {
+                    default: {
+                        encoder: {
+                            format: "console"
+                        }
+                    }
+                }
+            },
             apps: {
                 http: {
                     servers: {
@@ -88,6 +100,12 @@ module.exports = {
                 tls: {
                     automation: {
                         policies: []
+                    },
+                    on_demand: {
+                        permission: {
+                            endpoint: "https://my.hackclub.app/ok",
+                            module: "http"
+                        }
                     }
                 }
             }
