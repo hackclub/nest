@@ -12,9 +12,12 @@ module.exports = function ({ program, run }) {
         .description('lists all domains you have configured in caddy')
         .option('--user', 'allows you to add a domain on behalf of a user (requires sudo)')
         .action(async (options) => {
-            username = options?.user && !isAdmin
-                ? (console.error("To change/see another user's domains, you'll need to use sudo or be root."), process.exit(1))
-                : options?.user;
+            if (options?.user && !isAdmin) { 
+                console.error("To change/see another user's domains, you'll need to use sudo or be root.") 
+                process.exit(1)
+            } else if (options?.user) {
+                username = options.user
+            }
             var domains = await utils.getDomains(username)
             domains = domains.map(domain => `- ${domain.domain} (${domain.proxy})`).join("\n")
             console.log(domains)
@@ -25,9 +28,12 @@ module.exports = function ({ program, run }) {
         .option('--proxy', 'changes where the domain should be proxied to (advanced)')
         .option('--user', "allows you to list a different user's domains (requires sudo)")
         .action(async (domain, options) => {
-            username = options?.user && !isAdmin
-                ? (console.error("To change/see another user's domains, you'll need to use sudo or be root."), process.exit(1))
-                : options?.user;
+            if (options?.user && !isAdmin) { 
+                console.error("To change/see another user's domains, you'll need to use sudo or be root.") 
+                process.exit(1)
+            } else if (options?.user) {
+                username = options.user
+            }
             if (!validator.isFQDN(domain)) {
                 console.error("This domain is not a valid domain name. Please choose a valid domain name.")
                 process.exit(1)
@@ -64,9 +70,12 @@ module.exports = function ({ program, run }) {
         .description('removes a domain from caddy')
         .option('--user', 'allows you to add a domain on behalf of a user (requires sudo)')
         .action(async (domain, options) => {
-            username = options?.user && !isAdmin
-                ? (console.error("To change/see another user's domains, you'll need to use sudo or be root."), process.exit(1))
-                : options?.user;
+            if (options?.user && !isAdmin) { 
+                console.error("To change/see another user's domains, you'll need to use sudo or be root.") 
+                process.exit(1)
+            } else if (options?.user) {
+                username = options.user
+            }
             if (!validator.isFQDN(domain)) {
                 console.error("This domain is not a valid domain name. Please choose a valid domain name.")
                 process.exit(1)
