@@ -5,6 +5,10 @@ module.exports = function ({ program, run }) {
         .command('resources')
         .description('See your Nest resource usage and limits')
         .action(() => {
+            if (!process.getuid()){
+                console.log("Root doesn't have any limits.")
+                process.exit(0)
+            }
             const output = run(`quota`).toString();
             const numbers = output.split("\n").find(line => line.includes("/dev/sda")).match(/\d+/g);
             const array = numbers.map(Number)
