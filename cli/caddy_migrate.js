@@ -24,7 +24,7 @@ routes.forEach(route => {
     }
 });
 async function main() {
-    await prisma.domain.create({
+    await prisma.domain.createMany({
         data: set
     })
 }
