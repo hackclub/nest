@@ -1,0 +1,16 @@
+generator client {
+    provider      = "prisma-client-js"
+    binaryTargets = ["native"]
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = "file:./database.sqlite"
+}
+
+model Domain {
+    domain    String   @id @unique
+    createdAt DateTime @default(now())
+    username  String
+    proxy     String
+}

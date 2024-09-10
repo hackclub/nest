@@ -12,7 +12,6 @@ touch /var/lib/systemd/linger/$1
 export XDG_RUNTIME_DIR=/run/user/$(id -u $1)
 systemctl --user -M $1@ daemon-reload
 systemctl --user -M $1@ enable caddy
-systemctl reload caddy
 
 # Limits
 setquota -u $1 15G 15G 0 0 /
