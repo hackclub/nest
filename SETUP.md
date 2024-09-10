@@ -152,26 +152,61 @@ Anywhere (v6) on enp5s0    ALLOW FWD   Anywhere (v6) on vmbr0
 
 ### Nest VM network config
 
-`/etc/network/interfaces`:
+`systemd-networkd` is used on the Nest VM instead of the standard `networking` service.
 
+`/etc/systemd/network/ens18.network`:
 ```
-source /etc/network/interfaces.d/*
+[Match]
+Name=ens18
 
-# The loopback network interface
-auto lo
-iface lo inet loopback
+[Network]
+DHCP=false
+IPv6AcceptRA=false
 
-# The primary network interface
-allow-hotplug ens18
-iface ens18 inet static
-	address 37.27.51.34/32
-	# dns-* options are implemented by the resolvconf package, if installed
-	dns-nameservers 9.9.9.9
-	gateway 37.27.51.35
+[Address]
+Address=37.27.51.34/32
+Peer=37.27.51.35/32
 
-iface ens18 inet6 static
-	address 2a01:4f9:3081:399c::4/64
-        gateway 2a01:4f9:3081:399c::2
+[Route]
+Destination=0.0.0.0/0
+Gateway=37.27.51.35
+
+[Address]
+Address=2a01:4f9:3081:399c::4/64
+
+[Route]
+Destination=::/0
+Gateway=2a01:4f9:3081:399c::2
+
+# de2.g-load.eu (dn42)
+[Route]
+Destination=2a01:4f8:c2c:3b65::1/128
+Gateway=2a01:4f9:3081:399c::2
+
+# helsinki.dn42.immibis.com aka hcl.immibis.com (dn42)
+[Route]
+Destination=2a01:4f9:c010:b12b::1/128
+Gateway=2a01:4f9:3081:399c::2
+
+# sto.peer.highdef.network (dn42)
+[Route]
+Destination=2a0e:dc0:2:7fa1::1/128
+Gateway=2a01:4f9:3081:399c::2
+
+# de1.dn42.ni.sb (dn42)
+[Route]
+Destination=2603:c020:8012:a322::cd17/128
+Gateway=2a01:4f9:3081:399c::2
+
+# mikrus.catgirls.systems (dn42)
+[Route]
+Destination=2a01:4f9:4a:5029::103/128
+Gateway=2a01:4f9:3081:399c::2
+
+# Secure VM (IPv4)
+[Route]
+Destination=37.27.51.33/32
+Gateway=37.27.51.35
 ```
 
 The Nest VM is configured with fail2ban to combat spamming.

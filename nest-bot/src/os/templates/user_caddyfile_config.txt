@@ -2,7 +2,7 @@
 	admin unix//home/<username>/caddy-admin.sock
 }
 http://<username>.hackclub.app {
-	bind unix/.webserver.sock|777
+	bind unix/.<username>.hackclub.app.webserver.sock|777
 	root * /home/<username>/pub
 	file_server {
 		hide .git .env

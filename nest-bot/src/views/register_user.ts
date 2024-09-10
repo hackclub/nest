@@ -108,6 +108,7 @@ export function register_user(app: Slack.App) {
         ssh_public_key: key.toString("ssh"),
         description,
         tilde_username: username,
+        created_at: new Date()
       },
     });
 
