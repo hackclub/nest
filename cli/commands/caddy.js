@@ -10,7 +10,7 @@ module.exports = function ({ program, run }) {
     caddy
         .command('list')
         .description('lists all domains you have configured in caddy')
-        .option('--user', 'allows you to add a domain on behalf of a user (requires sudo)')
+        .option('--user [user]', 'allows you to add a domain on behalf of a user (requires sudo)')
         .action(async (options) => {
             if (options?.user && !isAdmin) { 
                 console.error("To change/see another user's domains, you'll need to use sudo or be root.") 
@@ -25,8 +25,8 @@ module.exports = function ({ program, run }) {
     caddy
         .command('add <domain>')
         .description('adds a domain to caddy')
-        .option('--proxy', 'changes where the domain should be proxied to (advanced)')
-        .option('--user', "allows you to list a different user's domains (requires sudo)")
+        .option('--proxy [proxy]', 'changes where the domain should be proxied to (advanced)')
+        .option('--user [user]', "allows you to list a different user's domains (requires sudo)")
         .action(async (domain, options) => {
             if (options?.user && !isAdmin) { 
                 console.error("To change/see another user's domains, you'll need to use sudo or be root.") 
@@ -68,7 +68,7 @@ module.exports = function ({ program, run }) {
     caddy
         .command('rm <domain>')
         .description('removes a domain from caddy')
-        .option('--user', 'allows you to add a domain on behalf of a user (requires sudo)')
+        .option('--user [user]', 'allows you to add a domain on behalf of a user (requires sudo)')
         .action(async (domain, options) => {
             if (options?.user && !isAdmin) { 
                 console.error("To change/see another user's domains, you'll need to use sudo or be root.") 

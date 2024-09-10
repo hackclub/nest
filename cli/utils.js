@@ -8,10 +8,9 @@ const isAdmin = !process.getuid() || os.userInfo().username == "nest-internal"
 
 module.exports = {
     checkWhitelist: function (domain, username) {
-        if (!fs.existsSync(".whitelist")) return
-        const whitelist = fs.readFileSync(".whitelist", "utf8").split("\n")
+        if (!fs.existsSync(__dirname + "/.whitelist")) return
+        const whitelist = fs.readFileSync(__dirname + "/.whitelist", "utf8").split("\n")
 
-        whitelist
         var i = 0
         while (i < whitelist.length) {
             if (minimatch(domain, whitelist[i].replace("$USERNAME", username))) return true
