@@ -106,33 +106,41 @@ export default function Info() {
         dedicated server, located in Helsinki, Finland. Users share a{" "}
         <span className="italic">virtual machine</span> on the server.
       </p>
-      <div className="flex flex-col gap-y-2 self-start lg:hidden">
-        <div className="flex">
-          <GoCpu className="text-5xl" />
-          <div className="ml-2 mt-2">
-            <div className="font">Processor</div>
-            <div className="text-xs">i5-13500</div>
+      <div className="flex flex-col gap-y-4 self-start lg:hidden">
+        <div className="rounded-lg p-4">
+          <div className="flex items-center">
+            <GoCpu className="text-4xl text-HCPurpleText" />
+            <div className="ml-4">
+              <div className="text-lg font-medium">Processor</div>
+              <div className="text-sm text-gray-300">i5-13500</div>
+            </div>
           </div>
         </div>
-        <div className="flex">
-          <BsMemory className="text-5xl" />
-          <div className="ml-2 mt-2">
-            <div className="font">Memory</div>
-            <div className="text-xs">64 GB DDR4 Ram</div>
+        <div className="rounded-lg p-4">
+          <div className="flex items-center">
+            <BsMemory className="text-4xl text-HCPurpleText" />
+            <div className="ml-4">
+              <div className="text-lg font-medium">Memory</div>
+              <div className="text-sm text-gray-300">64 GB DDR4 Ram</div>
+            </div>
           </div>
         </div>
-        <div className="flex">
-          <BsNvme className="text-5xl" />
-          <div className="ml-2 mt-2">
-            <div className="font">Disk Space</div>
-            <div className="text-xs">2 * 512 GB NVMe in RAID 1</div>
+        <div className="rounded-lg p-4">
+          <div className="flex items-center">
+            <BsNvme className="text-4xl text-HCPurpleText" />
+            <div className="ml-4">
+              <div className="text-lg font-medium">Disk Space</div>
+              <div className="text-sm text-gray-300">2 x 512 GB NVMe SSDs + 1 x 1 TB NVMe SSD</div>
+            </div>
           </div>
         </div>
-        <div className="flex">
-          <BsHddNetwork className="text-5xl" />
-          <div className="ml-2 mt-2">
-            <div className="font-bold">Internet</div>
-            <div className="text-xs">Gigabit uncapped</div>
+        <div className="rounded-lg p-4">
+          <div className="flex items-center">
+            <BsHddNetwork className="text-4xl text-HCPurpleText" />
+            <div className="ml-4">
+              <div className="text-lg font-medium">Internet</div>
+              <div className="text-sm text-gray-300">Gigabit uncapped</div>
+            </div>
           </div>
         </div>
       </div>
@@ -145,8 +153,6 @@ export default function Info() {
          !.......:!?|||||!!^^""'            ||||
          !.........||||                     ||||
          !.........||||  orpheus@nest:~$    ||||
-         !.........||||                     ||||
-         !.........||||  welcome, orpheus!  ||||
          !.........||||                     ||||
          !.........||||    check slack      ||||
          \`.........||||                    ,||||
@@ -161,9 +167,9 @@ export default function Info() {
   \`..........:::::::::::::::::::::::;iof688888888888b.     \`YBBBP^'
     \`........::::::::::::::::;iof688888888888888888888b.     \`
       \`......:::::::::;iof688888888888888888888888888888b.
-        \`....:::;iof688888888888888888888888888888888899fT!
-          \`..::!8888888888888888888888888888888899fT|!^"'
-            \`' !!988888888888888888888888899fT|!^"'
+        \`....:::;iof6888888888888888888888888888888899fT!
+          \`..::!8888888888888888888888888888899fT|!^"'
+            \`' !!988888888888888888888899fT|!^"'
                 \`!!8888888888888888899fT|!^"'
                   \`!988888888899fT|!^"'
                     \`!9899fT|!^"'
