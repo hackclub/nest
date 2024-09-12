@@ -91,7 +91,7 @@ const AnimatedBackground = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 z-0"
+      className="absolute inset-0 z-0 hidden lg:block"
       style={{ opacity: 0.4 }}
     />
   );
@@ -101,7 +101,7 @@ export default function Hero() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <section className="relative grid grid-cols-1 grid-rows-1 place-items-center p-4 lg:grid-cols-3 lg:gap-x-20 lg:p-16 2xl:p-32">
+    <section className="relative grid grid-cols-1 grid-rows-1 place-items-center p-4 lg:grid-cols-3 lg:gap-x-16 2xl:gap-x-20 lg:p-16 2xl:p-32">
       <div className="absolute inset-0 overflow-hidden">
         <AnimatedBackground />
       </div>
@@ -120,7 +120,7 @@ export default function Hero() {
         <div className="flex items-center justify-start gap-x-5">
           <a
             href="https://guides.hackclub.app/index.php/Quickstart"
-            className="group flex items-center gap-x-2 rounded-lg bg-HCPurple px-4 py-2 font-dm-mono text-base font-medium text-white transition-all duration-300 hover:bg-HCPurpleText md:text-lg 2xl:text-xl hover:scale-105 active:scale-95"
+            className="group flex items-center gap-x-2 border-2 border-HCPurple rounded-lg bg-HCPurple px-4 py-2 font-dm-mono text-base font-medium text-white transition-all duration-300 hover:bg-HCPurple 2xl:text-xl hover:scale-105 active:scale-95"
           >
             <FaCode className="text-xl" />
             <span>Join Nest!</span>
@@ -128,7 +128,7 @@ export default function Hero() {
 
           <a
             href="https://guides.hackclub.app/index.php/Main_Page"
-            className="group flex items-center gap-x-2 rounded-lg border-2 border-HCPurple px-4 py-2 font-dm-mono text-base font-medium text-HCPurpleText transition-all duration-300 hover:bg-HCPurple hover:text-white md:text-lg 2xl:text-xl hover:scale-105 active:scale-95"
+            className="group flex items-center gap-x-2 rounded-lg border-2 border-HCPurple px-4 py-2 font-dm-mono text-base font-medium text-HCPurpleText transition-all duration-300 hover:bg-HCPurple hover:text-white 2xl:text-xl hover:scale-105 active:scale-95"
           >
             <FaBook className="text-xl" />
             <span>Read the Docs</span>
@@ -208,7 +208,7 @@ export default function Hero() {
         <pre
           className={`${
             isExpanded ? "opacity-100" : "opacity-0"
-          } hidden text-xs transition-all duration-300 lg:block 2xl:text-base`}
+          } hidden text-xs transition-all duration-300 lg:block xl:text-sm 2xl:text-base`}
         >{`
  __________________    orpheus@nest 
 < Welcome to Nest! >   ----------- 
