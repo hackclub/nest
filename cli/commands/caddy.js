@@ -12,8 +12,8 @@ module.exports = function ({ program, run }) {
         .description('lists all domains you have configured in caddy')
         .option('--user [user]', 'allows you to add a domain on behalf of a user (requires sudo)')
         .action(async (options) => {
-            if (options?.user && !isAdmin) { 
-                console.error("To change/see another user's domains, you'll need to use sudo or be root.") 
+            if (options?.user && !isAdmin) {
+                console.error("To change/see another user's domains, you'll need to use sudo or be root.")
                 process.exit(1)
             } else if (options?.user) {
                 username = options.user
@@ -28,8 +28,8 @@ module.exports = function ({ program, run }) {
         .option('--proxy [proxy]', 'changes where the domain should be proxied to (advanced)')
         .option('--user [user]', "allows you to list a different user's domains (requires sudo)")
         .action(async (domain, options) => {
-            if (options?.user && !isAdmin) { 
-                console.error("To change/see another user's domains, you'll need to use sudo or be root.") 
+            if (options?.user && !isAdmin) {
+                console.error("To change/see another user's domains, you'll need to use sudo or be root.")
                 process.exit(1)
             } else if (options?.user) {
                 username = options.user
@@ -70,8 +70,8 @@ module.exports = function ({ program, run }) {
         .description('removes a domain from caddy')
         .option('--user [user]', 'allows you to add a domain on behalf of a user (requires sudo)')
         .action(async (domain, options) => {
-            if (options?.user && !isAdmin) { 
-                console.error("To change/see another user's domains, you'll need to use sudo or be root.") 
+            if (options?.user && !isAdmin) {
+                console.error("To change/see another user's domains, you'll need to use sudo or be root.")
                 process.exit(1)
             } else if (options?.user) {
                 username = options.user
@@ -95,5 +95,16 @@ module.exports = function ({ program, run }) {
             })
             await utils.reloadCaddy()
             console.log(`${domain} removed.`)
+        });
+    caddy
+        .command('reload')
+        .description('reloads the global caddy instance (admins only)')
+        .action(async () => {
+            if (!isAdmin) {
+                console.error("To reload the global caddy instance, you must use sudo.")
+                return process.exit(1)
+            } 
+            await utils.reloadCaddy()
+            console.log(`Global Caddy instance reloaded.`)
         });
 }
