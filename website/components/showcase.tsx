@@ -13,23 +13,23 @@ export default function Showcase(props: { projects: Project[] }) {
       <p className="p-4 text-center text-lg 2xl:text-xl">
         See what fellow &quot;birds&quot; are hosting on Nest!
       </p>
-      <div className="grid w-full grid-cols-1 gap-x-7 gap-y-10 px-5 md:grid-cols-2 lg:w-4/5 lg:grid-cols-3 lg:gap-y-8">
+      <div className="grid w-full grid-cols-1 gap-x-7 gap-y-10 px-5 md:grid-cols-2 lg:w-11/12 2xl:w-4/5 lg:grid-cols-3 lg:gap-y-8">
         {props.projects.map((p) => (
           <ProjectCard key={p.name} data={p} />
         ))}
       </div>
       <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row">
-        <Link
-          href="/projects"
-          className="text-HCPurpleText flex items-center rounded-lg border-2 border-HCPurple px-4 py-2 font-dm-mono text-base font-medium transition-all duration-300 hover:bg-HCPurple hover:text-white md:text-base 2xl:text-xl"
-        >
-          See all projects <FaArrowRight className="ml-2" />
-        </Link>
-        <Link
+      <Link
           href="https://guides.hackclub.app/index.php/Quickstart"
-          className="bg-HCPurple text-white flex items-center rounded-lg px-4 py-2 font-dm-mono text-base font-medium transition-all duration-300 hover:bg-HCPurpleText md:text-base 2xl:text-xl"
+          className="group flex items-center gap-x-2 border-2 border-HCPurple rounded-lg bg-HCPurple px-4 py-2 font-dm-mono text-base font-medium text-white transition-all duration-300 hover:bg-HCPurple 2xl:text-xl hover:scale-105 active:scale-95"
         >
           Start your project <FaCode className="ml-2" />
+        </Link>
+        <Link
+          href="/projects"
+          className="group flex items-center gap-x-2 rounded-lg border-2 border-HCPurple px-4 py-2 font-dm-mono text-base font-medium text-HCPurpleText transition-all duration-300 hover:bg-HCPurple hover:text-white 2xl:text-xl hover:scale-105 active:scale-95"
+        >
+          See all projects <FaArrowRight className="ml-2" />
         </Link>
       </div>
     </section>

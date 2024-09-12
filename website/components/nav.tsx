@@ -67,20 +67,19 @@ export default function Nav() {
       </div>
 
       <div className="hidden items-center justify-end gap-x-6 lg:flex opacity-0 translate-y-[-20px] animate-[fadeInDown_0.5s_ease-out_forwards]">
-        <a
-          href="https://identity.hackclub.app"
-          className="group flex items-center gap-x-2 rounded-lg border-2 border-HCPurple px-4 py-2 font-dm-mono text-base font-medium text-HCPurpleText transition-all duration-300 hover:bg-HCPurple hover:text-white md:text-lg 2xl:text-xl hover:scale-105 active:scale-95"
-        >
-          <FaTerminal className="text-xl" />
-          <span>Login</span>
-        </a>
-
-        <a
+      <a
           href="https://guides.hackclub.app/index.php/Quickstart"
-          className="group flex items-center gap-x-2 rounded-lg bg-HCPurple px-4 py-2 font-dm-mono text-base font-medium text-white transition-all duration-300 hover:bg-HCPurpleText md:text-lg 2xl:text-xl hover:scale-105 active:scale-95"
+          className="group flex items-center gap-x-2 border-2 border-HCPurple rounded-lg bg-HCPurple px-4 py-2 font-dm-mono text-base font-medium text-white transition-all duration-300 hover:bg-HCPurple 2xl:text-xl hover:scale-105 active:scale-95"
         >
           <FaCode className="text-xl" />
           <span>Join Nest!</span>
+        </a>
+        <a
+          href="https://identity.hackclub.app"
+          className="group flex items-center gap-x-2 rounded-lg border-2 border-HCPurple px-4 py-2 font-dm-mono text-base font-medium text-HCPurpleText transition-all duration-300 hover:bg-HCPurple hover:text-white 2xl:text-xl hover:scale-105 active:scale-95"
+        >
+          <FaTerminal className="text-xl" />
+          <span>Login</span>
         </a>
       </div>
     </nav>
