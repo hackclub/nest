@@ -61,7 +61,7 @@ export default function Info() {
     case "Community":
       text = (
         <p>
-          As part of Hack Club, Nest has a community of over 100 users and
+          As part of Hack Club, Nest has a community of over 200 users and
           others in the{" "}
           <a href="https://hackclub.com/slack" className="underline">
             Hack Club Slack
