@@ -25,7 +25,7 @@ export default function ProjectCard({ data: project }: { data: Project }) {
             <FaCode size={18} className="text-HCPurpleText hover:text-HCPurple transition-colors" />
           </Link>
         </div>
-        <div className="relative w-full">
+        <div className="relative w-full pb-6">
           <AnimatePresence initial={false}>
             <motion.div
               key="content"
@@ -34,20 +34,25 @@ export default function ProjectCard({ data: project }: { data: Project }) {
               exit="collapsed"
               variants={{
                 expanded: { height: "auto", opacity: 1 },
-                collapsed: { height: "60px", opacity: 1 }
+                collapsed: { height: "80px", opacity: 1 }
               }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="overflow-hidden"
+              className="overflow-hidden relative"
             >
               <p className="text-xs sm:text-sm 2xl:text-base">{project.description}</p>
+              {!expanded && project.description.length > 110 && (
+                <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-bg to-transparent" />
+              )}
             </motion.div>
           </AnimatePresence>
-          {project.description.length > 100 && (
+          {project.description.length > 110 && (
             <motion.button
-              className="absolute bottom-0 right-0 text-HCPurpleText hover:text-HCPurple transition-colors pl-2"
+              className="absolute bottom-0 right-0 text-HCPurpleText hover:text-HCPurple transition-colors"
               onClick={() => setExpanded(!expanded)}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: expanded || project.description.length > 110 ? 1 : 0 }}
             >
               {expanded ? <FaChevronUp size={14} /> : <FaChevronDown size={14} />}
             </motion.button>
