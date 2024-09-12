@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { DM_Mono } from "next/font/google";
 import Head from "next/head";
+import NestMascot from "@/components/NestMascot";
 
 const dm_mono = DM_Mono({
   weight: ["400", "500"],
@@ -40,6 +41,7 @@ export default function App({ Component, pageProps }: AppProps) {
         />
       </Head>
       <Component {...pageProps} />
+      <NestMascot />
     </div>
   );
 }
