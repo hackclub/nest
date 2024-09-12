@@ -42,7 +42,7 @@ export default function Home(
   props: InferGetStaticPropsType<typeof getStaticProps>,
 ) {
   return (
-    <main className="min-h-screen overflow-hidden bg-bg">
+    <main className="min-h-screen overflow-hidden bg-bg scrollbar-custom">
       <Nav />
       <Hero />
       <Showcase projects={props.featuredProjects} />
