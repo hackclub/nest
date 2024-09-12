@@ -185,7 +185,7 @@ export default function Hero() {
       </div>
       <div
         className={`${
-          isExpanded ? "bg-gray-900" : "self-start"
+          isExpanded ? "bg-gradient-to-b from-[#1a1a2e] to-[#16213e]" : "self-start"
         } relative z-10 col-span-2 hidden w-full flex-col gap-x-10 rounded-lg px-5 py-10 font-dm-mono text-white lg:flex`}
       >
         <div className="gap-x-5 lg:flex">
