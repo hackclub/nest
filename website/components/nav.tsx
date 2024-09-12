@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { FaHome, FaServer, FaBook, FaTools } from "react-icons/fa";
+import { FaHome, FaServer, FaBook, FaTools, FaTerminal, FaCode } from "react-icons/fa";
 import { FaGithub } from "react-icons/fa6";
 
 const navItems = [
@@ -35,74 +34,53 @@ export default function Nav() {
   return (
     <nav className="relative flex items-center justify-between border-b-2 border-violet-950 px-4 py-4 md:border-transparent md:bg-transparent md:px-16">
       <div className="flex items-center gap-x-4 md:hidden">
-        <Link href={"/"}>
+        <Link href={"/"} className="transition-transform hover:scale-105">
           <Image src={"/nest.svg"} alt="nest logo" width={70} height={70} />
         </Link>
       </div>
 
-      <div className="absolute right-4 top-1/2 flex -translate-y-1/2 transform items-center gap-x-4 lg:hidden">
+      <div className="absolute right-4 top-1/2 flex -translate-y-1/2 transform items-center gap-x-6 lg:hidden">
         {navItems.map((item, index) => (
-          <Link key={index} href={item.href} className="text-white">
+          <Link key={index} href={item.href} className="text-white hover:text-HCPurpleText transition-colors">
             {item.icon}
           </Link>
         ))}
       </div>
 
-      {/* <div className="absolute left-4 top-1/2 transform -translate-y-1/2 items-center gap-x-4 hidden lg:flex">
-        <Link href={"https://hackclub.com/"}>
-          <motion.div
-            initial={{ y: "-100%" }}
-            animate={{ y: 0 }}
-            whileHover={{
-              rotate: [0, 4, 0],
-              transition: { duration: 1, repeat: Infinity },
-            }}
-            transition={{ duration: 1 }}
-            className="flex-shrink-0"
-          >
-            <Image
-              src={"https://assets.hackclub.com/flag-orpheus-top.svg"}
-              alt="hc logo"
-              width={125}
-              height={125}
-              className="mb-1"
-            />
-          </motion.div>
-        </Link>
-      </div> */}
-
       <div className="hidden items-end justify-center gap-x-4 font-dm-mono text-white md:gap-x-12 lg:flex">
-        <Link className="flex-shrink-0" href={"/"}>
+        <Link className="flex-shrink-0 transition-transform hover:scale-105" href={"/"}>
           <Image src={"/nest.svg"} alt="nest logo" width={85} height={85} />
         </Link>
 
         {navItems.map((item, index) => (
           <Link
             key={index}
-            className="hover:text-HCBlue flex items-center hover:underline"
+            className="group flex items-center text-xl font-light transition-colors hover:text-HCPurpleText 2xl:text-2xl"
             href={item.href}
           >
-            {item.icon}{" "}
-            <span className="hidden text-xl font-light md:inline 2xl:text-2xl">
+            <span className="mr-2 transition-transform group-hover:scale-110">{item.icon}</span>
+            <span className="hidden border-b-2 border-transparent md:inline group-hover:border-HCPurpleText">
               {item.text}
             </span>
           </Link>
         ))}
       </div>
 
-      <div className="hidden items-center justify-end gap-x-4 md:gap-x-10 lg:flex">
+      <div className="hidden items-center justify-end gap-x-6 lg:flex opacity-0 translate-y-[-20px] animate-[fadeInDown_0.5s_ease-out_forwards]">
         <a
           href="https://identity.hackclub.app"
-          className="text-HCPurpleText rounded-lg border-2 border-HCPurple px-4 py-1 font-dm-mono text-base font-medium transition-all duration-300 hover:scale-110 hover:bg-HCPurple hover:text-white md:text-lg lg:px-6 2xl:px-8 2xl:py-1.5 2xl:text-xl"
+          className="group flex items-center gap-x-2 rounded-lg border-2 border-HCPurple px-4 py-2 font-dm-mono text-base font-medium text-HCPurpleText transition-all duration-300 hover:bg-HCPurple hover:text-white md:text-lg 2xl:text-xl hover:scale-105 active:scale-95"
         >
-          Login
+          <FaTerminal className="text-xl" />
+          <span>Login</span>
         </a>
 
         <a
           href="https://guides.hackclub.app/index.php/Quickstart"
-          className="rounded-lg border-2 border-HCPurple bg-HCPurple px-4 py-1.5 font-dm-mono text-base font-medium text-white transition-all duration-300 hover:scale-110 hover:shadow-lg md:text-lg 2xl:px-2 2xl:text-xl"
+          className="group flex items-center gap-x-2 rounded-lg bg-HCPurple px-4 py-2 font-dm-mono text-base font-medium text-white transition-all duration-300 hover:bg-HCPurpleText md:text-lg 2xl:text-xl hover:scale-105 active:scale-95"
         >
-          Join Nest!
+          <FaCode className="text-xl" />
+          <span>Join Nest!</span>
         </a>
       </div>
     </nav>
