@@ -35,11 +35,20 @@ const NestMascot: React.FC<NestMascotProps> = ({
         transition={{ duration: 0.5 }}
       >
         <Image
-          src={isHovered ? hoverImageSrc : defaultImageSrc}
+          src={defaultImageSrc}
           alt="Nest Mascot"
           width={200}
           height={200}
           priority
+          style={{ display: isHovered ? 'none' : 'block' }}
+        />
+        <Image
+          src={hoverImageSrc}
+          alt="Nest Mascot Hover"
+          width={200}
+          height={200}
+          priority
+          style={{ display: isHovered ? 'block' : 'none' }}
         />
       </motion.div>
     </motion.div>
