@@ -34,14 +34,13 @@ export const getStaticProps = async () => {
         featured: p.get("Featured") ?? false,
       })) as Project[],
     },
-    // Revalidate every hour
-    revalidate: 60 * 60,
+    revalidate: 3600, // Revalidate every hour
   };
 };
 
-export default function Projects(
-  props: InferGetStaticPropsType<typeof getStaticProps>,
-) {
+export default function Projects({
+  projects,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -49,29 +48,30 @@ export default function Projects(
   }, []);
 
   return (
-    <main className="min-h-screen overflow-hidden bg-bg font-dm-mono text-white">
+    <>
       <Head>
-        <title key="title">Nest - Projects</title>
-        <meta key="meta-title" name="title" content="Nest - Projects" />
-        <meta key="og:title" property="og:title" content="Nest - Projects" />
+        <title>Nest - Projects</title>
+        <meta name="title" content="Nest - Projects" />
+        <meta property="og:title" content="Nest - Projects" />
       </Head>
-      <Nav />
-      <p className="my-8 px-2 text-center text-3xl font-medium lg:px-4 2xl:text-4xl">
-        Nest Projects
-      </p>
-      <div className="px-20">
-        {/* Hacky way to make sure this doesn't try to render on the server */}
-        {isLoaded && (
-          <Masonry
-            items={props.projects}
-            render={ProjectCard}
-            columnWidth={300}
-            columnGutter={20}
-            maxColumnCount={4}
-          />
-        )}
-      </div>
-      <Footer />
-    </main>
+      <main className="min-h-screen bg-bg font-dm-mono text-white">
+        <Nav />
+        <h1 className="my-8 text-center text-3xl font-medium 2xl:text-4xl">
+          Nest Projects
+        </h1>
+        <div className="px-20">
+          {isLoaded && (
+            <Masonry
+              items={projects}
+              render={ProjectCard}
+              columnWidth={300}
+              columnGutter={20}
+              maxColumnCount={4}
+            />
+          )}
+        </div>
+        <Footer />
+      </main>
+    </>
   );
 }

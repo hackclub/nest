@@ -1,3 +1,4 @@
+import { GetStaticProps, InferGetStaticPropsType } from "next/types";
 import Airtable from "airtable";
 
 import Nav from "@/components/nav";
@@ -5,20 +6,18 @@ import Hero from "@/components/hero";
 import Showcase from "@/components/showcase";
 import Info from "@/components/info";
 import Footer from "@/components/footer";
+import { Project } from "@/types/project";
 
-import type { InferGetStaticPropsType } from "next/types";
-import type { Project } from "@/types/project";
-
-export const getStaticProps = async () => {
+export const getStaticProps: GetStaticProps<{
+  featuredProjects: Project[];
+}> = async () => {
   const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
     process.env.AIRTABLE_BASE!,
   );
 
   const projects = await base
     .table("Showcase")
-    .select({
-      filterByFormula: "{Featured}",
-    })
+    .select({ filterByFormula: "{Featured}" })
     .all();
 
   return {
@@ -33,19 +32,18 @@ export const getStaticProps = async () => {
         featured: p.get("Featured"),
       })) as Project[],
     },
-    // Revalidate every hour
-    revalidate: 60 * 60,
+    revalidate: 3600, // Revalidate every hour (60 * 60 seconds)
   };
 };
 
-export default function Home(
-  props: InferGetStaticPropsType<typeof getStaticProps>,
-) {
+export default function Home({
+  featuredProjects,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
-    <main className="min-h-screen overflow-hidden bg-bg scrollbar-custom">
+    <main className="scrollbar-custom min-h-screen overflow-hidden bg-bg">
       <Nav />
       <Hero />
-      <Showcase projects={props.featuredProjects} />
+      <Showcase projects={featuredProjects} />
       <Info />
       <Footer />
     </main>
