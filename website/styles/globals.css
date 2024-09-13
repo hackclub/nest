@@ -4,10 +4,11 @@
 
 @layer utilities {
   .scrollbar-custom {
-    @apply scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-900;
+    @apply scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-600;
   }
 }
 
-html, body {
+html,
+body {
   @apply scrollbar-custom;
 }
