@@ -89,7 +89,10 @@ export default function Nav() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "unset";
+    if (window.innerWidth > 768){
+      setIsOpen(false);
+    }
+    document.body.style.overflow = isOpen ? "hidden" : "visible";
   }, [isOpen]);
   
   return (
