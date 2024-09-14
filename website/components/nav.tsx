@@ -41,11 +41,6 @@ const navItems: NavItem[] = [
     icon: <FaServer className="text-xl md:mr-2" />,
     text: "Status",
   },
-  {
-    href: "https://github.com/hackclub/nest/",
-    icon: <FaGithub className="text-xl md:mr-2" />,
-    text: "GitHub",
-  },
 ];
 
 const NavLink: React.FC<NavItem & { className?: string }> = ({
