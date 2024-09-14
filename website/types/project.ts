@@ -6,4 +6,5 @@ export type Project = {
   authorPfp: string;
   image: string;
   featured: boolean;
+  category: string;
 };
