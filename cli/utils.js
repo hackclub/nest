@@ -98,7 +98,13 @@ module.exports = {
                 },
                 tls: {
                     automation: {
-                        policies: []
+                        policies: [],
+                        on_demand: {
+                            permission: {
+                                endpoint: "https://my.hackclub.app/ok",
+                                module: "http"
+                            }
+                        }
                     }
                 }
             }
