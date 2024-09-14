@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   FaHome,
   FaServer,
@@ -88,7 +87,7 @@ const ActionButton: React.FC<{
 
 export default function Nav() {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "unset";
   }, [isOpen]);
