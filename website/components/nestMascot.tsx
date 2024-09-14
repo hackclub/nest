@@ -40,7 +40,7 @@ const NestMascot: React.FC<NestMascotProps> = ({
           width={200}
           height={200}
           priority
-          style={{ display: isHovered ? 'none' : 'block' }}
+          style={{ display: isHovered ? "none" : "block" }}
         />
         <Image
           src={hoverImageSrc}
@@ -48,7 +48,7 @@ const NestMascot: React.FC<NestMascotProps> = ({
           width={200}
           height={200}
           priority
-          style={{ display: isHovered ? 'block' : 'none' }}
+          style={{ display: isHovered ? "block" : "none" }}
         />
       </motion.div>
     </motion.div>
