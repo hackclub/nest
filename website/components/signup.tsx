@@ -40,7 +40,7 @@ interface StepCardProps {
 
 const StepCard: React.FC<StepCardProps> = ({ step, index }) => (
   <div className="flex flex-col items-center">
-    <div className="mb-2 text-lg font-semibold text-HCPurpleText sm:mb-4 sm:text-2xl">
+    <div className="mb-2 text-lg font-semibold text-HCPurpleText sm:mb-4 md:text-xl">
       <span className="mr-2 font-mono">{index + 1}.</span>
       {step.title}
     </div>

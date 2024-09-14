@@ -143,10 +143,10 @@ export default function Hero() {
           Host Discord bots, apps, websites, try out basic computer networking,
           chat with others and more!
         </p>
-        <div className="flex items-center justify-start gap-x-5">
+        <div className="flex items-center justify-start gap-x-5 ">
           <ButtonLink
             href="https://guides.hackclub.app/index.php/Quickstart"
-            className="bg-HCPurple text-white hover:bg-HCPurple"
+            className="bg-HCPurple text-white hover:bg-HCPurple text-sm tabletx:text-base"
           >
             <FaCode className="text-xl" />
             <span>Join Nest!</span>
@@ -154,7 +154,7 @@ export default function Hero() {
 
           <ButtonLink
             href="https://guides.hackclub.app/index.php/Main_Page"
-            className="text-HCPurpleText hover:bg-HCPurple hover:text-white"
+            className="text-HCPurpleText hover:bg-HCPurple hover:text-white text-sm tabletx:text-base"
           >
             <FaBook className="text-xl" />
             <span>Read the Docs</span>

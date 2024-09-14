@@ -88,14 +88,14 @@ export default function Nav() {
   }, [isOpen]);
   
   return (
-    <nav className="sticky bg-[#03001c] top-0 z-50 w-full md:relative flex items-center justify-between border-b-2 border-violet-950 px-4 py-4 lg:border-transparent md:bg-transparent lg:px-16">
+    <nav className="sticky bg-[#03001c] top-0 z-50 md:relative flex items-center border-b-2 justify-between border-violet-950 px-4 lg:px-16 py-4 lg:border-transparent md:bg-transparent lg:max-tabletx:px-8">
       <div className="flex items-end right-0 gap-x-4 lg:hidden">
         <Link href="/" className="transition-transform hover:scale-105">
           <Image src="/nest.svg" alt="Nest logo" width={70} height={70} />
         </Link>
       </div>
 
-      <div className="hidden items-end justify-center gap-x-4 font-dm-mono text-white md:gap-x-9 lg:flex ">
+      <div className="hidden items-end gap-x-4 font-dm-mono text-white md:gap-x-9 lg:flex ">
         <Link
           href="/"
           className="flex-shrink-0 transition-transform hover:scale-105"
@@ -123,7 +123,7 @@ export default function Nav() {
         </div>
       </div>
 
-      <div className="hidden translate-y-[-20px] animate-[fadeInDown_0.5s_ease-out_forwards] items-center justify-end gap-x-6 opacity-0 lg:flex">
+      <div className="hidden absolute translate-y-[-20px] animate-[fadeInDown_0.5s_ease-out_forwards] items-center justify-end right-8 py-4 gap-x-4 opacity-0 lg:flex">
         <ActionButton
           href="https://guides.hackclub.app/index.php/Quickstart"
           icon={<FaCode className="text-xl" />}
