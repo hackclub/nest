@@ -199,7 +199,7 @@ module.exports = {
                             {
                                 "handle": [
                                     {
-                                        "body": "{err.status_code} | {err.status_text} (on {http.regexp.host.1})",
+                                        "body": `502 (on ${domain.domain})`,
                                         "close": true,
                                         "handler": "static_response"
                                     }
