@@ -49,7 +49,7 @@ const StepCard: React.FC<StepCardProps> = ({ step, index }) => (
         src={step.image}
         alt={step.title}
         layout="fill"
-        objectFit="contain"
+        objectFit="cover"
       />
     </div>
     <p className="text-center text-sm sm:text-base">{step.description}</p>
@@ -66,7 +66,7 @@ export default function SignupSteps() {
         Want to become a <span className="text-HCPurpleText">bird?</span> Follow
         these steps to get started!
       </p>
-      <div className="relative mx-auto mt-14 w-full max-w-lg rounded-lg bg-gradient-to-b from-[#1a1a2e] to-[#16213e] p-6 shadow-lg sm:w-11/12 2xl:max-w-7xl">
+      <div className="relative mx-auto mt-14 w-full max-w-6xl rounded-lg bg-gradient-to-b from-[#1a1a2e] to-[#16213e] p-6 shadow-lg sm:w-11/12 2xl:max-w-7xl">
         <div className="mb-3 flex flex-wrap items-center font-mono text-base text-green-400 sm:mb-6 sm:text-xl">
           <span className="whitespace-nowrap text-blue-400">
             nest@hackclub:~$
@@ -76,7 +76,7 @@ export default function SignupSteps() {
         <div className="max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-600 sm:max-h-[800px]">
           <div className="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-3">
             {steps.map((step, index) => (
-              <StepCard key={index} step={step} index={index} />
+              <StepCard key={index} step={step} index={index}/>
             ))}
           </div>
         </div>
