@@ -98,12 +98,12 @@ module.exports = {
                 },
                 tls: {
                     automation: {
-                        policies: []
-                    },
-                    on_demand: {
-                        permission: {
-                            endpoint: "https://my.hackclub.app/ok",
-                            module: "http"
+                        policies: [],
+                        on_demand: {
+                            permission: {
+                                endpoint: "https://my.hackclub.app/ok",
+                                module: "http"
+                            }
                         }
                     }
                 }
@@ -215,7 +215,8 @@ module.exports = {
             unix: process.env.CADDY_SOCKET_PATH,
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Host': "127.0.0.1"
             },
             body: JSON.stringify(caddy)
         });
