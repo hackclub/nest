@@ -18,6 +18,5 @@ export default async function handler(
     .split("\n")
     .map((u) => parseInt(u.split(":")[1]))
     .filter((n) => n >= 2000 && n < 3000);
-  console.log(uids);
   res.status(200).json({ count: uids.length });
 }
