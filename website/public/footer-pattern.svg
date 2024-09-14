@@ -1,6 +1,6 @@
 <svg width="180" height="60" xmlns="http://www.w3.org/2000/svg">
   <rect width="180" height="60" fill="none"/>
-  <path d="M30 30 Q35 20 40 30 T50 30" stroke="#a633d6" fill="none" opacity="0.2" stroke-width="2"/>
-  <path d="M90 30 Q95 20 100 30 T110 30" stroke="#a633d6" fill="none" opacity="0.2" stroke-width="2"/>
-  <path d="M150 30 Q155 20 160 30 T170 30" stroke="#a633d6" fill="none" opacity="0.2" stroke-width="2"/>
+  <path d="M20 30 Q25 20 30 30 T40 30" stroke="#a633d6" fill="none" opacity="0.2" stroke-width="2"/>
+  <path d="M80 30 Q85 20 90 30 T100 30" stroke="#a633d6" fill="none" opacity="0.2" stroke-width="2"/>
+  <path d="M140 30 Q145 20 150 30 T160 30" stroke="#a633d6" fill="none" opacity="0.2" stroke-width="2"/>
 </svg>
