@@ -13,13 +13,13 @@ export default function ProjectCard({ data: project }: { data: Project }) {
   const isLongDescription = project.description.length > MAX_DESCRIPTION_LENGTH;
 
   return (
-    <article className="flex w-full flex-col rounded-lg border-2 border-violet-950 sm:w-[300px] md:w-[320px] lg:w-[350px] xl:w-[400px]">
+    <article className="flex w-full flex-col rounded-lg border-2 border-violet-950 sm:w-full md:w-full lg:w-full xl:w-full 2xl:w-full">
       <Image
         src={project.image}
         width={400}
         height={200}
         alt={`Project "${project.name}"`}
-        className="h-[150px] w-full rounded-t-md object-cover sm:h-[180px] md:h-[200px]"
+        className="h-48 w-full rounded-t-md object-cover sm:h-56 md:h-64"
       />
       <div className="flex flex-col gap-y-2 p-3 sm:p-4">
         <div className="flex items-center justify-between">
@@ -45,7 +45,7 @@ export default function ProjectCard({ data: project }: { data: Project }) {
               exit="collapsed"
               variants={{
                 expanded: { height: "auto", opacity: 1 },
-                collapsed: { height: "60px", opacity: 1 },
+                collapsed: { height: "3.75rem", opacity: 1 },
               }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="relative overflow-hidden"
@@ -71,9 +71,9 @@ export default function ProjectCard({ data: project }: { data: Project }) {
             width={20}
             height={20}
             alt={project.authorName}
-            className="rounded-full"
+            className="h-5 w-5 rounded-full"
           />
-          <p className="text-base">{project.authorName}</p>
+          <p className="text-sm sm:text-base">{project.authorName}</p>
         </div>
       </div>
     </article>

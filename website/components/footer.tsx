@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <footer className="relative bg-footer-pattern px-4 py-12 font-dm-mono text-white lg:px-10 lg:py-16">
       <div className="absolute inset-0 opacity-5" />
-      <div className="relative z-10 mx-auto max-w-7xl">
+      <div className="relative z-10 mx-auto w-11/12">
         <div className="flex flex-col items-center justify-between gap-y-8 lg:flex-row lg:items-start">
           <div className="flex flex-col items-center lg:items-start">
             <h2 className="mb-4 text-2xl font-medium lg:text-3xl">

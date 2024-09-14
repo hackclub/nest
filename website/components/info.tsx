@@ -119,7 +119,7 @@ export default function Info() {
         <br />
         <Link
           href="https://guides.hackclub.app/index.php/Linux"
-          className="italic underline"
+          className="text-HCPurpleText hover:underline"
         >
           Learn more about Linux on Nest Guides
         </Link>
@@ -131,7 +131,7 @@ export default function Info() {
         These include{" "}
         <Link
           href="https://guides.hackclub.app/index.php/PostgreSQL"
-          className="underline"
+          className="text-HCPurpleText hover:underline"
         >
           Nest Postgres
         </Link>{" "}
@@ -140,7 +140,7 @@ export default function Info() {
         authentication, and{" "}
         <Link
           href="https://guides.hackclub.app/index.php/Caddy"
-          className="underline"
+          className="text-HCPurpleText hover:underline"
         >
           Caddy
         </Link>{" "}
@@ -149,15 +149,18 @@ export default function Info() {
     ),
     Community: (
       <p>
-        As part of Hack Club, Nest has a community of over 100 users and others
+        As part of Hack Club, Nest has a community of over 200 users and others
         in the{" "}
-        <Link href="https://hackclub.com/slack" className="underline">
+        <Link
+          href="https://hackclub.com/slack"
+          className="text-HCPurpleText hover:underline"
+        >
           Hack Club Slack
         </Link>{" "}
         who are happy to help you with any issues you might encounter. The{" "}
         <Link
           href="https://hackclub.slack.com/archives/C056WDR3MQR"
-          className="underline"
+          className="text-HCPurpleText hover:underline"
         >
           #nest
         </Link>{" "}
@@ -175,22 +178,22 @@ export default function Info() {
   };
 
   return (
-    <section className="flex flex-col items-center justify-start gap-y-8 p-4 py-8 font-dm-mono text-white sm:py-16 lg:p-16 lg:py-24 2xl:p-32">
-      <h2 className="mb-4 text-center text-2xl font-medium sm:text-3xl md:text-4xl 2xl:text-5xl">
+    <section className="flex flex-col items-center justify-start gap-y-8 px-4 py-8 font-dm-mono text-white lg:px-16 lg:py-12 2xl:px-32 2xl:py-16">
+      <h2 className="px-2 text-center text-3xl font-medium sm:text-3xl md:text-4xl 2xl:text-5xl">
         What makes up <span className="text-HCPurpleText">Nest</span>?
       </h2>
-      <p className="mb-8 max-w-4xl text-center text-sm sm:text-base lg:text-lg 2xl:text-xl">
+      <p className="mb-8 max-w-4xl text-center text-lg 2xl:text-xl">
         Nest is a{" "}
         <Link
           href="https://www.hetzner.com/dedicated-rootserver/ex44/"
-          className="text-HCPurpleText underline"
+          className="text-HCPurpleText hover:underline"
         >
           Hetzner EX44
         </Link>{" "}
         dedicated server, located in Helsinki, Finland. Users share a{" "}
         <span className="italic">virtual machine</span> on the server.
       </p>
-      <div className="w-full max-w-5xl overflow-hidden rounded-lg bg-gradient-to-b from-[#1a1a2e] to-[#16213e] shadow-lg">
+      <div className="w-11/12 overflow-hidden rounded-lg bg-gradient-to-b from-[#1a1a2e] to-[#16213e] shadow-lg 2xl:max-w-7xl">
         <div className="flex flex-wrap border-b border-violet-950">
           {(Object.keys(tabContent) as TabType[]).map((tab) => (
             <button
@@ -206,7 +209,7 @@ export default function Info() {
             </button>
           ))}
         </div>
-        <div className="h-[300px] overflow-y-auto p-4 scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-600 sm:h-[400px] sm:p-6">
+        <div className="h-[400px] overflow-y-auto p-4 scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-600 sm:h-[500px] sm:p-6">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
