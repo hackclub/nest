@@ -120,13 +120,10 @@ export default function Nav() {
           <FaBars className="text-xl "/>)}
         </button>
 
-        <div className = {`${isOpen ? "absolute": "hidden"} z-40 gap-y-10 w-screen h-screen mt-10 p-5 right-0 border-t-2 border-violet-950  backdrop-blur-[400px] backdrop-brightness-50 transition-opacity`}>
+        <div className = {`${isOpen ? "absolute": "hidden"} z-40 gap-y-10 w-screen h-screen mt-10 p-5 right-0 border-t-2 border-violet-950 backdrop-blur-3xl backdrop-brightness-50 transition-opacity`}>
         <button onClick={() => setIsOpen(false)}>
-          {isOpen ? (
-            navItems.map((item, index) => (
-             <NavLink key={index} {...item} className="text-white ml-5 py-5" /> ))  
-            ) : ( null
-          )}
+            {navItems.map((item, index) => (
+             <NavLink key={index} {...item} className="text-white ml-5 py-5" /> ))}
           </button>
         </div>
       </div>
