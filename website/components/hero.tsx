@@ -127,7 +127,7 @@ export default function Hero() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <section className="relative grid grid-cols-1 place-items-center p-4 lg:grid-cols-3 lg:gap-x-16 lg:p-16 2xl:gap-x-20 2xl:p-32">
+    <section className="relative grid grid-cols-1 place-items-center px-4 py-16 lg:grid-cols-3 lg:gap-x-16 lg:px-16 lg:py-24 2xl:px-32 2xl:py-32">
       <div className="absolute inset-0 overflow-hidden">
         <AnimatedBackground />
       </div>
@@ -160,7 +160,8 @@ export default function Hero() {
             <span>Read the Docs</span>
           </ButtonLink>
         </div>
-        <pre className="px-10 font-mono text-[4px] lg:hidden">{`
+        <pre className="px-10 font-mono text-[4px] lg:hidden">
+          {`
                                         ▓▓▓▓▓▓                                          
                                     ▓▓▓▓░░░░░░▓▓▓▓                                      
                                 ▓▓▓▓░░░░░░░░░░░░▒▒▓▓██                                  
@@ -192,7 +193,7 @@ export default function Hero() {
     ██████▒▒▒▒▒▒▓▓██░░░░░░░░▓▓██▒▒▒▒▒▒████░░░░░░▓▓██░░░░▓▓▓▓░░░░░░░░░░██░░░░▓▓          
     ██░░░░████▒▒▒▒▒▒████████▒▒▒▒▒▒████░░░░░░██▓▓░░░░████░░░░░░░░░░░░░░░░██░░░░██        
     ██░░░░░░░░████▒▒▒▒▒▒▒▒▒▒▒▒████░░░░░░████░░░░████░░░░░░░░░░░░░░░░░░░░░░██░░░░██      
-    ██░░░░░░░░░░░░████████████░░░░░░████░░░░██▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░██░░░░██    
+    ██░░░░░░░░░░░░████████████░░░░░░████░░░░██▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░██░░░░██    
   ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░████░░░░████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░██░░░░██  
   ██░░░░░░░░░░░░░░░░░░░░░░░░████░░░░████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░████░░░░██████
   ██░░░░░░░░░░░░░░░░░░░░░░▓▓░░██░░░░██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▓▓▓▓░░░░▓▓▓▓░░░░██
@@ -208,9 +209,9 @@ export default function Hero() {
                                       ████░░░░░░░░░░░░████                              
                                           ▓▓▓▓░░░░▓▓██                                  
                                           ░░░░▓▓▓▓░░                                    `}
-          </pre>
-        </div>
-        <div
+        </pre>
+      </div>
+      <div
         className={`relative z-10 col-span-2 hidden w-full flex-col gap-x-10 rounded-lg px-5 py-10 font-dm-mono text-white lg:flex ${
           isExpanded
             ? "bg-gradient-to-b from-[#1a1a2e] to-[#16213e]"
