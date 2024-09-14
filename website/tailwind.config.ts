@@ -36,6 +36,9 @@ const config: Config = {
       animation: {
         fadeInDown: "fadeInDown 0.5s ease-out forwards",
       },
+      screens: {
+        'tabletx': '1090px'
+      }
     },
   },
   plugins: [require("tailwind-scrollbar")],
