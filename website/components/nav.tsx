@@ -68,7 +68,7 @@ const ActionButton: React.FC<{
 }> = ({ href, icon, text, primary }) => (
   <Link
     href={href}
-    className={`group flex items-center gap-x-2 rounded-lg border-2 border-HCPurple px-4 py-2 font-dm-mono text-base font-medium transition-all duration-300 hover:scale-105 active:scale-95 2xl:text-xl ${
+    className={`group flex items-center gap-x-2 rounded-lg border-2 border-HCPurple px-4 py-2 font-dm-mono text-sm tabletx:text-base font-medium transition-all duration-200 hover:scale-105 active:scale-95 2xl:text-xl ${
       primary
         ? "bg-HCPurple text-white"
         : "text-HCPurpleText hover:bg-HCPurple hover:text-white"
@@ -88,7 +88,7 @@ export default function Nav() {
   }, [isOpen]);
   
   return (
-    <nav className="sticky bg-[#03001c] top-0 z-50 md:relative flex items-center border-b-2 justify-between border-violet-950 px-4 lg:px-16 py-4 lg:border-transparent md:bg-transparent lg:max-tabletx:px-8">
+    <nav className="sticky bg-[#03001c] top-0 z-50 md:relative flex items-center border-b-2 justify-between border-violet-950 px-4 lg:px-16 py-4 lg:border-transparent md:bg-transparent lg:max-tabletx:px-8 lg:py-8 transition-all duration-150 ease-out ">
       <div className="flex items-end right-0 gap-x-4 lg:hidden">
         <Link href="/" className="transition-transform hover:scale-105">
           <Image src="/nest.svg" alt="Nest logo" width={70} height={70} />
@@ -110,12 +110,12 @@ export default function Nav() {
       <div className="flex lg:hidden justify-end bg-[#03001c] shadow-lg">
       <button className = "z-50" onClick ={() => setIsOpen(!isOpen)}>
          {isOpen ? (
-          <FaTimes className="text-xl "/>
+          <FaTimes className="text-xl"/>
             ) : (
-          <FaBars className="text-xl "/>)}
+          <FaBars className="text-xl"/>)}
         </button>
 
-        <div className = {`${isOpen ? "absolute": "hidden"} z-40 gap-y-10 w-screen h-screen mt-10 p-5 right-0 border-t-2 border-violet-950 backdrop-blur-3xl backdrop-brightness-50 transition-opacity`}>
+        <div className = {`${isOpen ? "absolute": "hidden"} z-40 gap-y-10 w-screen h-screen mt-10 p-5 right-0 border-t-2 border-violet-950 backdrop-blur-3xl backdrop-brightness-50`}>
         <button onClick={() => setIsOpen(false)}>
             {navItems.map((item, index) => (
              <NavLink key={index} {...item} className="text-white ml-5 py-5" /> ))}
@@ -123,10 +123,10 @@ export default function Nav() {
         </div>
       </div>
 
-      <div className="hidden absolute translate-y-[-20px] animate-[fadeInDown_0.5s_ease-out_forwards] items-center justify-end right-8 py-4 gap-x-4 opacity-0 lg:flex">
+      <div className="hidden absolute translate-y-[-20px] animate-[fadeInDown_0.5s_ease-out_forwards] items-center justify-end right-8 py-4 gap-x-4 opacity-0  lg:flex">
         <ActionButton
           href="https://guides.hackclub.app/index.php/Quickstart"
-          icon={<FaCode className="text-xl" />}
+          icon={<FaCode className="text-xl " />}
           text="Join Nest!"
           primary
         />

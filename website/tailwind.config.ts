@@ -37,7 +37,8 @@ const config: Config = {
         fadeInDown: "fadeInDown 0.5s ease-out forwards",
       },
       screens: {
-        'tabletx': '1090px'
+        'tabletx': '1090px',
+        'tabletxx': '1185px'
       }
     },
   },
