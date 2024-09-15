@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { FaArrowRight, FaCode } from "react-icons/fa";
 import ProjectCard from "@/components/projectCard";
 import type { Project } from "@/types/project";
@@ -22,11 +23,19 @@ const ButtonLink: React.FC<{
 );
 
 export default function Showcase({ projects }: ShowcaseProps) {
+  const [count, setCount] = useState(200);
+
+  useEffect(() => {
+    fetch("/api/userCount")
+      .then((r) => r.json())
+      .then((d) => setCount(d.count));
+  }, []);
+
   return (
     <section className="flex flex-col items-center gap-y-4 px-4 py-8 font-dm-mono text-white lg:px-16 lg:py-12 2xl:px-32 2xl:py-16">
       <h2 className="px-2 text-center text-3xl font-medium sm:text-3xl md:text-4xl 2xl:text-5xl">
-        Join <span className="text-HCPurpleText">200 other teens</span> using
-        Nest
+        Join <span className="text-HCPurpleText">{count} other teens</span>{" "}
+        using Nest
       </h2>
       <p className="p-4 text-center text-lg 2xl:text-xl">
         See what fellow &quot;birds&quot; are hosting on Nest!

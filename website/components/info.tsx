@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { GoCpu } from "react-icons/go";
 import { BsMemory, BsNvme, BsHddNetwork } from "react-icons/bs";
@@ -98,6 +98,13 @@ const SpecsContent: React.FC = () => (
 
 export default function Info() {
   const [activeTab, setActiveTab] = useState<TabType | null>(null);
+  const [count, setCount] = useState(200);
+
+  useEffect(() => {
+    fetch("/api/userCount")
+      .then((r) => r.json())
+      .then((d) => setCount(d.count));
+  }, []);
 
   const tabContent: Record<TabType, React.ReactNode> = {
     Specs: <SpecsContent />,
@@ -149,7 +156,7 @@ export default function Info() {
     ),
     Community: (
       <p>
-        As part of Hack Club, Nest has a community of over 200 users and others
+        As part of Hack Club, Nest has a community of {count} users and others
         in the{" "}
         <Link
           href="https://hackclub.com/slack"
