@@ -117,7 +117,7 @@ const ButtonLink: React.FC<{
 }> = ({ href, className, children }) => (
   <Link
     href={href}
-    className={`group flex items-center gap-x-2 rounded-lg border-2 border-HCPurple px-4 py-2 font-dm-mono text-base font-medium transition-all duration-300 hover:scale-105 active:scale-95 2xl:text-xl ${className}`}
+    className={`group flex items-center grow gap-x-2 rounded-lg border-2 border-HCPurple px-4 py-2 font-dm-mono text-base font-medium transition-all duration-200 hover:scale-105 active:scale-95 2xl:text-lg 3xl:text-xl ${className}`}
   >
     {children}
   </Link>
@@ -127,7 +127,7 @@ export default function Hero() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <section className="relative grid grid-cols-1 place-items-center px-4 py-16 lg:grid-cols-3 lg:gap-x-16 lg:px-16 lg:py-24 2xl:px-32 2xl:py-32">
+    <section className="relative grid grid-cols-1 place-items-center px-8 py-16 lg:grid-cols-3 transition-all duration-200 ease-in-out lg:gap-x-16 lg:px-16 lg:py-24 2xl:px-32 2xl:py-32">
       <div className="absolute inset-0 overflow-hidden">
         <AnimatedBackground />
       </div>
@@ -143,10 +143,10 @@ export default function Hero() {
           Host Discord bots, apps, websites, try out basic computer networking,
           chat with others and more!
         </p>
-        <div className="flex items-center justify-start gap-x-5 ">
+        <div className="flex justify-start gap-x-5 lg:max-tabletxx:w-full lg:max-tabletxx:space-y-3 lg:max-tabletxx:flex-col">
           <ButtonLink
             href="https://guides.hackclub.app/index.php/Quickstart"
-            className="bg-HCPurple text-white hover:bg-HCPurple text-sm tabletx:text-base"
+            className="bg-HCPurple text-white hover:bg-HCPurple text-sm px-[0.5rem]"
           >
             <FaCode className="text-xl" />
             <span>Join Nest!</span>
@@ -154,13 +154,13 @@ export default function Hero() {
 
           <ButtonLink
             href="https://guides.hackclub.app/index.php/Main_Page"
-            className="text-HCPurpleText hover:bg-HCPurple hover:text-white text-sm tabletx:text-base"
+            className="text-HCPurpleText hover:bg-HCPurple hover:text-white text-sm px-[0.5rem]"
           >
             <FaBook className="text-xl" />
             <span>Read the Docs</span>
           </ButtonLink>
         </div>
-        <pre className="px-10 font-mono text-[4px] lg:hidden">
+        <pre className="px-10 font-mono text-[4px] sm:hidden">
           {`
                                         ▓▓▓▓▓▓                                          
                                     ▓▓▓▓░░░░░░▓▓▓▓                                      
@@ -212,15 +212,16 @@ export default function Hero() {
         </pre>
       </div>
       <div
-        className={`relative z-10 col-span-2 hidden w-full flex-col gap-x-10 rounded-lg px-5 py-10 font-dm-mono text-white lg:flex ${
+        className={`relative z-10 col-span-2 hidden w-full flex-col gap-x-10 rounded-lg py-10 font-dm-mono  text-white sm:flex ${
           isExpanded
-            ? "bg-gradient-to-b from-[#1a1a2e] to-[#16213e]"
+            ? "bg-gradient-to-b from-[#1a1a2e] to-[#16213e] px-5"
             : "self-start"
         }`}
       >
-        <div className="gap-x-5 lg:flex">
+        <div className={`gap-x-5 sm:flex  ${
+          isExpanded ? null : "mx-auto"} `}>
           <button
-            className="self-start font-medium text-HCPurpleText lg:text-3xl 2xl:text-4xl"
+            className="self-start font-medium text-HCPurpleText sm:text-xl md:text-2xl 2xl:text-4xl"
             disabled={isExpanded}
             onClick={() => setIsExpanded(true)}
             aria-expanded={isExpanded}
@@ -235,12 +236,12 @@ export default function Hero() {
                 width={85}
                 height={85}
               />
-              <p className="text-2xl font-medium">click me!</p>
+              <p className="sm:text-xl md:text-2xl font-medium">click me!</p>
             </div>
           )}
         </div>
         {isExpanded && (
-          <pre className="hidden text-xs transition-all duration-300 lg:block xl:text-sm 2xl:text-base">
+          <pre className="hidden text-xs transition-all duration-300 sm:block xl:text-sm 2xl:text-base">
             {`
  __________________    orpheus@nest 
 < Welcome to Nest! >   ----------- 
