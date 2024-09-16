@@ -181,7 +181,7 @@ module.exports = {
                                             {
                                                 "handle": [
                                                     {
-                                                        "body": `This site is either down or does not exist.\nIf this site really does exist, please make sure your Caddy is running. Try systemctl --user start caddy. It is also possible you have a fault in your Caddyfile. Check it for errors..\n\n\n
+                                                        "body": `This site is either down or does not exist.\nIf this site really does exist, please make sure your Caddy is running. Try systemctl --user start caddy. It is also possible you have a fault in your Caddyfile. Check it for errors.\n\n
                                           .MM.
                                           ;MM.
 KKc.lONMMWXk;    ckXWMMWXk:   'xXWMMWXxoKKNMMXKKKK
@@ -210,7 +210,7 @@ dd:        .dd;   ,xKNNKx,     .o0XNX0l.    .:oddc
                             {
                                 "handle": [
                                     {
-                                        "body": `Something went wrong on the project owner's end. You may want to contact ${domain.username} [at] hackclub [dot] app to resolve this issue.\n\n\n
+                                        "body": `Something went wrong on the project owner's end. You may want to contact ${domain.username} [at] hackclub [dot] app to resolve this issue.\n\n
                                           .MM.
                                           ;MM.
 KKc.lONMMWXk;    ckXWMMWXk:   'xXWMMWXxoKKNMMXKKKK
