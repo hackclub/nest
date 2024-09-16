@@ -4,7 +4,7 @@ This is a complete and comprehensive guide of how Nest is setup!
 
 ## Hardware
 
-Nest is running on a [Hetzner EX44 dedicated server](https://www.hetzner.com/dedicated-rootserver/ex44/), located in Helsinki, Finland.
+Nest is running on a [Hetzner EX101 dedicated server](https://www.hetzner.com/dedicated-rootserver/ex101/), located in Helsinki, Finland.
 It runs with the following specs:
 
 - [Intel® Core™ i5-13500](https://ark.intel.com/content/www/us/en/ark/products/230580/intel-core-i5-13500-processor-24m-cache-up-to-4-80-ghz.html)
