@@ -77,7 +77,7 @@ const SpecsContent: React.FC = () => (
         >
           Hetzner EX101
         </Link>{" "}
-        dedicated server, located in Helsinki, Finland. It uses Proxmox VE 8.1.3
+        dedicated server, located in Helsinki, Finland. It uses Proxmox VE 8.2.2
         with two main VMs:
       </p>
       <ul className="mt-2 list-inside list-disc">
