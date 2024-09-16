@@ -1,1 +1,14 @@
-index.js
+#!/bin/bash
+
+cmd="$1"
+subcmd="$2"
+
+if [ "$cmd" == "caddy" ]; then
+    if [ "$subcmd" == "add" ] || [ "$subcmd" == "rm" ] || [ "$subcmd" == "list" ]; then
+        ./index.js "$@" --user "$(whoami)"
+    else
+        ./index.js "$@"
+    fi
+else
+    ./index.js "$@"
+fi
