@@ -4,7 +4,7 @@ export default function approval_message(
   username: string,
   email: string,
   ssh_key: string,
-  description: string
+  description: string,
 ) {
   return [
     {

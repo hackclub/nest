@@ -13,7 +13,7 @@ export function register_user(app: Slack.App) {
       Object.entries(body.view.state.values).map(([key, value]) => [
         key,
         value[`${key}_input`].value,
-      ])
+      ]),
     );
 
     // Slack enforces required fields to be present
@@ -120,7 +120,7 @@ export function register_user(app: Slack.App) {
         username,
         email,
         ssh_key,
-        description
+        description,
       ),
       text: `<@${body.user.id}> is requesting an approval for Nest`,
     });

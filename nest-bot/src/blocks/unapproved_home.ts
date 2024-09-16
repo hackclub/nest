@@ -2,7 +2,7 @@ export default function unapproved_home(
   name: string,
   username: string,
   email: string,
-  ssh_key: string
+  ssh_key: string,
 ) {
   return {
     type: "home" as const,

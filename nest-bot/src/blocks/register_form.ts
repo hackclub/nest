@@ -73,7 +73,7 @@ export default function register_form(profile_name: string) {
         block_id: "ssh_key",
         label: {
           type: "plain_text",
-          text: "Public SSH key?",
+          text: "Public SSH key? (add one for now, you can add more once you've been approved)",
           emoji: true,
         },
         element: {
