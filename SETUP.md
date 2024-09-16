@@ -31,12 +31,14 @@ Every user on Nest has resource limits setup to prevent abuse of Nest and to mak
 CPU time and memory are configured through SystemD & CGroups. These default limits are defined in `/etc/systemd/system/user-.slice.d/limit.conf`, and can be overridden for users in `/etc/systemd/system/user-<id>.slice.d/limit.conf`. User overrides override the **entire** configuration - so if you want to increase the max memory for a user, you must specify the high memory and CPU quota in the file as well.
 
 `/etc/systemd/system/user-.slice.d/limit.conf`:
+
 ```
 [Slice]
 MemoryHigh=2G
 MemoryMax=2500M
 CPUQuota=200%
 ```
+
 (see https://www.freedesktop.org/software/systemd/man/latest/systemd.resource-control.html and https://www.kernel.org/doc/Documentation/cgroup-v2.txt for reference)
 
 Note that to apply changes to either the CPU time or memory limits, you must run `systemctl daemon-reload`. You can verify that a limit is applied by checking the appropriate file in `/sys/fs/cgroup/user.slice/user-<id>.slice` (ex. memory.max for MemoryMax).
@@ -44,7 +46,7 @@ Note that to apply changes to either the CPU time or memory limits, you must run
 Disk space limits are configured through `quota`. The following command is run by Nest Bot to set the default disk space limit:
 
 ```sh
-setquota -u <user> 15G 15G 0 0 /
+setquota -u 15G 0 0 / < user > 15G
 ```
 
 ### Secure VM
@@ -56,6 +58,7 @@ The Secure VM is the VM that hosts all critical Nest services:
 - Nest Bot's database
 
 In addition to some admin-only services:
+
 - [Headscale](https://headscale.net/)
 - [Vaultwarden](https://github.com/dani-garcia/vaultwarden)
 - [Wazuh](https://wazuh.com/)
@@ -155,6 +158,7 @@ Anywhere (v6) on enp5s0    ALLOW FWD   Anywhere (v6) on vmbr0
 `systemd-networkd` is used on the Nest VM instead of the standard `networking` service.
 
 `/etc/systemd/network/ens18.network`:
+
 ```
 [Match]
 Name=ens18
@@ -303,7 +307,6 @@ oidc:
 ### Guides
 
 https://guides.hackclub.app (MediaWiki) is used for all of Nest's documentation, with the exception of this document. It's maintained and written by Nest admins and the community, and contains guides and help for anyone using Nest. MediaWiki has its Docker compose configuration at `/opt/docker/guides/compose.yml` - contents are in [compose.yml](/secure-vm/docker/guides/compose.yml).
-
 
 The Docker compose configuration uses a custom FrankenPHP image to host the PHP application, located in `/opt/docker/guides/mediawiki`. The Dockerfile contents are in [Dockerfile](/secure-vm/docker/guides/Dockerfile), and the Caddyfile configuration is in [Caddyfile](/secure-vm/docker/guides/Caddyfile).
 
