@@ -199,7 +199,7 @@ module.exports = {
                             {
                                 "handle": [
                                     {
-                                        "body": "{err.status_code} | {err.status_text} (on {http.regexp.host.1})",
+                                        "body": `Something went wrong on the project owner's end. You may want to contact ${domain.username} [at] hackclub [dot] app to resolve this issue.`,
                                         "close": true,
                                         "handler": "static_response"
                                     }
