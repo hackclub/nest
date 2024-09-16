@@ -72,10 +72,10 @@ const SpecsContent: React.FC = () => (
       <p>
         Nest runs on a{" "}
         <Link
-          href="https://www.hetzner.com/dedicated-rootserver/ex44/"
+          href="https://www.hetzner.com/dedicated-rootserver/ex101/"
           className="text-HCPurpleText hover:underline"
         >
-          Hetzner EX44
+          Hetzner EX101
         </Link>{" "}
         dedicated server, located in Helsinki, Finland. It uses Proxmox VE 8.1.3
         with two main VMs:
