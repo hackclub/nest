@@ -49,13 +49,13 @@ const SpecsContent: React.FC = () => (
         {
           Icon: GoCpu,
           title: "Processor",
-          desc: "i5-13500 (14 cores, 20 threads)",
+          desc: "i9-13900 (24 cores, 32 threads)",
         },
-        { Icon: BsMemory, title: "Memory", desc: "64 GB DDR4 RAM" },
+        { Icon: BsMemory, title: "Memory", desc: "64 GB DDR5 RAM" },
         {
           Icon: BsNvme,
           title: "Storage",
-          desc: "2x 512GB NVMe SSD & 1x 1TB NVMe SSD",
+          desc: "2x 1.92 TB NVMe SSD",
         },
         { Icon: BsHddNetwork, title: "Network", desc: "1 Gbps, IPv4 & IPv6" },
       ].map(({ Icon, title, desc }) => (
