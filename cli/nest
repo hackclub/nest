@@ -5,10 +5,10 @@ subcmd="$2"
 
 if [ "$cmd" == "caddy" ]; then
     if [ "$subcmd" == "add" ] || [ "$subcmd" == "rm" ] || [ "$subcmd" == "list" ]; then
-        ./index.js "$@" --user "$(whoami)"
+        /usr/local/nest/cli/index.js "$@" --user "$(whoami)"
     else
-        ./index.js "$@"
+        /usr/local/nest/cli/index.js "$@"
     fi
 else
-    ./index.js "$@"
+    /usr/local/nest/cli/index.js "$@"
 fi
