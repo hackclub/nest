@@ -3,6 +3,8 @@ const { Command } = require('commander');
 const program = new Command();
 const { execSync } = require('child_process');
 
+require("dotenv").config();
+
 function run(command) {
     try {
         console.log(`> ${command}`)
