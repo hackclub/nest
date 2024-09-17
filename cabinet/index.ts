@@ -1,3 +1,5 @@
+// run as root!!
+
 import express from "express";
 import Identd from "identd";
 import validator from "validator";
@@ -27,13 +29,24 @@ app.use(async (req, res, next) => {
     });
   } catch (e) {
     console.error(e);
-    res.sendStatus(500);
+    res.status(500).send("Authentication failure, please contact @nestadmins!");
     return;
   }
 
   req.username = ident.userid?.toString();
   req.admin = req.username === "root" || req.username === "nest-internal";
-  next();
+
+  if (req.query.impersonateUser && !req.admin) {
+    res
+      .status(403)
+      .send("To impersonate another user, you'll need to use sudo or be root.");
+  } else if (req.query.impersonateUser) {
+    req.username = req.query.impersonateUser.toString();
+    req.admin = req.username === "root" || req.username === "nest-internal";
+    next();
+  } else {
+    next();
+  }
 });
 
 app.get("/list", async (req, res) => {
@@ -43,24 +56,30 @@ app.get("/list", async (req, res) => {
     },
   });
 
-  res.json(domains);
+  const text = domains
+    .map((domain) => `- ${domain.domain} (${domain.proxy})`)
+    .join("\n");
+
+  res.status(200).send(text);
 });
 
 app.post("/domain/new", async (req, res) => {
   let user = req.username;
 
-  if (req.body.impersonateUser && !req.admin) {
-    res.sendStatus(403);
-  } else if (req.body.impersonateUser) {
-    user = req.body.impersonateUser;
-  }
-
   if (!validator.isFQDN(req.body.domain)) {
-    return res.sendStatus(400);
+    return res
+      .status(400)
+      .send(
+        "This domain is not a valid domain name. Please choose a valid domain name.",
+      );
   }
 
   if (await domainExists(req.body.domain)) {
-    return res.sendStatus(409);
+    return res
+      .status(409)
+      .send(
+        "This domain already has already been taken by you or someone else. Pick another one!",
+      );
   }
 
   if (checkWhitelist(req.body.domain, user)) {
@@ -79,10 +98,11 @@ app.post("/domain/new", async (req, res) => {
 
   // Proceed as a regular domain
   if (!(await checkVerification(req.body.domain, user))) {
-    console.error(
-      `Please set the TXT record for domain-verification to your username (${user}). You can remove it after it is added.`,
-    );
-    process.exit(1);
+    return res
+      .status(401)
+      .send(
+        `Please set the TXT record for domain-verification to your username (${user}). You can remove it after it is added.`,
+      );
   }
 
   await prisma.domain.create({
@@ -95,29 +115,32 @@ app.post("/domain/new", async (req, res) => {
     },
   });
   await reloadCaddy();
-  return res.sendStatus(200);
+  return res
+    .status(200)
+    .send(
+      `${req.body.domain} added. (${req.body.proxy || `unix//home/${user}/.${req.body.domain}.webserver.sock`})`,
+    );
 });
 
 app.post("/domain/delete", async (req, res) => {
   let user = req.username;
 
-  if (req.body.impersonateUser && !req.admin) {
-    res.sendStatus(403);
-  } else if (req.body.impersonateUser) {
-    user = req.body.impersonateUser;
-  }
-
   if (!validator.isFQDN(req.body.domain)) {
-    return res.sendStatus(400);
+    return res
+      .status(400)
+      .send(
+        "This domain is not a valid domain name. Please choose a valid domain name.",
+      );
   }
 
-  if (await domainExists(req.body.domain)) {
-    return res.sendStatus(409);
+  if (!(await domainExists(req.body.domain))) {
+    return res.status(404).send("This domain is not in Caddy.");
   }
 
   if (!(await domainOwnership(req.body.domain, user))) {
-    console.error("You do not own the domain, so you cannot remove it.");
-    process.exit(1);
+    return res
+      .status(401)
+      .send("You do not own the domain, so you cannot remove it.");
   }
   await prisma.domain.delete({
     where: {
@@ -127,19 +150,22 @@ app.post("/domain/delete", async (req, res) => {
   });
   await reloadCaddy();
 
-  return res.sendStatus(200);
+  return res.status(200).send(`${req.body.domain} removed.`);
 });
 
 app.post("/reload", async (req, res) => {
   if (!req.admin) {
-    return res.sendStatus(403);
+    return res
+      .status(403)
+      .send("To reload the global caddy instance, you must use sudo.");
   }
 
   await reloadCaddy();
 
-  return res.sendStatus(200);
+  return res.status(200).send(`Global Caddy instance reloaded.`);
 });
 
-app.listen(process.env.PORT, () => {
+// listen on a privileged port >:)
+app.listen(999, () => {
   console.log(`Cabinet is listening on ${process.env.PORT}`);
 });
