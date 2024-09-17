@@ -1,77 +1,126 @@
-import Airtable from "airtable";
-import { Masonry } from "masonic";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Head from "next/head";
-
-import Nav from "@/components/nav";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { GetStaticProps, InferGetStaticPropsType } from "next/types";
+import { getProjects } from "@/utils/getProjects";
 import ProjectCard from "@/components/projectCard";
-import Footer from "@/components/footer";
-
-import type { InferGetStaticPropsType } from "next/types";
 import type { Project } from "@/types/project";
 
-export const getStaticProps = async () => {
-  const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
-    process.env.AIRTABLE_BASE!,
-  );
-
-  const projects = await base
-    .table("Showcase")
-    .select({
-      filterByFormula: "{Show}",
-    })
-    .all();
+export const getStaticProps: GetStaticProps<{
+  projects: Project[];
+}> = async () => {
+  const projects = await getProjects();
 
   return {
     props: {
-      projects: projects.map((p) => ({
-        name: p.get("Name"),
-        description: p.get("Description"),
-        repo: p.get("Repo"),
-        authorName: p.get("Author Name"),
-        authorPfp: p.get("Author PFP"),
-        image: p.get("Image"),
-        featured: p.get("Featured") ?? false,
-      })) as Project[],
+      projects,
     },
-    // Revalidate every hour
-    revalidate: 60 * 60,
+    revalidate: 3600, // Revalidate every hour
   };
 };
 
-export default function Projects(
-  props: InferGetStaticPropsType<typeof getStaticProps>,
-) {
-  const [isLoaded, setIsLoaded] = useState(false);
+export default function Projects({
+  projects,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
-  useEffect(() => {
-    setIsLoaded(true);
-  }, []);
+  const categories = [
+    "All",
+    "Websites",
+    "Bots",
+    "Game_Servers",
+    "Backends",
+    "Other",
+  ];
+
+  const filteredProjects =
+    selectedCategory && selectedCategory !== "All"
+      ? projects.filter((p) => p.category === selectedCategory)
+      : projects;
 
   return (
-    <main className="min-h-screen overflow-hidden bg-bg font-dm-mono text-white">
+    <>
       <Head>
-        <title key="title">Nest - Projects</title>
-        <meta key="meta-title" name="title" content="Nest - Projects" />
-        <meta key="og:title" property="og:title" content="Nest - Projects" />
+        <title>Nest - Projects</title>
+        <meta name="title" content="Nest - Projects" />
+        <meta property="og:title" content="Nest - Projects" />
       </Head>
-      <Nav />
-      <p className="my-8 px-2 text-center text-3xl font-medium lg:px-4 2xl:text-4xl">
-        Nest Projects
-      </p>
-      <div className="px-20">
-        {/* Hacky way to make sure this doesn't try to render on the server */}
-        {isLoaded && (
-          <Masonry
-            items={props.projects}
-            render={ProjectCard}
-            columnWidth={300}
-            columnGutter={20}
-            maxColumnCount={4}
-          />
-        )}
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="mb-8 bg-gradient-to-r from-HCPurpleText to-HCPurple bg-clip-text text-center text-4xl font-medium text-transparent">
+          Nest Projects
+        </h1>
+        <div className="mb-8 rounded-lg bg-gradient-to-b from-[#1a1a2e] to-[#16213e] p-4 shadow-lg">
+          <div className="mb-2 font-mono text-green-400">
+            <span className="text-blue-400">nest@hackclub:~$</span> ls
+          </div>
+          <div className="mb-4 flex flex-wrap gap-2">
+            <button
+              onClick={() => setSelectedCategory("All")}
+              className={`rounded px-3 py-1 text-sm transition-colors ${
+                selectedCategory === "All"
+                  ? "bg-HCPurple text-white"
+                  : "bg-gray-800 text-HCPurpleText hover:bg-gray-700"
+              }`}
+            >
+              categories/
+            </button>
+            <Link
+              href="#"
+              className={`rounded bg-gray-800 px-3 py-1 text-sm text-HCPurpleText transition-colors hover:bg-gray-700`}
+            >
+              register_project.sh
+            </Link>
+          </div>
+          {selectedCategory === "All" ? (
+            <div className="mb-2 font-mono text-green-400">
+              <span className="text-blue-400">nest@hackclub:~$</span> ls
+              categories/
+            </div>
+          ) : (
+            <div className="mb-2 font-mono text-green-400">
+              <span className="text-blue-400">nest@hackclub:~$</span> cat
+              categories/{selectedCategory.toLowerCase()}.txt
+            </div>
+          )}
+          <div className="flex flex-wrap gap-2">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`rounded px-3 py-1 text-sm transition-colors ${
+                  selectedCategory === category
+                    ? "bg-HCPurple text-white"
+                    : "bg-gray-800 text-HCPurpleText hover:bg-gray-700"
+                }`}
+              >
+                {category.toLowerCase()}.txt
+              </button>
+            ))}
+          </div>
+        </div>
+        <AnimatePresence>
+          <motion.div
+            className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {filteredProjects.map((project) => (
+              <motion.div
+                key={project.name}
+                layout
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ProjectCard data={project} />
+              </motion.div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
       </div>
-      <Footer />
-    </main>
+    </>
   );
 }

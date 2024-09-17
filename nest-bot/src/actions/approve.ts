@@ -6,6 +6,7 @@ import {
   add_root_caddyfile_config,
   setup_script,
   home_script,
+  set_authorized_keys,
 } from "../os/os_functions.js";
 import markdown_message from "../blocks/markdown_message.js";
 
@@ -13,12 +14,11 @@ export function approve(app: Slack.App) {
   app.action("approve", async ({ ack, body, client }) => {
     ack();
 
-    if (body.type !== "block_actions") {
+    if (body.type !== "block_actions" || body.actions[0].type !== "button") {
       return;
     }
 
     const adminUserId = body.user.id;
-    // @ts-expect-error
     const nestUserId = body.actions[0].value;
 
     const msgBlocks = body.message!.blocks;
@@ -60,20 +60,17 @@ export function approve(app: Slack.App) {
           username,
           name: user?.name,
           email: user?.email,
-          attributes: {
-            sshPublicKey: user?.ssh_public_key,
-          },
           is_active: true,
           path: "users",
           groups: ["c844feff-89b0-45cb-8204-8fc47afbd348"], // nest-users group
           type: "internal",
         }),
-      }
+      },
     );
 
     if (!createRes.ok) {
       console.error(
-        `Failed to create user ${username} in Authentik (HTTP code ${createRes.status})`
+        `Failed to create user ${username} in Authentik (HTTP code ${createRes.status})`,
       );
       return;
     }
@@ -93,12 +90,12 @@ export function approve(app: Slack.App) {
         body: JSON.stringify({
           password,
         }),
-      }
+      },
     );
 
     if (!passwordRes.ok) {
       console.error(
-        `Failed to set password for user ${username} in Authentik (HTTP code ${passwordRes.status})`
+        `Failed to set password for user ${username} in Authentik (HTTP code ${passwordRes.status})`,
       );
       return;
     }
@@ -116,7 +113,7 @@ export function approve(app: Slack.App) {
     await client.chat.postMessage({
       channel: nestUserId,
       blocks: markdown_message(
-        `Your password for your Nest account is \`${password}\`. Please continue through our Quickstart guide at https://guides.hackclub.app/index.php/Quickstart#Creating_an_Account.`
+        `Your password for your Nest account is \`${password}\`. Please continue through our Quickstart guide at https://guides.hackclub.app/index.php/Quickstart#Creating_an_Account.`,
       ),
       text: `Your password for your Nest account is ${password}. Please continue through our Quickstart guide at https://guides.hackclub.app/index.php/Quickstart#Creating_an_Account.`,
     });
@@ -134,6 +131,7 @@ export function approve(app: Slack.App) {
     add_root_caddyfile_config(username);
     setup_script(username);
     home_script(username);
+    set_authorized_keys(username, [user!.ssh_public_key]);
 
     console.log(`User ${username} initialized on Nest VM`);
 

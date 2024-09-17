@@ -1,43 +1,65 @@
+import Link from "next/link";
+import { FaCode } from "react-icons/fa";
+
 export default function Footer() {
   return (
-    <footer className="border-t-2 border-violet-950 bg-bg px-4 py-8 font-dm-mono text-white lg:px-10 lg:py-12">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex flex-col items-center justify-between gap-y-8 lg:flex-row lg:items-start lg:gap-y-0">
+    <footer className="relative bg-footer-pattern px-4 py-12 font-dm-mono text-white lg:px-10 lg:py-16">
+      <div className="absolute inset-0 opacity-5" />
+      <div className="relative z-10 mx-auto w-11/12">
+        <div className="flex flex-col items-center justify-between gap-y-8 lg:flex-row lg:items-start">
           <div className="flex flex-col items-center lg:items-start">
-            <h2 className="mb-4 text-2xl font-medium lg:text-3xl">Ready to get started?</h2>
-            <a
+            <h2 className="mb-4 text-2xl font-medium lg:text-3xl">
+              Ready to get started?
+            </h2>
+            <Link
               href="https://guides.hackclub.app/index.php/Quickstart"
-              className="rounded-lg bg-HCPurple px-6 py-2 text-xl font-medium text-white transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              className="flex items-center gap-x-2 rounded-lg border-2 border-HCPurple bg-HCPurple px-4 py-2 text-base font-medium transition-all duration-300 hover:scale-105 active:scale-95 2xl:text-xl"
             >
-              Join Nest!
-            </a>
+              <FaCode className="text-xl" />
+              <span>Join Nest!</span>
+            </Link>
           </div>
           <div className="flex flex-col items-center gap-y-4 lg:items-end">
             <p className="max-w-md text-center text-base lg:text-right lg:text-lg">
               Nest is a project by{" "}
-              <a href="https://hackclub.com" className="text-HCPurpleText hover:underline">
+              <Link
+                href="https://hackclub.com"
+                className="text-HCRed hover:underline"
+              >
                 Hack Club
-              </a>
+              </Link>
               . All code and configuration is open-source.
             </p>
             <div className="flex gap-x-6">
-              <a
+              <FooterLink
                 href="https://github.com/hackclub/nest"
-                className="text-HCPurpleText hover:text-white transition-colors text-lg font-medium"
-              >
-                GitHub
-              </a>
+                text="GitHub"
+              />
               <span className="text-gray-500">|</span>
-              <a
+              <FooterLink
                 href="https://hcb.hackclub.com/nest"
-                className="text-HCPurpleText hover:text-white transition-colors text-lg font-medium"
-              >
-                Finances
-              </a>
+                text="Finances"
+              />
             </div>
           </div>
         </div>
       </div>
     </footer>
+  );
+}
+
+interface FooterLinkProps {
+  href: string;
+  text: string;
+}
+
+function FooterLink({ href, text }: FooterLinkProps) {
+  return (
+    <Link
+      href={href}
+      className="text-lg font-medium text-HCPurpleText transition-colors hover:text-white"
+    >
+      {text}
+    </Link>
   );
 }
