@@ -7,11 +7,13 @@ export default async function populate_users() {
       headers: {
         Authorization: `Bearer ${process.env.AUTHENTIK_API_KEY}`,
       },
-    }
+    },
   );
 
   if (!usersRes.ok) {
-    console.error(`Failed to fetch users from Authentik (HTTP code ${usersRes.status})`);
+    console.error(
+      `Failed to fetch users from Authentik (HTTP code ${usersRes.status})`,
+    );
     return;
   }
 
@@ -21,7 +23,7 @@ export default async function populate_users() {
       user.groups.includes("c844feff-89b0-45cb-8204-8fc47afbd348") && // nest-users group
       user.is_active &&
       user.type === "internal" &&
-      !user.groups.includes("2c756b31-2afa-4fbd-b011-b951529210d5") // test-account group
+      !user.groups.includes("2c756b31-2afa-4fbd-b011-b951529210d5"), // test-account group
   );
 
   const reqs = [];
@@ -33,7 +35,6 @@ export default async function populate_users() {
         name: user.name,
         email: user.email,
         tilde_username: user.username,
-        ssh_public_key: user.attributes?.sshPublicKey ?? "None provided",
         description: "Added by populate_users function",
         is_approved: true,
       },
