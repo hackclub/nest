@@ -166,6 +166,6 @@ app.post("/reload", async (req, res) => {
 });
 
 // listen on a privileged port >:)
-app.listen(999, () => {
+app.listen(999, "localhost", () => {
   console.log(`Cabinet is listening on ${process.env.PORT}`);
 });
