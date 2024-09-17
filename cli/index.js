@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/node
 const { Command } = require('commander');
 const program = new Command();
 const { execSync } = require('child_process');

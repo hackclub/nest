@@ -61,11 +61,11 @@ export async function reloadCaddy() {
       tls: {
         automation: {
           policies: [],
-        },
-        on_demand: {
-          permission: {
-            endpoint: "https://my.hackclub.app/ok",
-            module: "http",
+          on_demand: {
+            permission: {
+              endpoint: "https://my.hackclub.app/ok",
+              module: "http",
+            },
           },
         },
       },
@@ -141,7 +141,18 @@ export async function reloadCaddy() {
                     {
                       handle: [
                         {
-                          body: "This site is either down or does not exist.\nIf this site really does exist, please make sure your Caddy is running. Try systemctl --user start caddy. It is also possible you have a >\n",
+                          body: `This site is either down or does not exist.\nIf this site really does exist, please make sure your Caddy is running. Try systemctl --user start caddy. It is also possible you have a fault in your Caddyfile. Check it for errors..\n\n
+                                          .MM.
+                                          ;MM.
+KKc.lONMMWXk;    ckXWMMWXk:   'xXWMMWXxoKKNMMXKKKK
+MMXNo'.  .lWM0.oWNo'.  .,dWWldMW:.  .:XMN'dMM:....
+MMW.       :MMWMN.        'MMMMWc.     .. cMM.
+MMO        .MMMMWXXXXXXXXXXWWO,dKNMNKOd:. cMM.
+MMO        .MMMMX                  .':OMMccMM.
+MMO        .MMKNMO.      .kK0KKl      .MMk:MM;
+MMO        .MMd.oXMKxoox0MXl ,OMNkdodkWWk. kWMKOOo
+dd:        .dd;   ,xKNNKx,     .o0XNX0l.    .:oddc
+- hackclub.app`,
                           handler: "static_response",
                           status_code: 502,
                         },
@@ -159,7 +170,18 @@ export async function reloadCaddy() {
             {
               handle: [
                 {
-                  body: "{err.status_code} | {err.status_text} (on {http.regexp.host.1})",
+                  body: `Something went wrong on the project owner's end. You may want to contact ${domain.username} [at] hackclub [dot] app to resolve this issue.\n\n
+                                          .MM.
+                                          ;MM.
+KKc.lONMMWXk;    ckXWMMWXk:   'xXWMMWXxoKKNMMXKKKK
+MMXNo'.  .lWM0.oWNo'.  .,dWWldMW:.  .:XMN'dMM:....
+MMW.       :MMWMN.        'MMMMWc.     .. cMM.
+MMO        .MMMMWXXXXXXXXXXWWO,dKNMNKOd:. cMM.
+MMO        .MMMMX                  .':OMMccMM.
+MMO        .MMKNMO.      .kK0KKl      .MMk:MM;
+MMO        .MMd.oXMKxoox0MXl ,OMNkdodkWWk. kWMKOOo
+dd:        .dd;   ,xKNNKx,     .o0XNX0l.    .:oddc
+- hackclub.app`,
                   close: true,
                   handler: "static_response",
                 },
@@ -177,6 +199,7 @@ export async function reloadCaddy() {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Host: "127.0.0.1",
     },
     body: JSON.stringify(caddy),
   });
