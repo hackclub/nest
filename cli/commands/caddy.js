@@ -21,6 +21,7 @@ module.exports = function ({ program }) {
         .option('--user [user]', "allows you to list a different user's domains (requires sudo)")
         .action(async (domain, options) => {
           const addRes = await fetch(`http://localhost:999/domain/new${options.user ? `?impersonateUser=${options.user}` : ""}`, {
+            method: "POST",
             body: JSON.stringify({
               domain,
               proxy: options?.proxy
@@ -40,6 +41,7 @@ module.exports = function ({ program }) {
         .option('--user [user]', 'allows you to add a domain on behalf of a user (requires sudo)')
         .action(async (domain, options) => {
           const removeRes = await fetch(`http://localhost:999/domain/delete${options.user ? `?impersonateUser=${options.user}` : ""}`, {
+            method: "POST",
             body: JSON.stringify({
               domain
             })
@@ -56,7 +58,9 @@ module.exports = function ({ program }) {
         .command('reload')
         .description('reloads the global caddy instance (admins only)')
         .action(async () => {
-            const reloadRes = await fetch(`http://localhost:999/reload${options.user ? `?impersonateUser=${options.user}` : ""}`);
+            const reloadRes = await fetch(`http://localhost:999/reload${options.user ? `?impersonateUser=${options.user}` : ""}`, {
+              method: "POST",
+            });
 
             if (reloadRes.status !== 200) {
               console.error(await reloadRes.text() || reloadRes.statusText)
