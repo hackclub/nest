@@ -7,11 +7,7 @@
     "nest": "./index.js"
   },
   "dependencies": {
-    "@prisma/client": "5.18.0",
     "commander": "12.1.0",
-    "dotenv": "16.4.5",
-    "minimatch": "10.0.1",
-    "prisma": "5.18.0",
-    "validator": "13.12.0"
+    "dotenv": "16.4.5"
   }
 }
