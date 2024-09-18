@@ -9,5 +9,8 @@
   "dependencies": {
     "commander": "12.1.0",
     "dotenv": "16.4.5"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
   }
 }
