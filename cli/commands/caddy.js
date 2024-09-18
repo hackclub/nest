@@ -22,6 +22,9 @@ module.exports = function ({ program }) {
         .action(async (domain, options) => {
           const addRes = await fetch(`http://localhost:999/domain/new${options.user ? `?impersonateUser=${options.user}` : ""}`, {
             method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
             body: JSON.stringify({
               domain,
               proxy: options?.proxy
@@ -42,6 +45,9 @@ module.exports = function ({ program }) {
         .action(async (domain, options) => {
           const removeRes = await fetch(`http://localhost:999/domain/delete${options.user ? `?impersonateUser=${options.user}` : ""}`, {
             method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
             body: JSON.stringify({
               domain
             })
