@@ -24,8 +24,8 @@ app.use(async (req, res, next) => {
   try {
     ident = await Identd.request({
       address: "localhost",
-      server_port: Number(process.env.PORT),
-      client_port: req.socket.remotePort!,
+      client_port: Number(process.env.PORT),
+      server_port: req.socket.remotePort!,
     });
   } catch (e) {
     console.error(e);
