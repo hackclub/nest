@@ -39,11 +39,11 @@ module.exports = function ({ program }) {
         .description('removes a domain from caddy')
         .option('--user [user]', 'allows you to add a domain on behalf of a user (requires sudo)')
         .action(async (domain, options) => {
-          const removeRes = await fetch(`http://localhost:999/domain/delete${options.user ? `?impersonateUser=${options.user}` : "", {
+          const removeRes = await fetch(`http://localhost:999/domain/delete${options.user ? `?impersonateUser=${options.user}` : ""}`, {
             body: JSON.stringify({
               domain
             })
-          }}`);
+          });
 
           if (removeRes.status !== 200) {
             console.error(await removeRes.text() || removeRes.statusText)
