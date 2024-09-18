@@ -93,7 +93,11 @@ app.post("/domain/new", async (req, res) => {
       },
     });
     await reloadCaddy();
-    return res.sendStatus(200);
+    return res
+      .status(200)
+      .send(
+        `${req.body.domain} added. (${req.body.proxy || `unix//home/${user}/.${req.body.domain}.webserver.sock`})`,
+      );
   }
 
   // Proceed as a regular domain
