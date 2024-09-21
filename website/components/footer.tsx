@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { forwardRef, Ref } from "react";
 import { FaCode } from "react-icons/fa";
 
-const Footer = forwardRef((_: unknown, ref: Ref<HTMLDivElement>) => {
+export default function Footer() {
   return (
-    <footer ref = {ref} className="relative bg-footer-pattern px-4 py-12 font-dm-mono text-white lg:px-10 lg:py-16">
+    <footer className="relative bg-footer-pattern px-4 py-12 font-dm-mono text-white lg:px-10 lg:py-16">
       <div className="absolute inset-0 opacity-5" />
       <div className="relative z-10 mx-auto w-11/12">
         <div className="flex flex-col items-center justify-between gap-y-8 lg:flex-row lg:items-start">
@@ -47,7 +46,7 @@ const Footer = forwardRef((_: unknown, ref: Ref<HTMLDivElement>) => {
       </div>
     </footer>
   );
-});
+}
 
 interface FooterLinkProps {
   href: string;
@@ -63,6 +62,4 @@ function FooterLink({ href, text }: FooterLinkProps) {
       {text}
     </Link>
   );
-};
-
-export default Footer;
+}
