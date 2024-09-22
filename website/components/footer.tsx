@@ -65,4 +65,5 @@ function FooterLink({ href, text }: FooterLinkProps) {
   );
 };
 
+Footer.displayName = 'Footer';
 export default Footer;

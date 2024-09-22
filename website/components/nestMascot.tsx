@@ -22,7 +22,7 @@ const NestMascot: React.FC<NestMascotProps> = ({
 
   return (
     <motion.div
-      className={`fixed bottom-8 right-8 z-50 cursor-pointer ${visible ? "lg:block" : "hidden"}`}
+      className={`fixed bottom-8 right-8 z-50 hidden cursor-pointer ${visible ? "hidden" : "lg:block"}`}
       initial={{ y: "70%" }}
       animate={{ y: isHovered ? "30%" : "70%" }}
       whileHover={{

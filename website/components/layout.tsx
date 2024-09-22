@@ -6,10 +6,11 @@ import { useInView } from "framer-motion";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [isInView, setIsInView] = useState(useInView(ref));
+  const [isInView, setIsInView] = useState(false);
+  const viewChange = useInView(ref);
   useEffect(() => {
-    setIsInView(!isInView)
-  }, [useInView(ref)])
+    setIsInView(i => !i)
+  }, [viewChange])
 
   return (
     <div className="min-h-screen bg-bg font-dm-mono text-white">
