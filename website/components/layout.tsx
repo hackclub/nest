@@ -1,14 +1,23 @@
 import Nav from "@/components/nav";
 import Footer from "@/components/footer";
 import NestMascot from "@/components/nestMascot";
+import { useEffect, useRef, useState } from "react";
+import { useInView } from "framer-motion";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+  const viewChange = useInView(ref);
+  useEffect(() => {
+    setIsInView(i => !i)
+  }, [viewChange])
+
   return (
     <div className="min-h-screen bg-bg font-dm-mono text-white">
       <Nav />
       <main className="scrollbar-custom overflow-hidden">{children}</main>
-      <Footer />
-      <NestMascot hoverImageSrc="/favicon.png" defaultImageSrc="/nest.png" />
+      <Footer ref = {ref} />
+      <NestMascot visible = {isInView} hoverImageSrc="/favicon.png" defaultImageSrc="/nest.png" />
     </div>
   );
 }
