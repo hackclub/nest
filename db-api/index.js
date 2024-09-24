@@ -1,5 +1,9 @@
 // required capabilities:
 // - CAP_NET_BIND_SERVICE (For listening on a port < 1024 so users can't steal its port number)
+// DO NOT run as root
+if(process.getuid()==0||process.geteuid()==0) {
+  throw new Error("Refusing to run as root. This should be running as an unprivileged user.");
+}
 import express from "express";
 import identHelper from "./ident-helper.js";
 import sql from "./database.js";
