@@ -64,7 +64,6 @@ app.get("/whoami", function (req, res) {
   });
 });
 app.put("/db/:database", async function (req, res) {
-  console.log(`/db/database`);
   if (safe_regex.test(req.params.database) !== true) {
     return res.status(403).json({
       message:
