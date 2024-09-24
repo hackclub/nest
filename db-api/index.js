@@ -41,7 +41,7 @@ app.get("/setup/:username", async function (req, res) {
   if (safe_regex.test(req.params.username) !== true) {
     return res.status(500).json({
       message:
-        "Username contains invalid characters, see /usr/local/nest/db-api/index.js line 6 for the regex used in production.",
+        "Username contains invalid characters, see /usr/local/nest/db-api/index.js for the regex used in production.",
     });
     throw new Error("We should never reach this. Bail out NOW.");
   } else if (req.username != "nest-internal") {
