@@ -68,7 +68,7 @@ app.put("/db/:database", async function (req, res) {
   if (safe_regex.test(req.params.database) !== true) {
     return res.status(403).json({
       message:
-        "Database name contains invalid characters, see /usr/local/nest/db-api/index.js line 6 for the regex used in production.",
+        "Database name contains invalid characters, see /usr/local/nest/db-api/index.js for the regex used in production.",
     });
     throw new Error("We should never reach this. Bail out NOW.");
   }
