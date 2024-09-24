@@ -7,7 +7,7 @@ This is a complete and comprehensive guide of how Nest is setup!
 Nest is running on a [Hetzner EX101 dedicated server](https://www.hetzner.com/dedicated-rootserver/ex101/), located in Helsinki, Finland.
 It runs with the following specs:
 
-- [Intel® Core™ i5-13900](https://ark.intel.com/content/www/us/en/ark/products/230499/intel-core-i9-13900-processor-36m-cache-up-to-5-60-ghz.html)
+- [Intel® Core™ i9-13900](https://ark.intel.com/content/www/us/en/ark/products/230499/intel-core-i9-13900-processor-36m-cache-up-to-5-60-ghz.html)
 - 128 GB DDR5 RAM
 - 2 x 1.92TB NVMe SSD (Datacenter Edition)
 - Gigabit internet
