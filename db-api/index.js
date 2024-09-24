@@ -80,8 +80,16 @@ app.put("/db/:database", async function (req, res) {
   }
   const database = req.params.database;
   if (database.startsWith(`${req.username}_`)) {
-    await sql.unsafe(`CREATE DATABASE "${database}" WITH OWNER "${req.username}"`);
-    await res.status(200).json({
+    try {
+      await sql.unsafe(`CREATE DATABASE "${database}" WITH OWNER "${req.username}"`);
+    }
+    catch(e) {
+      console.log(e.stack);
+      return res.status(500).json({
+        message: "Failed to create database. Make sure it doesn't already exist... If it doesn't exist already, contact nest admins in #nest."
+      });
+    }
+    return res.status(200).json({
       message: "Successfully created database."
     });
   }
