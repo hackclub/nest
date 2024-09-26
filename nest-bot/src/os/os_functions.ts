@@ -1,7 +1,8 @@
 import { exec, execSync, ExecException } from "child_process";
 import { promisify } from "util";
 // @ts-expect-error
-import escape from "escape-it";
+import escapeit from "escape-it";
+const escape = escapeit("linux");
 
 const execPromise = promisify(exec);
 
@@ -41,13 +42,14 @@ export async function get_authorized_keys(user: string) {
     throw new Error(stderr);
   }
 
-  return stdout.split("\n");
+  return stdout.trim().split("\n");
 }
 
 export function set_authorized_keys(user: string, keys: string[]) {
   exec(
     escape(
-      "sudo /home/nest-internal/nest/nest-bot/src/os/scripts/set_keys.sh",
+      "sudo",
+      "/home/nest-internal/nest/nest-bot/src/os/scripts/set_keys.sh",
       user,
       keys.join("|"),
     ),

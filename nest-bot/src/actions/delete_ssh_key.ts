@@ -5,6 +5,7 @@ import {
   set_authorized_keys,
 } from "../os/os_functions.js";
 import ssh_keys_view from "../blocks/ssh_keys_view.js";
+import { ssh_edit_view_ids } from "../util/ssh_edit_view_ids.js";
 
 export function delete_ssh_key(app: Slack.App) {
   app.action("delete_ssh_key", async ({ ack, body, client }) => {
@@ -25,6 +26,7 @@ export function delete_ssh_key(app: Slack.App) {
 
     await client.views.update({
       trigger_id: body.trigger_id,
+      view_id: ssh_edit_view_ids.get(user),
       view: await ssh_keys_view(user),
     });
   });

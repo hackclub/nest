@@ -78,7 +78,7 @@ export default function approved_home(
         type: "section",
         text: {
           type: "mrkdwn",
-          text: "Your SSH public keys",
+          text: "*Your SSH public keys*",
         },
         accessory: {
           type: "button",
