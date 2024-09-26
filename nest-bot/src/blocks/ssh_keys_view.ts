@@ -1,3 +1,4 @@
+import sshpk from "sshpk";
 import { get_authorized_keys } from "../os/os_functions.js";
 
 export default async function ssh_keys_view(user: string) {
@@ -31,13 +32,26 @@ export default async function ssh_keys_view(user: string) {
       {
         type: "divider",
       },
-      ...keys.map((key) => {
-        const [type, data, ...comment] = key.split(" ");
+      ...keys.map((keyText) => {
+        let prettyKey;
+        try {
+          let key = sshpk.parseKey(keyText);
+          // @ts-expect-error
+          if (sshpk.Key.isKey(key) === false) {
+            prettyKey = `\`${keyText.substring(0, 9)}...${keyText.substring(keyText.length - 9, keyText.length)}\``;
+          } else {
+            const [type, data, ...comment] = key.toString("ssh").split(" ");
+            prettyKey = `\`${type} ${data.substring(0, 9)}...${data.substring(data.length - 9, data.length)} ${comment.join(" ")}\``;
+          }
+        } catch {
+          prettyKey = `${keyText.substring(0, 9)}...${keyText.substring(keyText.length - 9, keyText.length)}`;
+        }
+
         return {
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `\`${type} ${data.substring(0, 9)}...${data.substring(data.length - 9, data.length)} ${comment.join(" ")}\``,
+            text: prettyKey,
           },
           accessory: {
             type: "button",
@@ -47,7 +61,7 @@ export default async function ssh_keys_view(user: string) {
               emoji: true,
             },
             style: "danger",
-            value: JSON.stringify({ user, ssh_key: key }),
+            value: JSON.stringify({ user, ssh_key: keyText }),
             action_id: "delete_ssh_key",
           },
         };

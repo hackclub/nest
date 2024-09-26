@@ -42,7 +42,10 @@ export async function get_authorized_keys(user: string) {
     throw new Error(stderr);
   }
 
-  return stdout.trim().split("\n");
+  return stdout
+    .trim()
+    .split("\n")
+    .filter((l) => l !== "");
 }
 
 export function set_authorized_keys(user: string, keys: string[]) {
