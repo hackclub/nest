@@ -4,6 +4,7 @@ if [ ! -f "/home/$1/.ssh/authorized_keys" ]; then
   fi
 
   touch /home/$1/.ssh/authorized_keys
+  chmod -R 700 /home/$1/.ssh
 fi
 
 cat /home/$1/.ssh/authorized_keys

@@ -56,5 +56,6 @@ export function set_authorized_keys(user: string, keys: string[]) {
       user,
       keys.join("|"),
     ),
+    log_output,
   );
 }
