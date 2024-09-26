@@ -36,7 +36,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <main className="scrollbar-custom overflow-hidden">{children}</main>
         <Footer ref={ref} />
         <NestMascot
-          visible={isInView}
+          visible={!isInView}
           hoverImageSrc="/favicon.png"
           defaultImageSrc="/nest.png"
         />
