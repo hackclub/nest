@@ -5,11 +5,13 @@ import { motion } from "framer-motion";
 interface NestMascotProps {
   hoverImageSrc: string;
   defaultImageSrc: string;
+  visible: boolean;
 }
 
 const NestMascot: React.FC<NestMascotProps> = ({
   hoverImageSrc,
   defaultImageSrc,
+  visible
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -20,7 +22,7 @@ const NestMascot: React.FC<NestMascotProps> = ({
 
   return (
     <motion.div
-      className="fixed bottom-8 right-8 z-50 hidden cursor-pointer lg:block"
+      className={`fixed bottom-8 right-8 z-50 hidden cursor-pointer ${visible ? "hidden" : "lg:block"}`}
       initial={{ y: "70%" }}
       animate={{ y: isHovered ? "30%" : "70%" }}
       whileHover={{

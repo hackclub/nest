@@ -4,27 +4,27 @@ This is a complete and comprehensive guide of how Nest is setup!
 
 ## Hardware
 
-Nest is running on a [Hetzner EX44 dedicated server](https://www.hetzner.com/dedicated-rootserver/ex44/), located in Helsinki, Finland.
+Nest is running on a [Hetzner EX101 dedicated server](https://www.hetzner.com/dedicated-rootserver/ex101/), located in Helsinki, Finland.
 It runs with the following specs:
 
-- [Intel® Core™ i5-13500](https://ark.intel.com/content/www/us/en/ark/products/230580/intel-core-i5-13500-processor-24m-cache-up-to-4-80-ghz.html)
-- 64 GB DDR4 RAM
-- 2 x 512GB NVMe SSD in software RAID 1
+- [Intel® Core™ i5-13900](https://ark.intel.com/content/www/us/en/ark/products/230499/intel-core-i9-13900-processor-36m-cache-up-to-5-60-ghz.html)
+- 128 GB DDR5 RAM
+- 2 x 1.92TB NVMe SSD (Datacenter Edition)
 - Gigabit internet
 
 ## Proxmox
 
-The server runs [Proxmox VE](https://www.proxmox.com/en/proxmox-virtual-environment/overview) 8.1.3 over [Debian](https://www.debian.org/) 12 Bookworm. It has 2 VMs: the Secure VM (ID `secure`, #102) and the Nest VM (ID `nest` #103).
+The server runs [Proxmox VE](https://www.proxmox.com/en/proxmox-virtual-environment/overview) 8.2.4 over [Debian](https://www.debian.org/) 12 Bookworm. It has 2 VMs: the Secure VM (ID `secure`, #100) and the Nest VM (ID `nest` #101).
 
 ### Nest VM
 
-The Nest VM is the VM that users will access and host their stuff on. It runs Debian 12 Bookworm. It's configured with all 20 CPU threads, 52 GiB of RAM, and 650GB of storage.
+The Nest VM is the VM that users will access and host their stuff on. It runs Debian 12 Bookworm. It's configured with all 32 CPU threads, 64 GiB of RAM, and 750GB of storage.
 
 #### Resource Limits
 
 Every user on Nest has resource limits setup to prevent abuse of Nest and to make sure there's enough resources for everyone. The default limits are:
 
-- 10% (total, technically it's 200% since there's 20 cores) CPU time
+- 6.25% (total, technically it's 200% since there's 20 cores) CPU time
 - 2G memory (2G high, 2500M max)
 - 15G disk (hard quota)
 
@@ -79,75 +79,154 @@ The network configuration files are as follows:
 
 ### Proxmox network config
 
-`sysctl -w net.ipv4.ip_forward=1`
+`$ sysctl -w net.ipv4.ip_forward=1`
 
-`sysctl -w net.ipv6.conf.all.forwarding=1`
+`$ sysctl -w net.ipv6.conf.all.forwarding=1`
 
 `/etc/network/interfaces`:
 
 ```
-source /etc/network/interfaces.d/*
-
 auto lo
 iface lo inet loopback
 
-iface lo inet6 loopback
-
 auto enp5s0
 iface enp5s0 inet static
-	address 37.27.51.35/26
-	gateway 37.27.51.1
-	up route add -net 37.27.51.0 netmask 255.255.255.192 gw 37.27.51.1 dev enp5s0
-# route 37.27.51.0/26 via 37.27.51.1
+  address 37.27.51.35/26
+  gateway 37.27.51.1
 
 iface enp5s0 inet6 static
-	address 2a01:4f9:3081:399c::2/128
-	gateway fe80::1
+  address 2a01:4f9:3081:399c::2/128
+  gateway fe80::1
 
 auto vmbr0
 iface vmbr0 inet static
-	address 37.27.51.35/32
-	bridge-ports none
-	bridge-stp off
-	bridge-fd 0
+  address 37.27.51.35/32
+  bridge_ports none
+  bridge_stp off
+  bridge_fd 0
+  up ip route add 37.27.51.33/32 dev vmbr0
+  up ip route add 37.27.51.34/32 dev vmbr0
 
 iface vmbr0 inet6 static
-	address 2a01:4f9:3081:399c::2/64
+  address 2a01:4f9:3081:399c::2/64
+  bridge_ports none
+  bridge_stp off
+  bridge_fd 0
+  up ip -6 route add 2a01:4f9:3081:399c::3/64 dev vmbr0
+  up ip -6 route add 2a01:4f9:3081:399c::4/64 dev vmbr0
 ```
 
-`/etc/network/interfaces.d/vm-routes`:
+`$ iptables -S`:
 
 ```
-iface vmbr0 inet static
-        up ip route add 37.27.51.34/32 dev vmbr0
-        up ip route add 37.27.51.33/32 dev vmbr0
-iface vmbr0 inet6 static
-        up ip -6 route add 2a01:4f9:3081:399c::3/64 dev vmbr0
-        up ip -6 route add 2a01:4f9:3081:399c::4/64 dev vmbr0
+-P INPUT ACCEPT
+-P FORWARD ACCEPT
+-P OUTPUT ACCEPT
+-N ts-forward
+-N ts-input
+-N ufw-after-forward
+-N ufw-after-input
+-N ufw-after-logging-forward
+-N ufw-after-logging-input
+-N ufw-after-logging-output
+-N ufw-after-output
+-N ufw-before-forward
+-N ufw-before-input
+-N ufw-before-logging-forward
+-N ufw-before-logging-input
+-N ufw-before-logging-output
+-N ufw-before-output
+-N ufw-reject-forward
+-N ufw-reject-input
+-N ufw-reject-output
+-N ufw-track-forward
+-N ufw-track-input
+-N ufw-track-output
+-A INPUT -j ts-input
+-A INPUT -j ufw-before-logging-input
+-A INPUT -j ufw-before-input
+-A INPUT -j ufw-after-input
+-A INPUT -j ufw-after-logging-input
+-A INPUT -j ufw-reject-input
+-A INPUT -j ufw-track-input
+-A INPUT -d 37.27.51.35/32 -i tailscale0 -p tcp -m multiport --dports 22,8006 -j ACCEPT
+-A INPUT -d 37.27.51.35/32 -p tcp -m multiport --dports 22,8006 -m conntrack --ctstate NEW -j DROP
+-A FORWARD -j ts-forward
+-A FORWARD -j ufw-before-logging-forward
+-A FORWARD -j ufw-before-forward
+-A FORWARD -j ufw-after-forward
+-A FORWARD -j ufw-after-logging-forward
+-A FORWARD -j ufw-reject-forward
+-A FORWARD -j ufw-track-forward
+-A OUTPUT -j ufw-before-logging-output
+-A OUTPUT -j ufw-before-output
+-A OUTPUT -j ufw-after-output
+-A OUTPUT -j ufw-after-logging-output
+-A OUTPUT -j ufw-reject-output
+-A OUTPUT -j ufw-track-output
+-A ts-forward -i tailscale0 -j MARK --set-xmark 0x40000/0xff0000
+-A ts-forward -m mark --mark 0x40000/0xff0000 -j ACCEPT
+-A ts-forward -s 100.64.0.0/10 -o tailscale0 -j DROP
+-A ts-forward -o tailscale0 -j ACCEPT
+-A ts-input -s 100.64.0.20/32 -i lo -j ACCEPT
+-A ts-input -s 100.115.92.0/23 ! -i tailscale0 -j RETURN
+-A ts-input -s 100.64.0.0/10 ! -i tailscale0 -j DROP
+-A ts-input -i tailscale0 -j ACCEPT
+-A ts-input -p udp -m udp --dport 41641 -j ACCEPT
 ```
 
-`ufw status verbose`:
+`$ ip6tables -S`:
 
 ```
-Status: active
-Logging: on (low)
-Default: deny (incoming), allow (outgoing), allow (routed)
-New profiles: skip
-
-To                         Action      From
---                         ------      ----
-Anywhere on tailscale0     ALLOW IN    Anywhere
-Anywhere on vmbr0          ALLOW IN    Anywhere
-Anywhere (v6) on tailscale0 ALLOW IN    Anywhere (v6)
-Anywhere (v6) on vmbr0     ALLOW IN    Anywhere (v6)
-
-Anywhere                   ALLOW OUT   Anywhere on vmbr0
-Anywhere (v6)              ALLOW OUT   Anywhere (v6) on vmbr0
-
-Anywhere on vmbr0          ALLOW FWD   Anywhere on enp5s0
-Anywhere on enp5s0         ALLOW FWD   Anywhere on vmbr0
-Anywhere (v6) on vmbr0     ALLOW FWD   Anywhere (v6) on enp5s0
-Anywhere (v6) on enp5s0    ALLOW FWD   Anywhere (v6) on vmbr0
+-P INPUT ACCEPT
+-P FORWARD ACCEPT
+-P OUTPUT ACCEPT
+-N ts-forward
+-N ts-input
+-N ufw6-after-forward
+-N ufw6-after-input
+-N ufw6-after-logging-forward
+-N ufw6-after-logging-input
+-N ufw6-after-logging-output
+-N ufw6-after-output
+-N ufw6-before-forward
+-N ufw6-before-input
+-N ufw6-before-logging-forward
+-N ufw6-before-logging-input
+-N ufw6-before-logging-output
+-N ufw6-before-output
+-N ufw6-reject-forward
+-N ufw6-reject-input
+-N ufw6-reject-output
+-N ufw6-track-forward
+-N ufw6-track-input
+-N ufw6-track-output
+-A INPUT -j ts-input
+-A INPUT -j ufw6-before-logging-input
+-A INPUT -j ufw6-before-input
+-A INPUT -j ufw6-after-input
+-A INPUT -j ufw6-after-logging-input
+-A INPUT -j ufw6-reject-input
+-A INPUT -j ufw6-track-input
+-A FORWARD -j ts-forward
+-A FORWARD -j ufw6-before-logging-forward
+-A FORWARD -j ufw6-before-forward
+-A FORWARD -j ufw6-after-forward
+-A FORWARD -j ufw6-after-logging-forward
+-A FORWARD -j ufw6-reject-forward
+-A FORWARD -j ufw6-track-forward
+-A OUTPUT -j ufw6-before-logging-output
+-A OUTPUT -j ufw6-before-output
+-A OUTPUT -j ufw6-after-output
+-A OUTPUT -j ufw6-after-logging-output
+-A OUTPUT -j ufw6-reject-output
+-A OUTPUT -j ufw6-track-output
+-A ts-forward -i tailscale0 -j MARK --set-xmark 0x40000/0xff0000
+-A ts-forward -m mark --mark 0x40000/0xff0000 -j ACCEPT
+-A ts-forward -o tailscale0 -j ACCEPT
+-A ts-input -s fd7a:115c:a1e0::14/128 -i lo -j ACCEPT
+-A ts-input -i tailscale0 -j ACCEPT
+-A ts-input -p udp -m udp --dport 41641 -j ACCEPT
 ```
 
 ### Nest VM network config
@@ -214,28 +293,6 @@ The Nest VM is configured with fail2ban to combat spamming.
 ### Secure VM network config
 
 The network configuration for the Secure VM can be found in [the networking.nix file](/secure-vm/networking.nix).
-
-### Backup VM network config
-
-`/etc/network/interfaces`:
-
-```
-auto lo
-iface lo inet loopback
-
-auto ens18
-iface ens18 inet static
-	address 192.168.100.2/24
-	gateway 192.168.100.1
-
-
-source /etc/network/interfaces.d/*
-
-iface ens18 inet6 static
-	address 2a01:4f9:3081:399c::6/64
-	gateway 2a01:4f9:3081:399c::2
-	dns-nameservers 2606:4700:4700::1111
-```
 
 ## Nest Services
 

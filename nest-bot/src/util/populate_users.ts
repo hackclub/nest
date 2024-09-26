@@ -37,6 +37,7 @@ export default async function populate_users() {
         tilde_username: user.username,
         description: "Added by populate_users function",
         is_approved: true,
+        ssh_public_key: "None",
       },
     });
     reqs.push(dbReq);

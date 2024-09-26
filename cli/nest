@@ -1,14 +1,1 @@
-#!/bin/bash
-
-cmd="$1"
-subcmd="$2"
-
-if [ "$cmd" == "caddy" ]; then
-    if [ "$subcmd" == "add" ] || [ "$subcmd" == "rm" ] || [ "$subcmd" == "list" ]; then
-        /usr/local/nest/cli/index.js "$@" --user "$(whoami)"
-    else
-        /usr/local/nest/cli/index.js "$@"
-    fi
-else
-    /usr/local/nest/cli/index.js "$@"
-fi
+index.js
