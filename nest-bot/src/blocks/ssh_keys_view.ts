@@ -44,7 +44,7 @@ export default async function ssh_keys_view(user: string) {
             prettyKey = `\`${type} ${data.substring(0, 9)}...${data.substring(data.length - 9, data.length)} ${comment.join(" ")}\``;
           }
         } catch {
-          prettyKey = `${keyText.substring(0, 9)}...${keyText.substring(keyText.length - 9, keyText.length)}`;
+          prettyKey = `\`${keyText.substring(0, 9)}...${keyText.substring(keyText.length - 9, keyText.length)}\``;
         }
 
         return {
