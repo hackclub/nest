@@ -83,7 +83,11 @@ module.exports = function ({ program }) {
   caddy
     .command("reload")
     .description("reloads the global caddy instance (admins only)")
-    .action(async () => {
+    .option(
+      "--user [user]",
+      "allows you to add a domain on behalf of a user (requires sudo)",
+    )
+    .action(async (options) => {
       const reloadRes = await fetch(
         `http://localhost:999/reload${options.user ? `?impersonateUser=${options.user}` : ""}`,
         {
