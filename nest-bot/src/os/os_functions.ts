@@ -19,18 +19,24 @@ function log_output(err: ExecException | null, stdout: string, stderr: string) {
   console.error(stderr);
 }
 
-export function setup_script(username: string) {
-  exec(
+export async function setup_script(username: string) {
+  const { stdout, stderr } = await execPromise(
     `sudo /home/nest-internal/nest/nest-bot/src/os/scripts/setup.sh ${username}`,
-    log_output,
   );
+
+  if (stderr) console.error(stderr);
+
+  console.log(stdout);
 }
 
-export function home_script(username: string) {
-  exec(
+export async function home_script(username: string) {
+  const { stdout, stderr } = await execPromise(
     `sudo /home/nest-internal/nest/nest-bot/src/os/scripts/create_home.sh ${username}`,
-    log_output,
   );
+
+  if (stderr) console.error(stderr);
+
+  console.log(stdout);
 }
 
 export async function get_authorized_keys(user: string) {
@@ -48,14 +54,17 @@ export async function get_authorized_keys(user: string) {
     .filter((l) => l !== "");
 }
 
-export function set_authorized_keys(user: string, keys: string[]) {
-  exec(
+export async function set_authorized_keys(user: string, keys: string[]) {
+  const { stdout, stderr } = await execPromise(
     escape(
       "sudo",
       "/home/nest-internal/nest/nest-bot/src/os/scripts/set_keys.sh",
       user,
       keys.join("|"),
     ),
-    log_output,
   );
+
+  if (stderr) console.error(stderr);
+
+  console.log(stdout);
 }

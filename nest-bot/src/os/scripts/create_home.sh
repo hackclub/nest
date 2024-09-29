@@ -14,6 +14,9 @@ sed "s/<username>/$1/" /home/nest-internal/nest/nest-bot/src/os/templates/user_c
 chown -R $1:$(id -u $1) /home/$1
 chmod 711 /home/$1
 
+# ssh permissions
+chmod -R 700 /home/$1/.ssh
+
 # Start Caddy
 systemctl --user -M $1@ daemon-reload
 systemctl --user -M $1@ start caddy

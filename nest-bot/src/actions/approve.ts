@@ -128,10 +128,10 @@ export function approve(app: Slack.App) {
     });
 
     // Initialize user on Nest VM
+    await setup_script(username);
+    await home_script(username);
     add_root_caddyfile_config(username);
-    setup_script(username);
-    home_script(username);
-    set_authorized_keys(username, [user!.ssh_public_key]);
+    await set_authorized_keys(username, [user!.ssh_public_key]);
 
     console.log(`User ${username} initialized on Nest VM`);
 
