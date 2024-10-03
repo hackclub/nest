@@ -15,7 +15,7 @@ export function delete_ssh_key(app: Slack.App) {
       return;
     }
 
-    const { user, ssh_key } = JSON.parse(body.actions[0].value);
+    const { user, ssh_key } = JSON.parse(body.actions[0].value!);
 
     const keys = await get_authorized_keys(user);
 
