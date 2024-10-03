@@ -1,5 +1,5 @@
 {
-  "name": "nest-bot",
+  "name": "quetzal",
   "version": "1.0.0",
   "description": "Slack bot for managing your Nest user!",
   "main": "dist/index.js",
@@ -19,7 +19,7 @@
   "homepage": "https://github.com/hackclub/nest#readme",
   "dependencies": {
     "@prisma/client": "^5.15.0",
-    "@slack/bolt": "^3.18.0",
+    "@slack/bolt": "^3.22.0",
     "dotenv": "^16.4.5",
     "escape-it": "^0.3.0",
     "sshpk": "^1.18.0"

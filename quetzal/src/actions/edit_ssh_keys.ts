@@ -13,11 +13,11 @@ export function edit_ssh_keys(app: Slack.App) {
 
     const { view } = await client.views.open({
       trigger_id: body.trigger_id,
-      view: await ssh_keys_view(body.actions[0].value),
+      view: await ssh_keys_view(body.actions[0].value!),
     });
 
     if (view?.id) {
-      ssh_edit_view_ids.set(body.actions[0].value, view.id);
+      ssh_edit_view_ids.set(body.actions[0].value!, view.id);
     }
   });
 }

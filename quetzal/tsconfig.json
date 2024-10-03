@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2016",
-    "module": "nodenext",
+    "module": "NodeNext",
     "rootDir": "src",
     "outDir": "dist",
     "esModuleInterop": true,

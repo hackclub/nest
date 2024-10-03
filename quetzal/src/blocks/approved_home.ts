@@ -11,7 +11,7 @@ export default function approved_home(
         type: "header",
         text: {
           type: "plain_text",
-          text: "Nest Bot",
+          text: "Quetzal",
         },
       },
       {

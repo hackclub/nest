@@ -20,7 +20,7 @@ const steps = [
   {
     title: "Register",
     image: "/signup-step2.png",
-    description: "Use the Nest Bot to register for an account",
+    description: "Use Quetzal to register for an account",
   },
   {
     title: "Start Nesting",
@@ -76,7 +76,7 @@ export default function SignupSteps() {
         <div className="max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-600 sm:max-h-[800px]">
           <div className="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-3">
             {steps.map((step, index) => (
-              <StepCard key={index} step={step} index={index}/>
+              <StepCard key={index} step={step} index={index} />
             ))}
           </div>
         </div>

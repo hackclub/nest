@@ -11,7 +11,7 @@ export default function unapproved_home(
         type: "header",
         text: {
           type: "plain_text",
-          text: "Nest Bot",
+          text: "Quetzal",
         },
       },
       {

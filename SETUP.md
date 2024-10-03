@@ -41,7 +41,7 @@ CPUQuota=200%
 
 Note that to apply changes to either the CPU time or memory limits, you must run `systemctl daemon-reload`. You can verify that a limit is applied by checking the appropriate file in `/sys/fs/cgroup/user.slice/user-<id>.slice` (ex. memory.max for MemoryMax).
 
-Disk space limits are configured through `quota`. The following command is run by Nest Bot to set the default disk space limit:
+Disk space limits are configured through `quota`. The following command is run by Quetzal to set the default disk space limit:
 
 ```sh
 setquota -u <user> 15G 15G 0 0 /
@@ -53,7 +53,7 @@ The Secure VM is the VM that hosts all critical Nest services:
 
 - [Authentik](https://goauthentik.io/) (https://identity.hacklub.app)
 - [Guides](https://www.mediawiki.org/wiki/MediaWiki) (https://guides.hackclub.app)
-- Nest Bot's database
+- Quetzal's database
 
 In addition to some admin-only services:
 - [Headscale](https://headscale.net/)
@@ -296,7 +296,7 @@ The network configuration for the Secure VM can be found in [the networking.nix 
 
 ## Nest Services
 
-With the exception of Gotify, Nest Bot, Prometheus/node_exporter, Forgejo, and Uptime Kuma, all services run on the Secure VM in Docker containers, configured within a Docker Compose file contained within the `/opt/docker` directory on the Secure VM.
+With the exception of Gotify, Quetzal, Prometheus/node_exporter, Forgejo, and Uptime Kuma, all services run on the Secure VM in Docker containers, configured within a Docker Compose file contained within the `/opt/docker` directory on the Secure VM.
 
 ### Authentik
 
@@ -366,15 +366,15 @@ The Docker compose configuration uses a custom FrankenPHP image to host the PHP 
 
 MediaWiki's configuration file is also documented here at [LocalSettings.php](/secure-vm/docker/guides/mediawiki/LocalSettings.php).
 
-### Nest Bot
+### Quetzal
 
-Nest Bot handles Nest account creation and management from Slack for easy access to users. Its code is in the directory [nest-bot](/nest-bot/). Since it needs to run commands on the Nest VM, it runs there, under the `nest-internal` user and inside a `tmux` session named `nest-bot`. This repo is cloned in `/home/nest-internal/nest`.
+Quetzal handles Nest account creation and management from Slack for easy access to users. Its code is in the directory [quetzal](/quetzal/). Since it needs to run commands on the Nest VM, it runs there, under the `nest-internal` user and inside a `tmux` session named `quetzal`. This repo is cloned in `/home/nest-internal/nest`.
 
-Nest Bot's database runs on the Secure VM. The Docker compose configuration for it is in `/opt/docker/nest-bot/compose.yml` - contents are in [nest-bot.yml](/secure-vm/docker/nest-bot.yml).
+Quetzal's database runs on the Secure VM. The Docker compose configuration for it is in `/opt/docker/quetzal/compose.yml` - contents are in [quetzal.yml](/secure-vm/docker/quetzal.yml).
 
 ### Prometheus / node_exporter
 
-[Prometheus](https://prometheus.io/) and [node_exporter](https://github.com/prometheus/node_exporter) have been setup on the Nest VM (nest-internal user, `/home/nest-internal`) to monitor the Nest VM's statistics and resources as well as report metrics from Nest Bot. All data is collected in Hack Club's [Grafana](https://grafana.com/) instance.
+[Prometheus](https://prometheus.io/) and [node_exporter](https://github.com/prometheus/node_exporter) have been setup on the Nest VM (nest-internal user, `/home/nest-internal`) to monitor the Nest VM's statistics and resources as well as report metrics from Quetzal. All data is collected in Hack Club's [Grafana](https://grafana.com/) instance.
 
 ### Uptime Kuma
 

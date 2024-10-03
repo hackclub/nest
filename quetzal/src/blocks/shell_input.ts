@@ -8,7 +8,7 @@ export default async function shell_input(shell: string) {
     callback_id: "edit_shell",
     title: {
       type: "plain_text" as const,
-      text: "Nest Bot",
+      text: "Quetzal",
       emoji: true,
     },
     blocks: [

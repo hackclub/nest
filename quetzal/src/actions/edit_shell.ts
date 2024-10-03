@@ -12,7 +12,7 @@ export function edit_shell(app: Slack.App) {
 
     await client.views.open({
       trigger_id: body.trigger_id,
-      view: await shell_input(body.actions[0].value),
+      view: await shell_input(body.actions[0].value!),
     });
   });
 }

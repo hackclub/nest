@@ -27,7 +27,7 @@ function log_output(err: ExecException | null, stdout: string, stderr: string) {
 
 export async function setup_script(username: string) {
   const { stdout, stderr } = await execPromise(
-    `sudo /home/nest-internal/nest/nest-bot/src/os/scripts/setup.sh ${username}`,
+    `sudo /home/nest-internal/nest/quetzal/src/os/scripts/setup.sh ${username}`,
   );
 
   if (stderr) console.error(stderr);
@@ -37,7 +37,7 @@ export async function setup_script(username: string) {
 
 export async function home_script(username: string) {
   const { stdout, stderr } = await execPromise(
-    `sudo /home/nest-internal/nest/nest-bot/src/os/scripts/create_home.sh ${username}`,
+    `sudo /home/nest-internal/nest/quetzal/src/os/scripts/create_home.sh ${username}`,
   );
 
   if (stderr) console.error(stderr);
@@ -47,7 +47,7 @@ export async function home_script(username: string) {
 
 export async function get_authorized_keys(user: string) {
   const { stdout, stderr } = await execPromise(
-    `sudo /home/nest-internal/nest/nest-bot/src/os/scripts/read_keys.sh ${user}`,
+    `sudo /home/nest-internal/nest/quetzal/src/os/scripts/read_keys.sh ${user}`,
   );
 
   if (stderr) {
@@ -64,7 +64,7 @@ export async function set_authorized_keys(user: string, keys: string[]) {
   const { stdout, stderr } = await execPromise(
     escape(
       "sudo",
-      "/home/nest-internal/nest/nest-bot/src/os/scripts/set_keys.sh",
+      "/home/nest-internal/nest/quetzal/src/os/scripts/set_keys.sh",
       user,
       keys.join("|"),
     ),

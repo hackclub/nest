@@ -1,10 +1,10 @@
-export default function email_input() {
+export default function full_name_input() {
   return {
     type: "modal" as const,
-    callback_id: "edit_email",
+    callback_id: "edit_full_name",
     title: {
       type: "plain_text" as const,
-      text: "Nest Bot",
+      text: "Quetzal",
       emoji: true,
     },
     blocks: [
@@ -12,20 +12,20 @@ export default function email_input() {
         type: "header",
         text: {
           type: "plain_text",
-          text: "Edit Email",
+          text: "Edit Full Name",
           emoji: true,
         },
       },
       {
         type: "input",
-        block_id: "email_new",
+        block_id: "name_new",
         element: {
           type: "plain_text_input",
-          action_id: "email_new_input",
+          action_id: "name_new_input",
         },
         label: {
           type: "plain_text",
-          text: "New Email",
+          text: "New Name",
           emoji: true,
         },
       },
