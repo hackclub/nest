@@ -1,5 +1,5 @@
 {
-  "name": "nest-bot",
+  "name": "quetzal",
   "version": "1.0.0",
   "description": "Slack bot for managing your Nest user!",
   "main": "dist/index.js",

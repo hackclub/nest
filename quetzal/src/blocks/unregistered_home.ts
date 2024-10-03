@@ -6,14 +6,14 @@ export default function unregistered_home() {
         type: "header",
         text: {
           type: "plain_text",
-          text: "Nest Bot",
+          text: "Quetzal",
         },
       },
       {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: "Hey there, I'm Nest Bot! I'll be helping you get started with Nest. Just provide your details and I'll help get you started! If you have any questions, ask in the #nest channel.",
+          text: "Hey there, I'm Quetzal! I'll be helping you get started with Nest. Just provide your details and I'll help get you started! If you have any questions, ask in the #nest channel.",
         },
       },
       {
