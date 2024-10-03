@@ -7,7 +7,13 @@ const escape = escapeit("linux");
 const execPromise = promisify(exec);
 
 export async function add_root_caddyfile_config(username: string) {
-  execSync(`nest caddy add ${username}.hackclub.app --user ${username}`);
+  const { stdout, stderr } = await execPromise(
+    `nest caddy add ${username}.hackclub.app --user ${username}`,
+  );
+
+  if (stderr) console.error(stderr);
+
+  console.log(stdout);
 }
 
 function log_output(err: ExecException | null, stdout: string, stderr: string) {
