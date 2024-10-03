@@ -368,9 +368,9 @@ MediaWiki's configuration file is also documented here at [LocalSettings.php](/s
 
 ### Quetzal
 
-Quetzal handles Nest account creation and management from Slack for easy access to users. Its code is in the directory [nest-bot](/nest-bot/). Since it needs to run commands on the Nest VM, it runs there, under the `nest-internal` user and inside a `tmux` session named `nest-bot`. This repo is cloned in `/home/nest-internal/nest`.
+Quetzal handles Nest account creation and management from Slack for easy access to users. Its code is in the directory [quetzal](/quetzal/). Since it needs to run commands on the Nest VM, it runs there, under the `nest-internal` user and inside a `tmux` session named `quetzal`. This repo is cloned in `/home/nest-internal/nest`.
 
-Quetzal's database runs on the Secure VM. The Docker compose configuration for it is in `/opt/docker/nest-bot/compose.yml` - contents are in [nest-bot.yml](/secure-vm/docker/nest-bot.yml).
+Quetzal's database runs on the Secure VM. The Docker compose configuration for it is in `/opt/docker/quetzal/compose.yml` - contents are in [quetzal.yml](/secure-vm/docker/quetzal.yml).
 
 ### Prometheus / node_exporter
 
