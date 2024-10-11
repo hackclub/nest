@@ -36,7 +36,7 @@ export default function ProjectCard({ data: project }: { data: Project }) {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="relative overflow-hidden"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex items-start justify-between">
                 <h2 className="text-sm font-medium sm:text-base lg:text-lg 2xl:text-xl">
                   {project.name}
                 </h2>
