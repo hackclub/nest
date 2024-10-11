@@ -22,20 +22,6 @@ export default function ProjectCard({ data: project }: { data: Project }) {
         className="h-48 w-full rounded-t-md object-cover sm:h-56 md:h-64"
       />
       <div className="flex flex-col gap-y-2 p-3 sm:p-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-medium sm:text-base lg:text-lg 2xl:text-xl">
-            {project.name}
-          </h2>
-          <Link
-            href={project.repo}
-            aria-label={`View ${project.name} repository`}
-          >
-            <FaCode
-              size={16}
-              className="text-HCPurpleText transition-colors hover:text-HCPurple"
-            />
-          </Link>
-        </div>
         <div className="relative pb-6">
           <AnimatePresence initial={false}>
             <motion.div
@@ -45,11 +31,25 @@ export default function ProjectCard({ data: project }: { data: Project }) {
               exit="collapsed"
               variants={{
                 expanded: { height: "auto", opacity: 1 },
-                collapsed: { height: "3.75rem", opacity: 1 },
+                collapsed: { height: "7em", opacity: 1 },
               }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="relative overflow-hidden"
             >
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-medium sm:text-base lg:text-lg 2xl:text-xl">
+                  {project.name}
+                </h2>
+                <Link
+                  href={project.repo}
+                  aria-label={`View ${project.name} repository`}
+                >
+                  <FaCode
+                    size={16}
+                    className="text-HCPurpleText transition-colors hover:text-HCPurple"
+                  />
+                </Link>
+              </div>
               <p className="text-xs sm:text-sm 2xl:text-base">
                 {project.description}
               </p>
