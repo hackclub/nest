@@ -124,13 +124,18 @@ export async function reloadCaddy() {
       terminal: true,
     });
 
-    const user = await prisma.users.findFirst({
-      where: {
-        tilde_username: domain.username,
-      },
-    });
-    const userEmail = user?.email
-      ? convertEmailFormat(user.email)
+    let specifiedEmail = null;
+    try {
+      specifiedEmail = fs.readFileSync(
+        `/home/${domain.username}/.error-page-email`,
+        "utf8",
+      );
+    } catch (err) {
+      console.error("Failed to read specified email:", err);
+    }
+    
+    const userEmail = specifiedEmail
+      ? specifiedEmail.replace("@", " [at] ").replace(/\./g, " [dot] ")
       : `${domain.username} [at] hackclub [dot] app`;
 
     caddy.apps.http.servers.srv0.errors.routes.push({
@@ -246,8 +251,4 @@ export async function domainOwnership(domain, username) {
   });
   if (!d) return false;
   else return true;
-}
-
-function convertEmailFormat(email: string): string {
-  return email.replace("@", " [at] ").replace(/\./g, " [dot] ");
 }
