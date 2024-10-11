@@ -87,7 +87,8 @@ export async function reloadCaddy() {
       ],
     });
   }
-  domains.forEach((domain) => {
+
+  for (const domain of domains) {
     caddy.apps.http.servers.srv0.routes.push({
       match: [
         {
@@ -122,6 +123,15 @@ export async function reloadCaddy() {
       ],
       terminal: true,
     });
+
+    const user = await prisma.users.findFirst({
+      where: {
+        tilde_username: domain.username,
+      },
+    });
+    const userEmail = user?.email
+      ? convertEmailFormat(user.email)
+      : `${domain.username} [at] hackclub [dot] app`;
 
     caddy.apps.http.servers.srv0.errors.routes.push({
       match: [
@@ -170,7 +180,7 @@ dd:        .dd;   ,xKNNKx,     .o0XNX0l.    .:oddc
             {
               handle: [
                 {
-                  body: `Something went wrong on the project owner's end. You may want to contact ${domain.username} [at] hackclub [dot] app to resolve this issue.\n\n
+                  body: `Something went wrong on the project owner's end. You may want to contact ${userEmail} to resolve this issue.\n\n
                                           .MM.
                                           ;MM.
 KKc.lONMMWXk;    ckXWMMWXk:   'xXWMMWXxoKKNMMXKKKK
@@ -192,7 +202,8 @@ dd:        .dd;   ,xKNNKx,     .o0XNX0l.    .:oddc
       ],
       terminal: true,
     });
-  });
+  }
+
   await fetch(process.env.CADDY_ADMIN_PATH || "http://localhost:2019/load", {
     // @ts-expect-error
     unix: process.env.CADDY_SOCKET_PATH,
@@ -235,4 +246,8 @@ export async function domainOwnership(domain, username) {
   });
   if (!d) return false;
   else return true;
+}
+
+function convertEmailFormat(email: string): string {
+  return email.replace("@", " [at] ").replace(/\./g, " [dot] ");
 }
