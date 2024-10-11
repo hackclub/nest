@@ -208,9 +208,10 @@ dd:        .dd;   ,xKNNKx,     .o0XNX0l.    .:oddc
 export async function checkVerification(domain, username) {
   if (username == "nest-internal" || username == "root") return true; // If sudo, skip.
   try {
-    const records = await dns.resolveTxt(domain);
+    const txtRecords = await dns.resolveTxt(domain);
+    const cnameRecords = await dns.resolveCname(domain);
 
-    for (const record of records) {
+    for (const record of txtRecords) {
       for (const entry of record) {
         if (entry.includes("domain-verification=" + username)) {
           return true;
@@ -218,7 +219,7 @@ export async function checkVerification(domain, username) {
       }
     }
 
-    return false;
+    return cnameRecords.includes(`${username}.hackclub.app`);
   } catch (err) {
     console.error("Error:", err);
     return false;
