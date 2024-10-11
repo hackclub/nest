@@ -131,9 +131,12 @@ export async function reloadCaddy() {
         "utf8",
       );
     } catch (err) {
-      console.error("Failed to read specified email:", err);
+      // ENOENT is thrown when the file's not found
+      if (err.code != "ENOENT") {
+        throw err;
+      }
     }
-    
+
     const userEmail = specifiedEmail
       ? specifiedEmail.replace("@", " [at] ").replace(/\./g, " [dot] ")
       : `${domain.username} [at] hackclub [dot] app`;
