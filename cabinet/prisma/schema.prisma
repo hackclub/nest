@@ -14,8 +14,3 @@ model Domain {
     username  String
     proxy     String
 }
-
-model users {
-  tilde_username String    @unique @db.VarChar(255)
-  email          String?   @db.VarChar(255)
-}
