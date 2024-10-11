@@ -87,7 +87,8 @@ export async function reloadCaddy() {
       ],
     });
   }
-  domains.forEach((domain) => {
+
+  for (const domain of domains) {
     caddy.apps.http.servers.srv0.routes.push({
       match: [
         {
@@ -122,6 +123,23 @@ export async function reloadCaddy() {
       ],
       terminal: true,
     });
+
+    let specifiedEmail = null;
+    try {
+      specifiedEmail = fs.readFileSync(
+        `/home/${domain.username}/.error-page-email`,
+        "utf8",
+      );
+    } catch (err) {
+      // ENOENT is thrown when the file's not found
+      if (err.code != "ENOENT") {
+        throw err;
+      }
+    }
+
+    const userEmail = specifiedEmail
+      ? specifiedEmail.replace("@", " [at] ").replace(/\./g, " [dot] ")
+      : `${domain.username} [at] hackclub [dot] app`;
 
     caddy.apps.http.servers.srv0.errors.routes.push({
       match: [
@@ -170,7 +188,7 @@ dd:        .dd;   ,xKNNKx,     .o0XNX0l.    .:oddc
             {
               handle: [
                 {
-                  body: `Something went wrong on the project owner's end. You may want to contact ${domain.username} [at] hackclub [dot] app to resolve this issue.\n\n
+                  body: `Something went wrong on the project owner's end. You may want to contact ${userEmail} to resolve this issue.\n\n
                                           .MM.
                                           ;MM.
 KKc.lONMMWXk;    ckXWMMWXk:   'xXWMMWXxoKKNMMXKKKK
@@ -192,7 +210,8 @@ dd:        .dd;   ,xKNNKx,     .o0XNX0l.    .:oddc
       ],
       terminal: true,
     });
-  });
+  }
+
   await fetch(process.env.CADDY_ADMIN_PATH || "http://localhost:2019/load", {
     // @ts-expect-error
     unix: process.env.CADDY_SOCKET_PATH,
