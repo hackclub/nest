@@ -12,6 +12,7 @@ import {
   checkVerification,
   domainOwnership,
 } from "./utils";
+import { stripIndent } from "common-tags";
 
 import type { Response } from "identd";
 
@@ -102,11 +103,17 @@ app.post("/domain/new", async (req, res) => {
 
   // Proceed as a regular domain
   if (!(await checkVerification(req.body.domain, user))) {
-    return res
-      .status(401)
-      .send(
-        `Please set the TXT record for domain-verification to your username (${user}). You can remove it after it is added.`,
-      );
+    return res.status(401).send(
+      stripIndent`
+        The domain \`${req.body.domain}\` is not verified.
+
+        There are two ways to verify your domain:
+
+        - Set the TXT record for domain-verification to your username (${user}). You can remove it after it is added.
+        - Set the CNAME record on your domain (${req.body.domain}) to \`${user}.hackclub.app\`.
+        
+        If you have already done this, please wait a few minutes for DNS records to propagate.`,
+    );
   }
 
   await prisma.domain.create({

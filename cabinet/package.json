@@ -5,6 +5,7 @@
   "dependencies": {
     "@prisma/client": "^5.19.1",
     "@types/express": "^4.17.21",
+    "common-tags": "^1.8.2",
     "express": "^4.21.0",
     "identd": "^1.0.2",
     "minimatch": "^10.0.1",
