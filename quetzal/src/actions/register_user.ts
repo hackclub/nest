@@ -37,7 +37,7 @@ export function register_user(app: Slack.App) {
     ) {
       await app.client.chat.postMessage({
         channel: body.user.id,
-        text: "Unfortunately, your student status is not currrently verified, and we are currently not processing new submissions, so you cannot signup for Nest at this time. Please check back later! ",
+        text: "Before you can sign up for nest, you'll need to verify that you are a student with Hack Club. Please see https://forms.hackclub.com/eligibility for more details. Note that this form is processed by HCB (not Nest), so if you have any questions about how to complete it, please ask in #hcb. It may take a while for the team to process your submission.",
       });
     } else
       await client.views.open({
