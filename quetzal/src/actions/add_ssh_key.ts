@@ -12,7 +12,7 @@ export function add_ssh_key(app: Slack.App) {
 
     await client.views.push({
       trigger_id: body.trigger_id,
-      view: new_ssh_key(body.actions[0].value),
+      view: new_ssh_key(body.actions[0].value!),
     });
   });
 }

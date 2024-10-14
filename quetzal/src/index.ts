@@ -34,5 +34,5 @@ if (process.env.POPULATE_USERS === "true") {
 (async () => {
   await app.start(process.env.PORT ?? 3000);
 
-  console.log("Nest Bot is running!");
+  console.log("Quetzal is running!");
 })();

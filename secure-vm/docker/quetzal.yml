@@ -5,7 +5,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER:
-      POSTGRES_DB: nest_bot
+      POSTGRES_DB: quetzal
       POSTGRES_PASSWORD:
     volumes:
       - ./dbdata:/var/lib/postgresql/data

@@ -106,12 +106,12 @@ export function approve(app: Slack.App) {
     await new Promise((resolve) => setTimeout(resolve, 1000 * 60 * 6));
 
     await client.chat.postMessage({
-      channel: nestUserId,
+      channel: nestUserId!,
       text: "Your request for Nest has been approved!",
     });
 
     await client.chat.postMessage({
-      channel: nestUserId,
+      channel: nestUserId!,
       blocks: markdown_message(
         `Your password for your Nest account is \`${password}\`. Please continue through our Quickstart guide at https://guides.hackclub.app/index.php/Quickstart#Creating_an_Account.`,
       ),
