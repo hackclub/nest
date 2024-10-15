@@ -66,7 +66,7 @@ export default function Projects({
               categories/
             </button>
             <Link
-              href="#"
+              href="https://airtable.com/appn7WTuXlxFRrQFb/shr60ela2ZHdEDwQf"
               className={`rounded bg-gray-800 px-3 py-1 text-sm text-HCPurpleText transition-colors hover:bg-gray-700`}
             >
               register_project.sh
