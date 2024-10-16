@@ -227,7 +227,7 @@ dd:        .dd;   ,xKNNKx,     .o0XNX0l.    .:oddc
 export async function checkVerification(domain, username) {
   if (username == "nest-internal" || username == "root") return true; // If sudo, skip.
   try {
-    const txtRecords = await dns.resolveTxt(domain);
+    const txtRecords = await dns.resolveTxt(domain).catch(() => []);
     const cnameRecords = await dns.resolveCname(domain).catch(() => []);
 
     for (const record of txtRecords) {
