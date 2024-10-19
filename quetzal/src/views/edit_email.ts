@@ -18,6 +18,7 @@ export function edit_email(app: Slack.App) {
           email_new: "Invalid email.",
         },
       });
+      return;
     }
 
     ack();
