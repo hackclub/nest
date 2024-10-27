@@ -66,7 +66,7 @@ app.get("/list", async (req, res) => {
 
 app.post("/domain/new", async (req, res) => {
   let user = req.username;
-
+  req.admin = req.username === "root" || req.username === "nest-internal";
   if (!validator.isFQDN(req.body.domain)) {
     return res
       .status(400)
@@ -102,7 +102,7 @@ app.post("/domain/new", async (req, res) => {
   }
 
   // Proceed as a regular domain
-  if (!(await checkVerification(req.body.domain, user))) {
+  if (!(await checkVerification(req.body.domain, user)) && !req.admin) {
     return res.status(401).send(
       stripIndent`
         The domain \`${req.body.domain}\` is not verified.
