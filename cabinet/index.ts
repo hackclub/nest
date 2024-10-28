@@ -65,12 +65,14 @@ app.get("/list", async (req, res) => {
 });
 
 app.get("/list/json", async (req, res) => {
-  res.json(await prisma.domain.findMany({
-    where: {
-      username: req.username,
-    },
-  }));
-})
+  res.json(
+    await prisma.domain.findMany({
+      where: {
+        username: req.username,
+      },
+    }),
+  );
+});
 
 app.post("/domain/new", async (req, res) => {
   let user = req.username;
