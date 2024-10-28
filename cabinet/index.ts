@@ -64,6 +64,14 @@ app.get("/list", async (req, res) => {
   res.status(200).send(text);
 });
 
+app.get("/list/json", async (req, res) => {
+  res.json(await prisma.domain.findMany({
+    where: {
+      username: req.username,
+    },
+  }));
+})
+
 app.post("/domain/new", async (req, res) => {
   let user = req.username;
   req.admin = req.username === "root" || req.username === "nest-internal";
