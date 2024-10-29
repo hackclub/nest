@@ -55,6 +55,7 @@ export async function reloadCaddy() {
             errors: {
               routes: [], // error routing
             },
+            metrics: {}, // enable metrics: https://caddyserver.com/docs/metrics
           },
         },
       },
