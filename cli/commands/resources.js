@@ -12,7 +12,7 @@ module.exports = function ({ program, run }) {
       const output = run(`quota`).toString();
       const numbers = output
         .split("\n")
-        .find((line) => line.includes("/dev/sda"))
+        .find((line) => line.includes("/dev/"))
         .match(/\d+/g);
       const array = numbers.map(Number);
       const blockSize = 1024;
