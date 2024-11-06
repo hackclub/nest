@@ -51,7 +51,7 @@ setquota -u <user> 15G 15G 0 0 /
 
 The Secure VM is the VM that hosts all critical Nest services:
 
-- [Authentik](https://goauthentik.io/) (https://identity.hacklub.app)
+- [Authentik](https://goauthentik.io/) (https://identity.hackclub.app)
 - [Guides](https://www.mediawiki.org/wiki/MediaWiki) (https://guides.hackclub.app)
 - Quetzal's database
 
