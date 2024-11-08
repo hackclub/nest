@@ -119,7 +119,7 @@ app.post("/domain/new", async (req, res) => {
 
         There are two ways to verify your domain:
 
-        - Set the TXT record for domain-verification to your username (${user}). You can remove it after it is added.
+        - Add a TXT record to your domain (${req.body.domain}) to "domain-verification=${user}". You can remove it after it is added.
         - Set the CNAME record on your domain (${req.body.domain}) to \`${user}.hackclub.app\`.
         
         If you have already done this, please wait a few minutes for DNS records to propagate.`,
