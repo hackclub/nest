@@ -63,7 +63,7 @@ export async function reloadCaddy() {
         automation: {
           policies: [
             {
-              subjects: ["https://*.my.hackclub.app"],
+              subjects: ["*.my.hackclub.app"],
               on_demand: true,
             } as any,
           ],
