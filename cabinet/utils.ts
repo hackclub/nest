@@ -61,7 +61,12 @@ export async function reloadCaddy() {
       },
       tls: {
         automation: {
-          policies: [],
+          policies: [
+            {
+              subjects: ["https://*.my.hackclub.app"],
+              on_demand: true,
+            } as any,
+          ],
           on_demand: {
             permission: {
               endpoint: "https://my.hackclub.app/ok",
