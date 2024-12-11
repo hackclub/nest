@@ -36,6 +36,7 @@ app.use(async (req, res, next) => {
 
   req.username = ident.userid?.toString();
   req.admin = req.username === "root" || req.username === "nest-internal";
+  req.setTimeout(0);
 
   if (req.query.impersonateUser && !req.admin) {
     res
