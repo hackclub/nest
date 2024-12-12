@@ -100,19 +100,7 @@ export function register_user(app: Slack.App) {
 
     ack();
 
-    await prisma.users.create({
-      data: {
-        slack_user_id: body.user.id,
-        name,
-        email,
-        ssh_public_key: key.toString("ssh"),
-        description,
-        tilde_username: username,
-        created_at: new Date()
-      },
-    });
-
-    await client.chat.postMessage({
+    const slackApprovalMsg = await client.chat.postMessage({
       channel: "C05VBD1B7V4", // private #nest-registration channel id
       blocks: approval_message(
         body.user.id,
@@ -123,6 +111,19 @@ export function register_user(app: Slack.App) {
         description,
       ),
       text: `<@${body.user.id}> is requesting an approval for Nest`,
+    });
+
+    await prisma.users.create({
+      data: {
+        slack_user_id: body.user.id,
+        name,
+        email,
+        ssh_public_key: key.toString("ssh"),
+        description,
+        tilde_username: username,
+        created_at: new Date(),
+        message_id: slackApprovalMsg.ts,
+      },
     });
 
     await client.views.publish({

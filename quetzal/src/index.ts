@@ -4,6 +4,7 @@ import * as events from "./events/index.js";
 import * as actions from "./actions/index.js";
 import * as views from "./views/index.js";
 import populate_users from "./util/populate_users.js";
+import { prisma } from "./util/prisma.js";
 
 import "dotenv/config";
 
@@ -30,6 +31,34 @@ for (const [name, view] of Object.entries(views)) {
 if (process.env.POPULATE_USERS === "true") {
   populate_users();
 }
+
+// Reminder for forgotten approvals
+setInterval(
+  async () => {
+    const users = await prisma.users.findMany({
+      where: {
+        is_approved: null,
+      },
+    });
+
+    for (const user of users) {
+      if (user.message_id) {
+        app.client.chat.postMessage({
+          channel: "C05VBD1B7V4",
+          reply_broadcast: true,
+          thread_ts: user.message_id,
+          text: `Reminder: @${user.slack_user_id} is waiting on a response!`,
+        });
+      } else {
+        app.client.chat.postMessage({
+          channel: "C05VBD1B7V4",
+          text: `Reminder: @${user.slack_user_id} is waiting on a response!`,
+        });
+      }
+    }
+  },
+  24 * 60 * 60 * 1000, // every 24 hours
+);
 
 (async () => {
   await app.start(process.env.PORT ?? 3000);
