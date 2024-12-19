@@ -1,7 +1,7 @@
 {
     "type": "module",
     "dependencies": {
-        "express": "^5.0.0",
+        "express": "^5.0.1",
         "identd": "^1.0.2",
         "postgres": "^3.4.4"
     },
