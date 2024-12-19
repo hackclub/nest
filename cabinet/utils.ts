@@ -3,7 +3,20 @@ import { minimatch } from "minimatch";
 import dns from "dns/promises";
 
 import { prisma } from "./prisma";
+function isModified(username) {
+  try {
+      const stats = fs.statSync(`/home/${username}/Caddyfile`);
+      const birthTime = stats.birthtime.getTime();
+      const modifyTime = stats.mtime.getTime();
 
+      const diff = modifyTime - birthTime;
+
+      return diff > 10 * 60 * 1000;
+  } catch (err) {
+      console.error('Error:', err);
+      return false;
+  }
+}
 export async function domainExists(domain: string) {
   const d = await prisma.domain.findFirst({
     where: {
@@ -95,6 +108,50 @@ export async function reloadCaddy() {
   }
 
   for (const domain of domains) {
+      if (!isModified(domain.username)) {
+         caddy.apps.http.servers.srv0.routes.push({
+              "match": [
+                  {
+                      "host": [
+                          domain.domain
+                      ]
+                  }
+              ],
+              "handle": [
+                  {
+                      "handler": "subroute",
+                      "routes": [
+                          {
+
+                              "handle": [
+                                  {
+                                      "body": `To make this site visible, you'll need to open and resave your Caddyfile. This helps us save on memory.
+                                      
+                                    .MM.
+                                    ;MM.
+KKc.lONMMWXk;    ckXWMMWXk:   'xXWMMWXxoKKNMMXKKKK
+MMXNo'.  .lWM0.oWNo'.  .,dWWldMW:.  .:XMN'dMM:....
+MMW.       :MMWMN.        'MMMMWc.     .. cMM.
+MMO        .MMMMWXXXXXXXXXXWWO,dKNMNKOd:. cMM.
+MMO        .MMMMX                  .':OMMccMM.
+MMO        .MMKNMO.      .kK0KKl      .MMk:MM;
+MMO        .MMd.oXMKxoox0MXl ,OMNkdodkWWk. kWMKOOo
+dd:        .dd;   ,xKNNKx,     .o0XNX0l.    .:oddc
+- hackclub.app`,
+                                      "handler": "static_response",
+                                      "status_code": 200
+                                  }
+                              ]
+
+
+                          }
+                      ]
+                  }
+              ],
+              "terminal": true
+          })
+          continue;
+      }
     caddy.apps.http.servers.srv0.routes.push({
       match: [
         {
