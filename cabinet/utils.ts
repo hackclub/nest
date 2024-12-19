@@ -221,6 +221,7 @@ dd:        .dd;   ,xKNNKx,     .o0XNX0l.    .:oddc
   await fetch(process.env.CADDY_ADMIN_PATH || "http://localhost:2019/load", {
     // @ts-expect-error
     unix: process.env.CADDY_SOCKET_PATH,
+    timeout: false,
     method: "POST",
     headers: {
       "Content-Type": "application/json",
