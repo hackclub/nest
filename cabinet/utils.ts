@@ -1,8 +1,16 @@
 import fs from "fs";
 import { minimatch } from "minimatch";
 import dns from "dns/promises";
+import rndc from "bind9-rndc";
 
 import { prisma } from "./prisma";
+
+const rndcSession = rndc.connect(
+  "localhost",
+  953,
+  process.env.RNDC_KEY,
+  "sha256",
+);
 
 export async function domainExists(domain: string) {
   const d = await prisma.domain.findFirst({
@@ -234,6 +242,11 @@ dd:        .dd;   ,xKNNKx,     .o0XNX0l.    .:oddc
 export async function checkVerification(domain, username) {
   if (username == "nest-internal" || username == "root") return true; // If sudo, skip.
   try {
+    rndcSession.send(`flushname ${domain}`);
+
+    // wait for dns to flush cache
+    await new Promise((res) => setTimeout(res, 1000));
+
     const txtRecords = await dns.resolveTxt(domain).catch(() => []);
     const cnameRecords = await dns.resolveCname(domain).catch(() => []);
 
