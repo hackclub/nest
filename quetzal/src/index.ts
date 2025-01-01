@@ -8,9 +8,15 @@ import { prisma } from "./util/prisma.js";
 
 import "dotenv/config";
 
+const expressReceiver = new Slack.ExpressReceiver({
+  signingSecret: process.env.SLACK_SIGNING_SECRET!,
+});
 const app = new Slack.App({
   token: process.env.SLACK_BOT_TOKEN,
-  signingSecret: process.env.SLACK_SIGNING_SECRET,
+  receiver: expressReceiver,
+});
+expressReceiver.app.get("/status", (req, res) => {
+  res.status(200).send();
 });
 
 for (const [name, event] of Object.entries(events)) {
