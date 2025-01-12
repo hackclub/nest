@@ -1,1 +1,3 @@
 node_modules
+# Has credentials (BIND rndc key). Permissions of /usr/local/nest/cabinet/.env should be root:root 0600, run `setfacl -m user:caddy:r--` after to let cabinet access it.
+.env
