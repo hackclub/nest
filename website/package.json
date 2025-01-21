@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@opendrives/getent": "^0.3.0",
     "airtable": "^0.12.2",
     "framer-motion": "^11.2.10",
     "masonic": "^4.0.1",

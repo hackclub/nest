@@ -1,9 +1,7 @@
-import { exec } from "child_process";
-import { promisify } from "util";
+// @ts-expect-error
+import getent from "@opendrives/getent";
 
 import type { NextApiRequest, NextApiResponse } from "next";
-
-const execAsync = promisify(exec);
 
 type ResponseData = {
   count: number;
@@ -13,10 +11,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>,
 ) {
-  const users = await execAsync("getent passwd | cut -d: -f1,3");
-  const uids = users.stdout
-    .split("\n")
-    .map((u) => parseInt(u.split(":")[1]))
-    .filter((n) => n >= 2000 && n < 3000);
-  res.status(200).json({ count: uids.length });
+  const users = getent.passwd();
+
+  const nestUsers = users.filter((u: any) => u.uid >= 2000 && u.uid < 3000);
+
+  res.status(200).json({ count: nestUsers.length });
 }
