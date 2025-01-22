@@ -34,7 +34,7 @@ export default function register_form(profile_name: string) {
         block_id: "username",
         label: {
           type: "plain_text",
-          text: "Nest username? (This will be your subdomain)",
+          text: "Nest username? (This will be your Linux username as well as your subdomain on hackclub.app)",
           emoji: true,
         },
         element: {
