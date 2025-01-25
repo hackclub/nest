@@ -253,9 +253,9 @@ export default function Hero() {
      _.----._/ /       Shell: bash 5.2.15 
     /         /        Resolution: 1280x800 
  __/ (| | (  |         Terminal: /dev/pts/88 
-/__.-'|_|--|_|         CPU: 13th Gen Intel i5-13500 (20) @ 2.496GHz 
+/__.-'|_|--|_|         CPU: AMD EPYC 9454P (80) @ 2.749GHz 
                        GPU: 00:02.0 Vendor 1234 Device 1111 
-                       Memory: 26666MiB / 52203MiB 
+                       Memory: 77808MiB / 150865MiB
             `}
           </pre>
         )}
