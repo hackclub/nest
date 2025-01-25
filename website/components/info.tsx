@@ -192,10 +192,10 @@ export default function Info() {
       <p className="mb-8 max-w-4xl text-center text-lg 2xl:text-xl">
         Nest is a{" "}
         <Link
-          href="https://www.hetzner.com/dedicated-rootserver/ex44/"
+          href="https://www.hetzner.com/dedicated-rootserver/ax162-r/"
           className="text-HCPurpleText hover:underline"
         >
-          Hetzner EX44
+          Hetzner AX162-R
         </Link>{" "}
         dedicated server, located in Helsinki, Finland. Users share a{" "}
         <span className="italic">virtual machine</span> on the server.
