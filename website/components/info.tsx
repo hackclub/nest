@@ -49,9 +49,9 @@ const SpecsContent: React.FC = () => (
         {
           Icon: GoCpu,
           title: "Processor",
-          desc: "i9-13900 (24 cores, 32 threads)",
+          desc: "AMD EPYC™ Genoa 9454P (48 cores, 96 threads)",
         },
-        { Icon: BsMemory, title: "Memory", desc: "64 GB DDR5 RAM" },
+        { Icon: BsMemory, title: "Memory", desc: "256 GB DDR5 ECC RAM" },
         {
           Icon: BsNvme,
           title: "Storage",
@@ -72,10 +72,10 @@ const SpecsContent: React.FC = () => (
       <p>
         Nest runs on a{" "}
         <Link
-          href="https://www.hetzner.com/dedicated-rootserver/ex101/"
+          href="https://www.hetzner.com/dedicated-rootserver/ax162-r/"
           className="text-HCPurpleText hover:underline"
         >
-          Hetzner EX101
+          Hetzner AX162-R
         </Link>{" "}
         dedicated server, located in Helsinki, Finland. It uses Proxmox VE 8.2.2
         with two main VMs:
