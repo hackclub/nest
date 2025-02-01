@@ -397,7 +397,7 @@ At the moment, it is setup to monitor 6 services:
 
 The Nest CLI is a collection of tools for Nest users. At the moment, its core use is in allowing users to edit the global Caddyfile and add their own domains. It also includes a command for getting a random port that you can bind your services to.
 
-Nest CLI is written in Ruby using Thor (with the help of some bash scripts), and is located in the [cli](/cli/) directory. On the Nest VM, this Nest repo (including the Nest CLI) is cloned in the `/usr/local/nest` directory.
+Nest CLI is written in Nodejs using Commander (with the help of some bash scripts), and is located in the [cli](/cli/) directory. On the Nest VM, this Nest repo (including the Nest CLI) is cloned in the `/usr/local/nest` directory.
 
 Nest CLI requires the `/var/nest-cli` directory to be created.
 
