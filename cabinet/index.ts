@@ -112,8 +112,16 @@ app.post("/domain/new", async (req, res) => {
       );
   }
 
+  const domains = await prisma.domain.findMany({
+    where: {
+      username: req.username,
+    },
+  });
+
+  const isAlreadyVerified = domains.some(domainObj => req.body.domain.endsWith("."+domainObj.domain));
+  
   // Proceed as a regular domain
-  if (!(await checkVerification(req.body.domain, user)) && !req.admin) {
+  if (!(await checkVerification(req.body.domain, user)) && !req.admin && !isAlreadyVerified) {
     return res.status(401).send(
       stripIndent`
         The domain \`${req.body.domain}\` is not verified.
@@ -137,11 +145,20 @@ app.post("/domain/new", async (req, res) => {
     },
   });
   await reloadCaddy();
-  return res
-    .status(200)
-    .send(
-      `${req.body.domain} added. (${req.body.proxy || `unix//home/${user}/.${req.body.domain}.webserver.sock`})`,
-    );
+  if (!isAlreadyVerified) {
+    return res
+      .status(200)
+      .send(stripIndent`
+        Make sure to set the CNAME record on your domain (${req.body.domain}) to \`${user}.hackclub.app\`.
+        ${req.body.domain} added. (${req.body.proxy || `unix//home/${user}/.${req.body.domain}.webserver.sock`})`,
+      );
+  } else {
+    return res
+      .status(200)
+      .send(
+        `${req.body.domain} added. (${req.body.proxy || `unix//home/${user}/.${req.body.domain}.webserver.sock`})`,
+      );
+  }
 });
 
 app.post("/domain/delete", async (req, res) => {
