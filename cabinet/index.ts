@@ -118,7 +118,7 @@ app.post("/domain/new", async (req, res) => {
     },
   });
 
-  const isAlreadyVerified = domains.some(domainObj => req.body.domain.endsWith(domainObj.domain));
+  const isAlreadyVerified = domains.some(domainObj => req.body.domain.endsWith("."+domainObj.domain));
   
   // Proceed as a regular domain
   if (!(await checkVerification(req.body.domain, user)) && !req.admin && !isAlreadyVerified) {
@@ -153,9 +153,10 @@ app.post("/domain/new", async (req, res) => {
         ${req.body.domain} added. (${req.body.proxy || `unix//home/${user}/.${req.body.domain}.webserver.sock`})`,
       );
   } else {
+    return res
       .status(200)
       .send(
-        `Dib\n${req.body.domain} added. (${req.body.proxy || `unix//home/${user}/.${req.body.domain}.webserver.sock`})`,
+        `${req.body.domain} added. (${req.body.proxy || `unix//home/${user}/.${req.body.domain}.webserver.sock`})`,
       );
   }
 });
