@@ -32,8 +32,8 @@ export function register_user(app: Slack.App) {
     ).text();
 
     if (
-      !verificationResponse.includes("Eligible L1") &&
-      !verificationResponse.includes("Eligible L2")
+      /*!verificationResponse.includes("Eligible L1") &&
+      !verificationResponse.includes("Eligible L2")*/ false
     ) {
       await app.client.chat.postMessage({
         channel: body.user.id,
