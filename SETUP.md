@@ -8,23 +8,23 @@ Nest is running on a [Hetzner AX162-R dedicated server](https://www.hetzner.com/
 It runs with the following specs:
 
 - [AMD EPYC™ Genoa 9454P](https://www.amd.com/en/products/processors/server/epyc/4th-generation-9004-and-8004-series/amd-epyc-9454p.html)
-- 256 GB DDR5 RAM
+- 256GB DDR5 RAM
 - 2 x 1.92TB NVMe SSD (Datacenter Edition)
 - Gigabit internet
 
 ## Proxmox
 
-The server runs [Proxmox VE](https://www.proxmox.com/en/proxmox-virtual-environment/overview) 8.2.4 over [Debian](https://www.debian.org/) 12 Bookworm. It has 2 VMs: the Secure VM (ID `secure`, #100) and the Nest VM (ID `nest` #101).
+The server runs [Proxmox VE](https://www.proxmox.com/en/proxmox-virtual-environment/overview) 8.3.4 over [Debian](https://www.debian.org/) 12 Bookworm. It has 2 VMs: the Secure VM (ID `secure`, #100) and the Nest VM (ID `nest` #101).
 
 ### Nest VM
 
-The Nest VM is the VM that users will access and host their stuff on. It runs Debian 12 Bookworm. It's configured with all 32 CPU threads, 64 GiB of RAM, and 750GB of storage.
+The Nest VM is the VM that users will access and host their stuff on. It currently runs Debian 13 Trixie. It's configured with 80 CPU threads, 147GiB of RAM, and 2TB of storage.
 
 #### Resource Limits
 
 Every user on Nest has resource limits setup to prevent abuse of Nest and to make sure there's enough resources for everyone. The default limits are:
 
-- 6.25% (total, technically it's 200% since there's 20 cores) CPU time
+- 0.625% (total, which is 50% of one thread, since there are 80 threads) CPU time
 - 2G memory (2G high, 2500M max)
 - 15G disk (hard quota)
 
@@ -35,7 +35,9 @@ CPU time and memory are configured through SystemD & CGroups. These default limi
 [Slice]
 MemoryHigh=2G
 MemoryMax=2500M
-CPUQuota=200%
+MemorySwapMax=10G
+CPUQuota=50%
+IODeviceLatencyTargetSec=/etc/fstab 100ms
 ```
 (see https://www.freedesktop.org/software/systemd/man/latest/systemd.resource-control.html and https://www.kernel.org/doc/Documentation/cgroup-v2.txt for reference)
 
@@ -60,7 +62,7 @@ In addition to some admin-only services:
 - [Vaultwarden](https://github.com/dani-garcia/vaultwarden)
 - [Wazuh](https://wazuh.com/)
 
-It runs NixOS 23.05. it's configured with 20 CPU cores and 8 GiB of RAM. Configuration files can be found in [the secure-vm directory](/secure-vm/).
+It runs NixOS 23.05. it's configured with 20 CPU threads and 8 GiB of RAM. Configuration files can be found in [the secure-vm directory](/secure-vm/).
 
 ## Networking
 
