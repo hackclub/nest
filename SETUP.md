@@ -14,11 +14,11 @@ It runs with the following specs:
 
 ## Proxmox
 
-The server runs [Proxmox VE](https://www.proxmox.com/en/proxmox-virtual-environment/overview) 8.2.4 over [Debian](https://www.debian.org/) 13 Testing/trixie. It has 2 VMs: the Secure VM (ID `secure`, #100) and the Nest VM (ID `nest` #101).
+The server runs [Proxmox VE](https://www.proxmox.com/en/proxmox-virtual-environment/overview) 8.3.4 over [Debian](https://www.debian.org/) 12 Bookworm. It has 2 VMs: the Secure VM (ID `secure`, #100) and the Nest VM (ID `nest` #101).
 
 ### Nest VM
 
-The Nest VM is the VM that users will access and host their stuff on. It currently runs Debian 13 Testing/trixie. It's configured with 80 CPU threads, 147GiB of RAM, and 1.92TB of storage.
+The Nest VM is the VM that users will access and host their stuff on. It currently runs Debian 13 Trixie. It's configured with 80 CPU threads, 147GiB of RAM, and 1.92TB of storage.
 
 #### Resource Limits
 
