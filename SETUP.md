@@ -18,7 +18,7 @@ The server runs [Proxmox VE](https://www.proxmox.com/en/proxmox-virtual-environm
 
 ### Nest VM
 
-The Nest VM is the VM that users will access and host their stuff on. It currently runs Debian 13 Trixie. It's configured with 80 CPU threads, 147GiB of RAM, and 1.92TB of storage.
+The Nest VM is the VM that users will access and host their stuff on. It currently runs Debian 13 Trixie. It's configured with 80 CPU threads, 147GiB of RAM, and 2TB of storage.
 
 #### Resource Limits
 
@@ -62,7 +62,7 @@ In addition to some admin-only services:
 - [Vaultwarden](https://github.com/dani-garcia/vaultwarden)
 - [Wazuh](https://wazuh.com/)
 
-It runs NixOS 23.05. it's configured with 16 CPU threads and 8 GiB of RAM. Configuration files can be found in [the secure-vm directory](/secure-vm/).
+It runs NixOS 23.05. it's configured with 20 CPU threads and 8 GiB of RAM. Configuration files can be found in [the secure-vm directory](/secure-vm/).
 
 ## Networking
 
