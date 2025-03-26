@@ -21,6 +21,8 @@ export function approve(app: Slack.App) {
     const adminUserId = body.user.id;
     const nestUserId = body.actions[0].value;
 
+    const originalBlocks = JSON.parse(JSON.stringify(body.message!.blocks));
+
     const msgBlocks = body.message!.blocks;
     msgBlocks[2] = {
       type: "section",
@@ -157,48 +159,12 @@ export function approve(app: Slack.App) {
       
       const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
       
-      msgBlocks[2] = {
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: `Error during approval: ${errorMessage}`,
-        },
-      };
-
-      // Yoink to the original buttons
-      msgBlocks[3] = {
-        type: "actions",
-        elements: [
-          {
-            type: "button",
-            text: {
-              type: "plain_text",
-              text: "Approve",
-              emoji: true,
-            },
-            style: "primary",
-            value: nestUserId,
-            action_id: "approve",
-          },
-          {
-            type: "button",
-            text: {
-              type: "plain_text",
-              text: "Reject",
-              emoji: true,
-            },
-            style: "danger",
-            value: nestUserId,
-            action_id: "reject",
-          },
-        ],
-      };
-
+      // Yoink back to original blocks
       await client.chat.update({
         channel: body.container.channel_id,
         ts: body.container.message_ts,
         text: `Error during approval: ${errorMessage}`,
-        blocks: msgBlocks,
+        blocks: originalBlocks,
       });
     }
   });
