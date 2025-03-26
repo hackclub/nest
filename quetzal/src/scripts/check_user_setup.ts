@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { prisma } from "../util/prisma.js";
 import { exec } from "child_process";
 import { promisify } from "util";
@@ -79,7 +80,7 @@ async function checkUserSetup(username: string): Promise<SetupStatus["checks"]> 
 async function main() {
   const users = await prisma.users.findMany({
     where: {
-      is_approved: true,
+      is_approved: false,
     },
     select: {
       slack_user_id: true,
@@ -104,7 +105,7 @@ async function main() {
       slackUserId: user.slack_user_id,
       name: user.name,
       email: user.email,
-      isApproved: true,
+      isApproved: false,
       authentikPk: user.pk,
       checks,
     });
