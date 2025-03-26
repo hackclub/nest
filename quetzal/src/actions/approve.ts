@@ -159,12 +159,16 @@ export function approve(app: Slack.App) {
       
       const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
       
-      // Yoink back to original blocks
       await client.chat.update({
         channel: body.container.channel_id,
         ts: body.container.message_ts,
-        text: `Error during approval: ${errorMessage}`,
         blocks: originalBlocks,
+      });
+
+      await client.chat.postMessage({
+        channel: body.container.channel_id,
+        thread_ts: body.container.message_ts,
+        text: `Error during approval: ${errorMessage}`,
       });
     }
   });
