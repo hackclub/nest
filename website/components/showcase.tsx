@@ -23,7 +23,7 @@ const ButtonLink: React.FC<{
 );
 
 export default function Showcase({ projects }: ShowcaseProps) {
-  const [count, setCount] = useState(200);
+  const [count, setCount] = useState(700);
 
   useEffect(() => {
     fetch("/api/userCount")
