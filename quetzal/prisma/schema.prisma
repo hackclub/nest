@@ -19,4 +19,5 @@ model users {
   is_approved    Boolean?  @default(false)
   message_id     String?
   created_at     DateTime? @default(dbgenerated("'1970-01-01 00:00:00+00'::timestamp with time zone")) @db.Timestamptz(6)
+  admin          Boolean   @default(false)
 }
