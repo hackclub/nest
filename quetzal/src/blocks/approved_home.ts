@@ -35,7 +35,15 @@ export default async function approved_home(
         : "pending";
 
   const ballot = election
-    ? prisma.ballots.findFirst({
+    ? await prisma.ballots.findFirst({
+        where: {
+          electionsId: election.id,
+          usersId: id,
+        },
+      })
+    : null;
+  const nomination = election
+    ? await prisma.nominees.findFirst({
         where: {
           electionsId: election.id,
           usersId: id,
@@ -206,10 +214,10 @@ export default async function approved_home(
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `**<@${n.user.slack_user_id}>** - ${n.message}`,
+                text: `- *<@${n.user.slack_user_id}>* - ${n.message}`,
               },
             })),
-            admin
+            electionState === "pending" && nomination == null
               ? {
                   type: "actions",
                   elements: [
@@ -217,33 +225,52 @@ export default async function approved_home(
                       type: "button",
                       text: {
                         type: "plain_text",
-                        text: "View Results",
+                        text: "Nominate myself",
                       },
                       value: election.id.toString(),
-                      action_id: "election-results",
+                      action_id: "nominate",
                     },
                   ],
                 }
-              : {
-                  type: "section",
-                  text: {
-                    type: "mrkdwn",
-                    text:
-                      ballot === null
-                        ? "You have not yet voted in this election."
-                        : "You have already voted in this election",
-                  },
-                  accessory: {
-                    type: "button",
-                    text: {
-                      type: "plain_text",
-                      text: ballot === null ? "Vote" : "Edit votes",
+              : null,
+            admin && electionState === "ended"
+              ? {
+                  type: "actions",
+                  elements: [
+                    {
+                      type: "button",
+                      text: {
+                        type: "plain_text",
+                        text: "View results",
+                      },
+                      style: "primary",
+                      value: election.id.toString(),
+                      action_id: "election_results",
                     },
-                    value: election.id.toString(),
-                    action_id: "vote",
-                  },
-                },
-          ]),
+                  ],
+                }
+              : electionState === "running"
+                ? {
+                    type: "section",
+                    text: {
+                      type: "mrkdwn",
+                      text:
+                        ballot === null
+                          ? "You have not yet voted in this election."
+                          : "You have already voted in this election",
+                    },
+                    accessory: {
+                      type: "button",
+                      text: {
+                        type: "plain_text",
+                        text: ballot === null ? "Vote" : "Edit votes",
+                      },
+                      value: election.id.toString(),
+                      action_id: "vote",
+                    },
+                  }
+                : null,
+          ].filter((t) => t !== null)),
     ],
   };
 }

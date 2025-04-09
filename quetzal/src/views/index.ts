@@ -4,4 +4,5 @@ export { edit_email } from "./edit_email.js";
 export { edit_shell } from "./edit_shell.js";
 export { new_election } from "./new_election.js";
 export { new_ssh_key } from "./new_ssh_key.js";
+export { nominate } from "./nominate.js";
 export { ssh_keys_view } from "./ssh_keys_view.js";
