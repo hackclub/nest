@@ -21,7 +21,14 @@ export function edit_full_name(app: Slack.App) {
 
     await client.views.publish({
       user_id: body.user.id,
-      view: approved_home(user.name!, user.tilde_username, user.email!, shell),
+      view: await approved_home(
+        user.id,
+        user.name!,
+        user.tilde_username,
+        user.email!,
+        shell,
+        user.admin,
+      ),
     });
   });
 }

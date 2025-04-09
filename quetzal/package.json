@@ -29,6 +29,6 @@
     "@types/sshpk": "^1.17.4",
     "prettier": "^3.3.3",
     "prisma": "^5.15.0",
-    "typescript": "^5.4.5"
+    "typescript": "^5.8.3"
   }
 }
