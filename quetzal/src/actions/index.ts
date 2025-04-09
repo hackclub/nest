@@ -7,3 +7,4 @@ export { edit_shell } from "./edit_shell.js";
 export { add_ssh_key } from "./add_ssh_key.js";
 export { delete_ssh_key } from "./delete_ssh_key.js";
 export { edit_ssh_keys } from "./edit_ssh_keys.js";
+export { new_election } from "./new_election.js";

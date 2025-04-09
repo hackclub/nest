@@ -28,8 +28,8 @@ export default async function approved_home(
   const electionState =
     election === null
       ? "none"
-      : election.start_date > new Date()
-        ? election.end_date > new Date()
+      : election.start_date < new Date()
+        ? election.end_date < new Date()
           ? "ended"
           : "running"
         : "pending";
@@ -179,7 +179,7 @@ export default async function approved_home(
                         type: "plain_text",
                         text: "Start a new election",
                       },
-                      action_id: "new-election",
+                      action_id: "new_election",
                     },
                   ],
                 }
