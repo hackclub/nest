@@ -6,3 +6,4 @@ export { new_election } from "./new_election.js";
 export { new_ssh_key } from "./new_ssh_key.js";
 export { nominate } from "./nominate.js";
 export { ssh_keys_view } from "./ssh_keys_view.js";
+export { vote } from "./vote.js";

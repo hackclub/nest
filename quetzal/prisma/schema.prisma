@@ -44,7 +44,7 @@ model nominees {
   election    elections @relation(fields: [electionsId], references: [id])
   usersId     Int
   electionsId Int
-  ballots     ballots[]
+  votes       votes[]
 }
 
 model ballots {
@@ -53,8 +53,21 @@ model ballots {
   caster   users     @relation(fields: [usersId], references: [id])
   election elections @relation(fields: [electionsId], references: [id])
 
-  selections nominees[]
+  votes votes[]
 
   usersId     Int
   electionsId Int
+}
+
+model votes {
+  id Int @id @default(autoincrement())
+
+  ballotId Int
+  ballot   ballots @relation(fields: [ballotsId], references: [id])
+
+  nominee nominees @relation(fields: [nomineesId], references: [id])
+  rank    Int
+
+  ballotsId  Int
+  nomineesId Int
 }
