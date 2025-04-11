@@ -11,7 +11,7 @@ export default async function approved_home(
   const election = await prisma.elections.findFirst({
     where: {
       end_date: {
-        gte: new Date(),
+        gte: new Date(new Date().valueOf() - 7 * 24 * 60 * 60 * 1000),
       },
     },
     orderBy: {
@@ -198,7 +198,7 @@ export default async function approved_home(
               type: "section",
               text: {
                 type: "plain_text",
-                text: `The ${electionState} election ${electionState === "pending" ? `will start` : "started"} on ${election.start_date.toLocaleDateString()} and ${electionState === "ended" ? "ended" : "will end"} on ${election.end_date.toLocaleDateString()}.`,
+                text: `The election ${electionState === "pending" ? `will start` : "started"} on ${election.start_date.toLocaleDateString()} and ${electionState === "ended" ? "ended" : "will end"} on ${election.end_date.toLocaleDateString()}.`,
                 emoji: true,
               },
             },
@@ -206,7 +206,7 @@ export default async function approved_home(
               type: "section",
               text: {
                 type: "plain_text",
-                text: "The current nominees for this election are:",
+                text: "The nominees for this election are:",
                 emoji: true,
               },
             },
