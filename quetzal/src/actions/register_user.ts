@@ -26,14 +26,15 @@ export function register_user(app: Slack.App) {
         headers: headers,
         body: JSON.stringify({
           slack_id: body.user.id,
+          email: profileRes.profile?.email,
         }),
         redirect: "follow",
       })
     ).text();
 
     if (
-      /*!verificationResponse.includes("Eligible L1") &&
-      !verificationResponse.includes("Eligible L2")*/ false
+      !verificationResponse.includes("Eligible L1") &&
+      !verificationResponse.includes("Eligible L2")
     ) {
       await app.client.chat.postMessage({
         channel: body.user.id,
