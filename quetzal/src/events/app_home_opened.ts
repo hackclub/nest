@@ -11,17 +11,27 @@ import get_user_shell from "../os/get_user_shell.js";
 export async function app_home_opened(app: Slack.App) {
   app.event("app_home_opened", async ({ event, client }) => {
     const user = event.user;
-    const { name, is_approved, email, ssh_public_key, tilde_username } =
+    const {
+      id,
+      name,
+      is_approved,
+      email,
+      ssh_public_key,
+      tilde_username,
+      admin,
+    } =
       (await prisma.users.findUnique({
         where: {
           slack_user_id: user,
         },
         select: {
+          id: true,
           tilde_username: true,
           name: true,
           is_approved: true,
           ssh_public_key: true,
           email: true,
+          admin: true,
         },
       })) ?? {};
 
@@ -30,7 +40,14 @@ export async function app_home_opened(app: Slack.App) {
     if (name && is_approved) {
       await client.views.publish({
         user_id: user,
-        view: approved_home(name, tilde_username!, email!, shell),
+        view: await approved_home(
+          id!,
+          name,
+          tilde_username!,
+          email!,
+          shell,
+          admin!,
+        ),
       });
     } else if (name && !is_approved) {
       await client.views.publish({

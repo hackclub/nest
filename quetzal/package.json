@@ -22,13 +22,14 @@
     "@slack/bolt": "^3.22.0",
     "dotenv": "^16.4.5",
     "escape-it": "^0.3.0",
-    "sshpk": "^1.18.0"
+    "sshpk": "^1.18.0",
+    "stv": "^0.0.2"
   },
   "devDependencies": {
     "@types/node": "^22.5.1",
     "@types/sshpk": "^1.17.4",
     "prettier": "^3.3.3",
     "prisma": "^5.15.0",
-    "typescript": "^5.4.5"
+    "typescript": "^5.8.3"
   }
 }
