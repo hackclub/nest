@@ -1,5 +1,22 @@
 import { prisma } from "../util/prisma.js";
 
+function shuffle(array: any[]) {
+  let currentIndex = array.length;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+    // Pick a remaining element...
+    let randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+}
+
 export default async function approved_home(
   id: number,
   name: string,
@@ -50,6 +67,11 @@ export default async function approved_home(
         },
       })
     : null;
+
+  const nominees = election?.nominees;
+  if (nominees) {
+    shuffle(nominees);
+  }
 
   return {
     type: "home" as const,
@@ -210,7 +232,7 @@ export default async function approved_home(
                 emoji: true,
               },
             },
-            ...election.nominees.map((n) => ({
+            ...nominees!.map((n) => ({
               type: "section",
               text: {
                 type: "mrkdwn",
