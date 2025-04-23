@@ -26,18 +26,19 @@ export function register_user(app: Slack.App) {
         headers: headers,
         body: JSON.stringify({
           slack_id: body.user.id,
+          email: profileRes.profile?.email,
         }),
         redirect: "follow",
       })
     ).text();
 
     if (
-      /*!verificationResponse.includes("Eligible L1") &&
-      !verificationResponse.includes("Eligible L2")*/ false
+      !verificationResponse.includes("Eligible L1") &&
+      !verificationResponse.includes("Eligible L2")
     ) {
       await app.client.chat.postMessage({
         channel: body.user.id,
-        text: "Before you can sign up for nest, you'll need to verify that you are a student with Hack Club. Please see https://forms.hackclub.com/eligibility for more details. Note that this form is processed by HCB (not Nest), so if you have any questions about how to complete it, please ask in #hcb. It may take a while for the team to process your submission.",
+        text: "Before you can sign up for nest, you'll need to verify that you are a student with Hack Club. Please see https://forms.hackclub.com/eligibility for more details. Note that this form is processed by Hack Club HQ (not Nest), so if you have any questions about how to complete it, please email verifications@hackclub.com. It may take a while for the team to process your submission.",
       });
     } else
       await client.views.open({
