@@ -25,10 +25,12 @@ export default async function approved_home(
   shell: string,
   admin: boolean,
 ) {
+  const today = new Date();
+
   const election = await prisma.elections.findFirst({
     where: {
       end_date: {
-        gte: new Date(new Date().valueOf() - 7 * 24 * 60 * 60 * 1000),
+        gte: new Date(today.valueOf() - 7 * 24 * 60 * 60 * 1000),
       },
     },
     orderBy: {
@@ -45,8 +47,8 @@ export default async function approved_home(
   const electionState =
     election === null
       ? "none"
-      : election.start_date < new Date()
-        ? election.end_date < new Date()
+      : election.start_date < today
+        ? election.end_date < today
           ? "ended"
           : "running"
         : "pending";

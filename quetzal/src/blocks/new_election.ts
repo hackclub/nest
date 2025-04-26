@@ -25,7 +25,7 @@ export default function new_election() {
           type: "datepicker",
           placeholder: {
             type: "plain_text",
-            text: "2025-04-1",
+            text: "1970-01-01",
             emoji: true,
           },
           action_id: "start_date",
@@ -61,6 +61,7 @@ export default function new_election() {
           type: "number_input",
           is_decimal_allowed: false,
           action_id: "election_count",
+          min_value: "1",
         },
         label: {
           type: "plain_text",
