@@ -36,6 +36,10 @@ export function new_election(app: Slack.App) {
 
     const shell = await get_user_shell(user.tilde_username!);
 
+    const userInfo = await client.users.info({
+      user: body.user.id,
+    });
+
     await client.views.publish({
       user_id: body.user.id,
       view: await approved_home(
@@ -45,6 +49,7 @@ export function new_election(app: Slack.App) {
         user.email!,
         shell,
         user.admin,
+        userInfo.user?.tz!,
       ),
     });
   });

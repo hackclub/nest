@@ -24,6 +24,7 @@ export default async function approved_home(
   email: string,
   shell: string,
   admin: boolean,
+  timeZone: string,
 ) {
   const today = new Date();
 
@@ -222,7 +223,7 @@ export default async function approved_home(
               type: "section",
               text: {
                 type: "plain_text",
-                text: `The election ${electionState === "pending" ? `will start` : "started"} on ${election.start_date.toLocaleDateString()} and ${electionState === "ended" ? "ended" : "will end"} on ${election.end_date.toLocaleDateString()}.`,
+                text: `The election ${electionState === "pending" ? `will start` : "started"} on ${election.start_date.toLocaleDateString("en-US", { timeZone })} and ${electionState === "ended" ? "ended" : "will end"} on ${election.end_date.toLocaleDateString("en-US", { timeZone })}.`,
                 emoji: true,
               },
             },
