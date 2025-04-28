@@ -21,17 +21,19 @@ export function edit_shell(app: Slack.App) {
 
     ack();
 
-    const { name, email, tilde_username, pk } =
+    const { id, name, email, tilde_username, pk, admin } =
       (await prisma.users.findUnique({
         where: {
           slack_user_id: body.user.id,
         },
         select: {
+          id: true,
           tilde_username: true,
           name: true,
           is_approved: true,
           email: true,
           pk: true,
+          admin: true,
         },
       })) ?? {};
 
@@ -74,9 +76,21 @@ export function edit_shell(app: Slack.App) {
       return;
     }
 
+    const userInfo = await client.users.info({
+      user: body.user.id,
+    });
+
     await client.views.publish({
       user_id: body.user.id,
-      view: approved_home(name!, tilde_username!, email!, shell!),
+      view: await approved_home(
+        id!,
+        name!,
+        tilde_username!,
+        email!,
+        shell!,
+        admin!,
+        userInfo.user?.tz!,
+      ),
     });
   });
 }

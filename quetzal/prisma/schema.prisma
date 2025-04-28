@@ -8,15 +8,66 @@ datasource db {
 }
 
 model users {
-  id             Int       @id @default(autoincrement())
-  pk             Int?      @unique @db.Integer
-  slack_user_id  String    @unique @db.VarChar(255)
-  tilde_username String    @unique @db.VarChar(255)
-  name           String?   @db.VarChar(255)
-  email          String?   @db.VarChar(255)
+  id             Int        @id @default(autoincrement())
+  pk             Int?       @unique @db.Integer
+  slack_user_id  String     @unique @db.VarChar(255)
+  tilde_username String     @unique @db.VarChar(255)
+  name           String?    @db.VarChar(255)
+  email          String?    @db.VarChar(255)
   ssh_public_key String
   description    String
-  is_approved    Boolean?  @default(false)
+  is_approved    Boolean?   @default(false)
   message_id     String?
-  created_at     DateTime? @default(dbgenerated("'1970-01-01 00:00:00+00'::timestamp with time zone")) @db.Timestamptz(6)
+  created_at     DateTime?  @default(dbgenerated("'1970-01-01 00:00:00+00'::timestamp with time zone")) @db.Timestamptz(6)
+  admin          Boolean    @default(false)
+  nominees       nominees[]
+  ballots        ballots[]
+}
+
+model elections {
+  id Int @id @default(autoincrement())
+
+  num_elected Int
+
+  start_date DateTime
+  end_date   DateTime
+
+  nominees nominees[]
+  ballots  ballots[]
+}
+
+model nominees {
+  id Int @id @default(autoincrement())
+
+  user        users     @relation(fields: [usersId], references: [id])
+  message     String
+  election    elections @relation(fields: [electionsId], references: [id])
+  usersId     Int
+  electionsId Int
+  votes       votes[]
+}
+
+model ballots {
+  id Int @id @default(autoincrement())
+
+  caster   users     @relation(fields: [usersId], references: [id])
+  election elections @relation(fields: [electionsId], references: [id])
+
+  votes votes[]
+
+  usersId     Int
+  electionsId Int
+}
+
+model votes {
+  id Int @id @default(autoincrement())
+
+  ballotId Int
+  ballot   ballots @relation(fields: [ballotsId], references: [id])
+
+  nominee nominees @relation(fields: [nomineesId], references: [id])
+  rank    Int
+
+  ballotsId  Int
+  nomineesId Int
 }
