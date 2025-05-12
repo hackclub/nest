@@ -45,11 +45,11 @@ export function approve(app: Slack.App) {
           slack_user_id: nestUserId,
         },
       });
-      
+
       if (!user?.tilde_username) {
         throw new Error("User not found or missing username");
       }
-      
+
       const username = user.tilde_username;
       const password = randomBytes(20).toString("base64url");
 
@@ -75,7 +75,9 @@ export function approve(app: Slack.App) {
       );
 
       if (!createRes.ok) {
-        throw new Error(`Failed to create user in Authentik (HTTP code ${createRes.status})`);
+        throw new Error(
+          `Failed to create user in Authentik (HTTP code ${createRes.status})`,
+        );
       }
 
       const pk = (await createRes.json()).pk;
@@ -95,7 +97,9 @@ export function approve(app: Slack.App) {
       );
 
       if (!passwordRes.ok) {
-        throw new Error(`Failed to set password in Authentik (HTTP code ${passwordRes.status})`);
+        throw new Error(
+          `Failed to set password in Authentik (HTTP code ${passwordRes.status})`,
+        );
       }
       console.log(`Password set for ${username}`);
 
@@ -106,15 +110,6 @@ export function approve(app: Slack.App) {
       await home_script(username);
       await add_root_caddyfile_config(username);
       await set_authorized_keys(username, [user.ssh_public_key]);
-
-      const userGroup = await client.usergroups.users.list({
-        usergroup: "S05RNTN07SN", // @birds group
-      });
-
-      await client.usergroups.users.update({
-        usergroup: "S05RNTN07SN", // @birds group
-        users: [...(userGroup.users ?? []), nestUserId].join(","),
-      });
 
       await prisma.users.update({
         where: {
@@ -153,12 +148,12 @@ export function approve(app: Slack.App) {
         ),
         text: `Your password for your Nest account is ${password}. Please continue through our Quickstart guide at https://guides.hackclub.app/index.php/Quickstart#Creating_an_Account.`,
       });
-
     } catch (error) {
       console.error("Error during user approval:", error);
-      
-      const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
-      
+
+      const errorMessage =
+        error instanceof Error ? error.message : "An unknown error occurred";
+
       await client.chat.update({
         channel: body.container.channel_id,
         ts: body.container.message_ts,
