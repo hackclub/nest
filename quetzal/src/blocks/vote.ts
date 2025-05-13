@@ -1,6 +1,12 @@
 import { prisma } from "../util/prisma.js";
 
 export default async function vote(electionId: string, userId: string) {
+  const user = await prisma.users.findFirst({
+    where: {
+      slack_user_id: userId,
+    },
+  });
+
   const election = await prisma.elections.findUnique({
     where: {
       id: parseInt(electionId),
@@ -13,6 +19,34 @@ export default async function vote(electionId: string, userId: string) {
       },
     },
   });
+
+  if (
+    (election?.start_date ?? new Date()).valueOf() <
+    (user?.created_at?.valueOf() ?? 0)
+  ) {
+    return {
+      type: "modal" as const,
+      title: {
+        type: "plain_text" as const,
+        text: "Vote",
+        emoji: true,
+      },
+      close: {
+        type: "plain_text" as const,
+        text: "Exit",
+        emoji: true,
+      },
+      blocks: [
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `As your Nest account was created after this election started, you cannot vote.`,
+          },
+        },
+      ],
+    };
+  }
 
   const ballot = await prisma.ballots.findFirst({
     where: {
