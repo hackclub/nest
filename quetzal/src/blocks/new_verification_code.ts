@@ -70,6 +70,7 @@ export default function new_verification_code(user: string) {
           text: "Expiry? (leave blank to never expire)",
           emoji: true,
         },
+        optional: true,
       },
     ],
   };
