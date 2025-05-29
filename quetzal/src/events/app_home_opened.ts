@@ -38,21 +38,9 @@ export async function app_home_opened(app: Slack.App) {
     const shell = await get_user_shell(tilde_username!);
 
     if (name && is_approved) {
-      const userInfo = await client.users.info({
-        user,
-      });
-
       await client.views.publish({
         user_id: user,
-        view: await approved_home(
-          id!,
-          name,
-          tilde_username!,
-          email!,
-          shell,
-          admin!,
-          userInfo.user?.tz!,
-        ),
+        view: await approved_home(id!, name, tilde_username!, email!, shell),
       });
     } else if (name && !is_approved) {
       await client.views.publish({
