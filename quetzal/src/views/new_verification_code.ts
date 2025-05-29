@@ -27,8 +27,8 @@ export function new_verification_code(app: Slack.App) {
       data: {
         code: crypto.randomBytes(10).toString("hex"),
         generated_on: new Date(),
-        usersId: user.id,
-        oneTime: one_time,
+        generated_by_id: user.id,
+        one_time: one_time,
         expiry,
       },
     });

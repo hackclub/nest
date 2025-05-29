@@ -41,7 +41,7 @@ export function submit_code(app: Slack.App) {
       ),
     });
 
-    if (code.oneTime) {
+    if (code.one_time) {
       await prisma.codes.update({
         where: {
           id: code.id,

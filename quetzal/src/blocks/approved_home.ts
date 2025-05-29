@@ -154,7 +154,7 @@ export default async function approved_home(
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `${code.oneTime ? "1️⃣ " : ""}Code \`${code.code}\` generated on ${code.generated_on.toLocaleDateString()} by <@${code.generated_by.slack_user_id}>. ${code.expiry !== null ? `Expiring on ${code.expiry.toLocaleString()}.` : ""}`,
+                text: `${code.one_time ? "1️⃣ " : ""}Code \`${code.code}\` generated on ${code.generated_on.toLocaleDateString()} by <@${code.generated_by.slack_user_id}>. ${code.expiry !== null ? `Expiring on ${code.expiry.toLocaleString()}.` : ""}`,
               },
               accessory: {
                 type: "button",
