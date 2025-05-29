@@ -40,7 +40,14 @@ export async function app_home_opened(app: Slack.App) {
     if (name && is_approved) {
       await client.views.publish({
         user_id: user,
-        view: await approved_home(id!, name, tilde_username!, email!, shell),
+        view: await approved_home(
+          id!,
+          name,
+          tilde_username!,
+          email!,
+          shell,
+          admin!,
+        ),
       });
     } else if (name && !is_approved) {
       await client.views.publish({
