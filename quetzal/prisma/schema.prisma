@@ -8,16 +8,28 @@ datasource db {
 }
 
 model users {
-  id             Int        @id @default(autoincrement())
-  pk             Int?       @unique @db.Integer
-  slack_user_id  String     @unique @db.VarChar(255)
-  tilde_username String     @unique @db.VarChar(255)
-  name           String?    @db.VarChar(255)
-  email          String?    @db.VarChar(255)
+  id             Int       @id @default(autoincrement())
+  pk             Int?      @unique @db.Integer
+  slack_user_id  String    @unique @db.VarChar(255)
+  tilde_username String    @unique @db.VarChar(255)
+  name           String?   @db.VarChar(255)
+  email          String?   @db.VarChar(255)
   ssh_public_key String
   description    String
-  is_approved    Boolean?   @default(false)
+  is_approved    Boolean?  @default(false)
   message_id     String?
-  created_at     DateTime?  @default(dbgenerated("'1970-01-01 00:00:00+00'::timestamp with time zone")) @db.Timestamptz(6)
-  admin          Boolean    @default(false)
+  created_at     DateTime? @default(dbgenerated("'1970-01-01 00:00:00+00'::timestamp with time zone")) @db.Timestamptz(6)
+  admin          Boolean   @default(false)
+  codes          codes[]
+}
+
+model codes {
+  id           Int       @id @default(autoincrement())
+  generated_by users     @relation(fields: [usersId], references: [id])
+  usersId      Int
+  generated_on DateTime  @default(dbgenerated("'1970-01-01 00:00:00+00'::timestamp with time zone")) @db.Timestamptz(6)
+  valid        Boolean   @default(true)
+  expiry       DateTime?
+  oneTime      Boolean
+  code         String
 }

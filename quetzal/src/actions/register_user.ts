@@ -1,6 +1,7 @@
 import Slack from "@slack/bolt";
 
 import register_form from "../blocks/register_form.js";
+import verification_required from "../blocks/verification_required.js";
 
 export function register_user(app: Slack.App) {
   app.action("register_user", async ({ ack, body, client }) => {
@@ -36,9 +37,9 @@ export function register_user(app: Slack.App) {
       !verificationResponse.includes("Eligible L1") &&
       !verificationResponse.includes("Eligible L2")
     ) {
-      await app.client.chat.postMessage({
-        channel: body.user.id,
-        text: "Before you can sign up for nest, you'll need to verify that you are a student with Hack Club. Please see https://forms.hackclub.com/eligibility for more details. Note that this form is processed by Hack Club HQ (not Nest), so if you have any questions about how to complete it, please email verifications@hackclub.com. It may take a while for the team to process your submission.",
+      await client.views.open({
+        trigger_id: body.trigger_id,
+        view: verification_required(),
       });
     } else
       await client.views.open({

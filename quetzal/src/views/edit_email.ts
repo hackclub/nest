@@ -42,6 +42,7 @@ export function edit_email(app: Slack.App) {
         user.tilde_username,
         user.email!,
         shell,
+        user.admin,
       ),
     });
   });

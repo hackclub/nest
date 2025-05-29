@@ -4,16 +4,28 @@ import { prisma } from "../util/prisma.js";
 import approved_home from "../blocks/approved_home.js";
 import get_user_shell from "../os/get_user_shell.js";
 
-export function edit_full_name(app: Slack.App) {
-  app.view("edit_full_name", async ({ ack, body, view, client }) => {
+export function invalidate_code(app: Slack.App) {
+  app.action("invalidate_code", async ({ ack, body, client }) => {
     ack();
 
-    const user = await prisma.users.update({
+    if (body.type !== "block_actions" || body.actions[0].type !== "button") {
+      return;
+    }
+
+    const user = await prisma.users.findFirst({
       where: {
         slack_user_id: body.user.id,
       },
+    });
+
+    if (!user?.admin) return;
+
+    await prisma.codes.update({
+      where: {
+        id: Number(body.actions[0].value!),
+      },
       data: {
-        name: view.state.values.name_new.name_new_input.value,
+        valid: false,
       },
     });
 

@@ -78,7 +78,14 @@ export function edit_shell(app: Slack.App) {
 
     await client.views.publish({
       user_id: body.user.id,
-      view: await approved_home(id!, name!, tilde_username!, email!, shell!),
+      view: await approved_home(
+        id!,
+        name!,
+        tilde_username!,
+        email!,
+        shell!,
+        admin!,
+      ),
     });
   });
 }

@@ -1,4 +1,5 @@
 import { prisma } from "../util/prisma.js";
+import type { codes, users } from "@prisma/client";
 
 export default async function approved_home(
   id: number,
@@ -6,7 +7,30 @@ export default async function approved_home(
   username: string,
   email: string,
   shell: string,
+  admin: boolean,
 ) {
+  let verification_codes: (codes & {
+    generated_by: users;
+  })[] = [];
+  if (admin) {
+    verification_codes = await prisma.codes.findMany({
+      where: {
+        valid: true,
+        OR: [
+          {
+            expiry: { gt: new Date() },
+          },
+          {
+            expiry: null,
+          },
+        ],
+      },
+      include: {
+        generated_by: true,
+      },
+    });
+  }
+
   return {
     type: "home" as const,
     blocks: [
@@ -114,9 +138,50 @@ export default async function approved_home(
           action_id: "edit_shell",
         },
       },
-      {
-        type: "divider",
-      },
+      ...(admin
+        ? [
+            {
+              type: "divider",
+            },
+            {
+              type: "header",
+              text: {
+                type: "plain_text",
+                text: "Verification Codes",
+              },
+            },
+            ...verification_codes.map((code) => ({
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: `${code.oneTime ? "1️⃣ " : ""}Code \`${code.code}\` generated on ${code.generated_on.toLocaleDateString()} by <@${code.generated_by.slack_user_id}>. ${code.expiry !== null ? `Expiring on ${code.expiry.toLocaleString()}.` : ""}`,
+              },
+              accessory: {
+                type: "button",
+                text: {
+                  type: "plain_text",
+                  text: "Invalidate code",
+                  emoji: true,
+                },
+                value: code.id.toString(),
+                action_id: "invalidate_code",
+              },
+            })),
+            {
+              type: "actions",
+              elements: [
+                {
+                  type: "button",
+                  text: {
+                    type: "plain_text",
+                    text: "New verification code",
+                  },
+                  action_id: "new_verification_code",
+                },
+              ],
+            },
+          ]
+        : []),
     ],
   };
 }
