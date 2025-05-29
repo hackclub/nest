@@ -47,7 +47,7 @@ export default function register_form(profile_name: string) {
         block_id: "name",
         label: {
           type: "plain_text",
-          text: "Full name?",
+          text: "Full name? (May be displayed publicly through OAuth2 apps)",
           emoji: true,
         },
         element: {
