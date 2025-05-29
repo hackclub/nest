@@ -6,11 +6,6 @@ export default function verification_code(code: string) {
       text: "Verification Code",
       emoji: true,
     },
-    submit: {
-      type: "plain_text" as const,
-      text: "Submit",
-      emoji: true,
-    },
     close: {
       type: "plain_text" as const,
       text: "Cancel",
@@ -21,7 +16,7 @@ export default function verification_code(code: string) {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `Your new verification code is: ${code}`,
+          text: `Your new verification code is: \`${code}\``,
         },
       },
     ],
