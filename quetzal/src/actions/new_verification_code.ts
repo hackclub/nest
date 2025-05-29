@@ -12,7 +12,7 @@ export function new_verification_code(app: Slack.App) {
 
     await client.views.open({
       trigger_id: body.trigger_id,
-      view: new_verification_code_view(body.user.id),
+      view: new_verification_code_view(),
     });
   });
 }

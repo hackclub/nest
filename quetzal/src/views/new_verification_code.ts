@@ -8,7 +8,6 @@ import approved_home from "../blocks/approved_home.js";
 
 export function new_verification_code(app: Slack.App) {
   app.view("new_verification_code", async ({ ack, body, view, client }) => {
-    const user_id = view.private_metadata;
     const one_time =
       (view.state.values.one_time.one_time_input.value ?? "no") == "yes";
     const expiry = view.state.values.expiry.expiry_input.selected_date_time
@@ -17,7 +16,7 @@ export function new_verification_code(app: Slack.App) {
 
     const user = await prisma.users.findFirst({
       where: {
-        slack_user_id: user_id,
+        slack_user_id: body.user.id,
       },
     });
 

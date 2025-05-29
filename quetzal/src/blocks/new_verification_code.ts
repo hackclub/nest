@@ -1,8 +1,7 @@
-export default function new_verification_code(user: string) {
+export default function new_verification_code() {
   return {
     type: "modal" as const,
     callback_id: "new_verification_code",
-    private_metadata: user,
     title: {
       type: "plain_text" as const,
       text: "New Verification Code",
