@@ -13,7 +13,7 @@ export default async function handler(
 ) {
   const users = getent.passwd();
 
-  const nestUsers = users.filter((u: any) => u.uid >= 2000 && u.uid < 3000);
+  const nestUsers = users.filter((u: any) => u.uid >= 2000 && u.uid < 30000);
 
   res.status(200).json({ count: nestUsers.length });
 }
