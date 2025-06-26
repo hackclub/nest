@@ -37,7 +37,8 @@ export function register_user(app: Slack.App) {
     ).json()).result;
     const acceptableResponses = ["verified_eligible", "verified_but_over_18"]
     if (
-     !acceptableResponses.includes(verificationResponse1) || acceptableResponses.includes(verificationResponse2)
+         !acceptableResponses.includes(verificationResponse1) &&
+         !acceptableResponses.includes(verificationResponse2)
     ) {
       await client.views.open({
         trigger_id: body.trigger_id,
