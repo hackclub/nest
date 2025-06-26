@@ -21,21 +21,23 @@ export function register_user(app: Slack.App) {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
 
-    const verificationResponse = await (
-      await fetch("https://verify.hackclub.dev/api/status", {
-        method: "POST",
+    const verificationResponse1 = (await (
+      await fetch("https://identity.hackclub.com/api/external/check?slack_id="+ body.user.id, {
+        method: "GET",
         headers: headers,
-        body: JSON.stringify({
-          slack_id: body.user.id,
-          email: profileRes.profile?.email,
-        }),
         redirect: "follow",
       })
-    ).text();
-
+    ).json()).result;
+    const verificationResponse2 = (await (
+      await fetch("https://identity.hackclub.com/api/external/check?email="+ body.user.email, {
+        method: "GET",
+        headers: headers,
+        redirect: "follow",
+      })
+    ).json()).result;
+    const acceptableResponses = ["verified_eligible", "verified_but_over_18"]
     if (
-      !verificationResponse.includes("Eligible L1") &&
-      !verificationResponse.includes("Eligible L2")
+     !acceptableResponses.includes(verificationResponse1) || acceptableResponses.includes(verificationResponse2)
     ) {
       await client.views.open({
         trigger_id: body.trigger_id,
