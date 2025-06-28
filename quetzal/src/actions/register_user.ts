@@ -22,14 +22,14 @@ export function register_user(app: Slack.App) {
     headers.append("Content-Type", "application/json");
 
     const verificationResponse1 = (await (
-      await fetch("https://identity.hackclub.com/api/external/check?slack_id="+ body.user.id, {
+      await fetch("https://identity.hackclub.com/api/external/check?slack_id="+ body?.user?.id, {
         method: "GET",
         headers: headers,
         redirect: "follow",
       })
     ).json()).result;
     const verificationResponse2 = (await (
-      await fetch("https://identity.hackclub.com/api/external/check?email="+ body.user.email, {
+      await fetch("https://identity.hackclub.com/api/external/check?email="+ body?.user?.email, {
         method: "GET",
         headers: headers,
         redirect: "follow",
