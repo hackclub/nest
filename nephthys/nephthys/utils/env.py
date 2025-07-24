@@ -2,11 +2,11 @@ import os
 
 from aiohttp import ClientSession
 from dotenv import load_dotenv
+from prisma import Prisma
 from slack_sdk.web.async_client import AsyncWebClient
 
 from nephthys.transcripts import transcripts
 from nephthys.transcripts.transcript import Transcript
-from prisma import Prisma
 
 load_dotenv(override=True)
 
@@ -14,7 +14,7 @@ load_dotenv(override=True)
 class Environment:
     def __init__(self):
         self.slack_bot_token = os.environ.get("SLACK_BOT_TOKEN", "unset")
-        self.slack_user_token = os.environ.get("SLACK_USER_TOKEN", "unset")
+        # self.slack_user_token = os.environ.get("SLACK_USER_TOKEN", "unset")
         self.slack_signing_secret = os.environ.get("SLACK_SIGNING_SECRET", "unset")
         self.slack_app_token = os.environ.get("SLACK_APP_TOKEN")
 

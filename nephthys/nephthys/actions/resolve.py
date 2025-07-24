@@ -1,12 +1,11 @@
 from datetime import datetime
 
+from prisma.enums import TicketStatus
 from slack_sdk.web.async_client import AsyncWebClient
 
-from nephthys.utils.delete_thread import add_thread_to_delete_queue
 from nephthys.utils.env import env
 from nephthys.utils.logging import send_heartbeat
 from nephthys.utils.permissions import can_resolve
-from prisma.enums import TicketStatus
 
 
 async def resolve(ts: str, resolver: str, client: AsyncWebClient, stale: bool = False):
@@ -73,8 +72,4 @@ async def resolve(ts: str, resolver: str, client: AsyncWebClient, stale: bool = 
         channel=env.slack_help_channel,
         name="thinking_face",
         timestamp=ts,
-    )
-
-    await add_thread_to_delete_queue(
-        channel_id=env.slack_ticket_channel, thread_ts=tkt.ticketTs
     )

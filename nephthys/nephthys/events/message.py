@@ -2,12 +2,12 @@ from datetime import datetime
 from typing import Any
 from typing import Dict
 
+from prisma.enums import TicketStatus
 from slack_sdk.web.async_client import AsyncWebClient
 
 from nephthys.macros import run_macro
 from nephthys.utils.env import env
 from nephthys.utils.logging import send_heartbeat
-from prisma.enums import TicketStatus
 
 ALLOWED_SUBTYPES = ["file_share", "me_message", "thread_broadcast"]
 
@@ -25,13 +25,6 @@ async def on_message(event: Dict[str, Any], client: AsyncWebClient):
     db_user = await env.db.user.find_first(where={"slackId": user})
 
     if event.get("subtype") == "thread_broadcast" and not (db_user and db_user.helper):
-        await client.chat_delete(
-            channel=event["channel"],
-            ts=event["ts"],
-            as_user=True,
-            token=env.slack_user_token,
-            broadcast_delete=True,
-        )
         await client.chat_postEphemeral(
             channel=event["channel"],
             user=event["user"],

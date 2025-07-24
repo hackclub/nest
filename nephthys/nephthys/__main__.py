@@ -12,7 +12,6 @@ from starlette.applications import Starlette
 from nephthys.tasks.close_stale import close_stale_tickets
 from nephthys.tasks.daily_stats import send_daily_stats
 from nephthys.tasks.update_helpers import update_helpers
-from nephthys.utils.delete_thread import process_queue
 from nephthys.utils.env import env
 from nephthys.utils.logging import send_heartbeat
 
@@ -46,7 +45,6 @@ async def main(_app: Starlette):
         )
         scheduler.start()
 
-        delete_msg_task = asyncio.create_task(process_queue())
         await update_helpers()
         handler = None
         if env.slack_app_token:
@@ -67,7 +65,6 @@ async def main(_app: Starlette):
 
         yield
         scheduler.shutdown()
-        delete_msg_task.cancel()
 
         if handler:
             logging.info("Stopping Socket Mode handler")
