@@ -25,6 +25,7 @@ async def run_macro(
             new_kwargs = kwargs.copy()
             new_kwargs["text"] = text
             await macro().run(ticket, helper, **new_kwargs)
+            return
 
     await send_heartbeat(
         f"Macro {name} not found from <@{helper.slackId}>.",
