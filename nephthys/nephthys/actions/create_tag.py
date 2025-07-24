@@ -29,11 +29,13 @@ async def create_tag_btn_callback(ack: AsyncAck, body: dict, client: AsyncWebCli
     """
     Open modal to create a tag
     """
+    
     await ack()
     user_id = body["user"]["id"]
     trigger_id = body["trigger_id"]
 
     user = await env.db.user.find_unique(where={"slackId": user_id})
+
     if not user or not user.admin:
         await send_heartbeat(
             f"Attempted to open create tag modal by non-admin user <@{user_id}>"

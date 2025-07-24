@@ -1,6 +1,6 @@
 # Nephthys
 
-Nephthys is the bot powering #summer-of-making-help and #identity-help in the Hack Club Slack! Below is a guide to set her up for developing and here's a list of some of her features :)
+Nephthys is the bot powering #summer-of-making-help and #identity-help (and now #nest-help!!!) in the Hack Club Slack! Below is a guide to set her up for developing and here's a list of some of her features :)
 
 ## Features
 
@@ -17,7 +17,7 @@ Sometimes it’s nice to be able to do things quickly... Here’s where macros c
 * `?identity` - redirect to #identity-help 
 * `?guides` - redirect to the guides
 * `?hii` - silly message :3
-* more to come?? feel free to PR your own into hackclub/nephthys or tell me what you want
+* more to come?? feel free to PR your own into hackclub/nephthys (for #nest-help: nephthys folder in hackclub/nest) or tell me (amber for som/idv nephthys, cyteon for nest nephthys) what you want
 
 ### Stale
 
