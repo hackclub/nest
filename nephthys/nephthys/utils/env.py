@@ -28,7 +28,7 @@ class Environment:
         self.slack_bts_channel = os.environ.get("SLACK_BTS_CHANNEL", "unset")
         self.slack_user_group = os.environ.get("SLACK_USER_GROUP", "unset")
         self.slack_maintainer_id = os.environ.get("SLACK_MAINTAINER_ID", "unset")
-        self.program = os.environ.get("PROGRAM", "summer_of_making")
+        self.program = os.environ.get("PROGRAM", "nest")
 
         self.port = int(os.environ.get("PORT", 3000))
 
