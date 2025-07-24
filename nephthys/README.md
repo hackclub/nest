@@ -15,7 +15,7 @@ Sometimes it’s nice to be able to do things quickly... Here’s where macros c
 
 * `?resolve` - the ticket gets closed. Equivalent of hitting i get it now
 * `?identity` - redirect to #identity-help 
-* `?faq` - redirect to the FAQ
+* `?guides` - redirect to the guides
 * `?hii` - silly message :3
 * more to come?? feel free to PR your own into hackclub/nephthys or tell me what you want
 

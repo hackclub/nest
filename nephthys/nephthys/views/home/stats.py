@@ -22,7 +22,7 @@ async def get_stats_view(user: User):
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": ":rac_cute: weh im just a silly raccoon, did you expect me to have stats :rac_ded: i don't even have a job >:(",
+                    "text": ":rac_cute: weh im just a silly bird, did you expect me to have stats :rac_ded: i don't even have a job >:(",
                 },
             },
         ],

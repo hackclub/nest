@@ -3,7 +3,7 @@ from typing import Any
 from prisma.models import Ticket
 from prisma.models import User
 
-from nephthys.macros.faq import FAQ
+from nephthys.macros.guides import Guides
 from nephthys.macros.hello_world import HelloWorld
 from nephthys.macros.identity import Identity
 from nephthys.macros.resolve import Resolve
@@ -11,7 +11,7 @@ from nephthys.utils.env import env
 from nephthys.utils.logging import send_heartbeat
 
 
-macros = [Resolve, HelloWorld, FAQ, Identity]
+macros = [Resolve, HelloWorld, Guides, Identity]
 
 
 async def run_macro(
