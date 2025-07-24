@@ -1,0 +1,91 @@
+generator client {
+  provider             = "prisma-client-py"
+  interface            = "asyncio"
+  recursive_type_depth = 5
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
+model User {
+  id       Int     @id @unique @default(autoincrement())
+  slackId  String  @unique
+  username String? @unique
+  admin    Boolean @default(false)
+
+  openedTickets   Ticket[] @relation("OpenedTickets")
+  closedTickets   Ticket[] @relation("ClosedTickets")
+  assignedTickets Ticket[] @relation("AssignedTickets")
+
+  tagSubscriptions UserTagSubscription[]
+  helper           Boolean               @default(false)
+
+  createdAt DateTime @default(now())
+}
+
+model Ticket {
+  id          Int          @id @unique @default(autoincrement())
+  title       String
+  description String
+  status      TicketStatus @default(OPEN)
+
+  msgTs    String @unique
+  ticketTs String @unique
+
+  openedBy   User   @relation("OpenedTickets", fields: [openedById], references: [id])
+  openedById Int
+
+  closedBy   User?     @relation("ClosedTickets", fields: [closedById], references: [id])
+  closedById Int?
+  closedAt   DateTime?
+
+  assignedTo   User?   @relation("AssignedTickets", fields: [assignedToId], references: [id])
+  assignedToId Int?
+  assignedAt   DateTime?
+
+  tagsOnTickets TagsOnTickets[]
+
+  createdAt DateTime @default(now())
+}
+
+model Tag {
+  id   Int    @id @unique @default(autoincrement())
+  name String @unique
+
+  ticketsOnTags TagsOnTickets[]
+
+  userSubscriptions UserTagSubscription[]
+  createdAt DateTime @default(now())
+}
+
+model TagsOnTickets {
+  ticket   Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  ticketId Int
+  tag      Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId    Int
+
+  assignedAt DateTime @default(now())
+
+  @@id([ticketId, tagId])
+  @@map("tags_on_tickets")
+}
+
+model UserTagSubscription {
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId  Int
+
+  subscribedAt DateTime @default(now())
+
+  @@id([userId, tagId])
+  @@map("user_tag_subscriptions")
+}

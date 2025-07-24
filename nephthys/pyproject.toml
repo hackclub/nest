@@ -1,0 +1,39 @@
+[project]
+name = "nephthys"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "aiohttp>=3.11.14",
+    "apscheduler>=3.10.4",
+    "astral>=3.2",
+    "matplotlib>=3.10.3",
+    "numpy>=2.3.1",
+    "prisma>=0.15.0",
+    "pydantic>=2.11.5",
+    "python-dotenv>=1.1.0",
+    "pytz>=2025.2",
+    "slack-bolt>=1.23.0",
+    "starlette>=0.46.1",
+    "thefuzz>=0.22.1",
+    "uvicorn>=0.34.0",
+    "uvloop>=0.21.0",
+]
+
+[project.scripts]
+nephthys = "nephthys.__main__:start"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = ["pre-commit>=4.1.0"]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
+[tool.hatch.envs.default]
+path = "./.venv/"
