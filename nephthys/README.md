@@ -1,4 +1,5 @@
 # Nephthys
+Forked from https://github.com/hackclub/nephthys by @amber
 
 Nephthys is the bot powering #summer-of-making-help and #identity-help (and now #nest-help!!!) in the Hack Club Slack! Below is a guide to set her up for developing and here's a list of some of her features :)
 
