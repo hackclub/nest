@@ -126,7 +126,7 @@ if your question has been answered, please hit the button below to mark it as re
         """
 
         if not self.home_unknown_user_text:
-            self.home_unknown_user_text = f"heyyyy, heidi here! it looks like i'm not allowed to show ya this. sorry! if you think this is a mistake, please reach out to <@{self.program_owner}> and she'll lmk what to do!"
+            self.home_unknown_user_text = f"heyyyy, quetzal here! it looks like i'm not allowed to show ya this. sorry! if you think this is a mistake, please reach out to <@{self.program_owner}> and she'll lmk what to do!"
 
         if not self.not_allowed_channel:
             self.not_allowed_channel = f"heya, it looks like you're not supposed to be in that channel, pls talk to <@{self.program_owner}> if that's wrong"

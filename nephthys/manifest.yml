@@ -1,7 +1,7 @@
 {
     "display_information": {
-        "name": "helper heidi",
-        "description": "helping you make your summer (and my partner proud)",
+        "name": "helper quetzal",
+        "description": "helping you make your nest not blow up",
         "background_color": "#c47600"
     },
     "features": {
@@ -11,18 +11,9 @@
             "messages_tab_read_only_enabled": true
         },
         "bot_user": {
-            "display_name": "helper heidi",
+            "display_name": "helper quetzal",
             "always_online": false
         },
-        "slash_commands": [
-          {
-            "command": "/dm-magic-link",
-            "url": "https://nephthys.hackclub.com/slack/events",
-            "description": "Send a magic login link to a user",
-            "usage_hint": "<@user>",
-            "should_escape": true
-          }
-        ]
     },
     "oauth_config": {
         "scopes": {

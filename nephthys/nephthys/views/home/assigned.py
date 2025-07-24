@@ -75,7 +75,7 @@ async def get_assigned_tickets_view(user: User):
                 "type": "header",
                 "text": {
                     "type": "plain_text",
-                    "text": ":rac_cute: helper heidi",
+                    "text": ":nest: helper quetzal",
                     "emoji": True,
                 },
             },

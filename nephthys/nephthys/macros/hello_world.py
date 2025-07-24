@@ -16,7 +16,7 @@ class HelloWorld(Macro):
             or user_info["user"]["name"]
         )
         await env.slack_client.chat_postMessage(
-            text=f"hey, {name}! i'm heidi :rac_shy: say hi to orpheus for me would you? :rac_cute:",
+            text=f"hey, {name}! i'm quetzal :rac_shy: say hi to orpheus for me would you? :rac_cute:",
             channel=env.slack_help_channel,
             thread_ts=ticket.msgTs,
         )

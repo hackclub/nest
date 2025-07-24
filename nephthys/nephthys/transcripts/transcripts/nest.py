@@ -23,6 +23,6 @@ if your question has been answered, please hit the button below to mark it as re
     home_unknown_user_title: str = (
         ":upside-down_orpheus: woah, stop right there {name}!"
     )
-    home_unknown_user_text: str = f"heyyyy, heidi here! it looks like i'm not allowed to show ya this. sorry! if you think this is a mistake, please reach out to <@{program_owner}> and she'll lmk what to do!"
+    home_unknown_user_text: str = f"heyyyy, quetzal here! it looks like i'm not allowed to show ya this. sorry! if you think this is a mistake, please reach out to <@{program_owner}> and she'll lmk what to do!"
 
     not_allowed_channel: str = f"heya, it looks like you're not supposed to be in that channel, pls talk to <@{program_owner}> if that's wrong"

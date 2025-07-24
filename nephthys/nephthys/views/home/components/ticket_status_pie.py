@@ -72,7 +72,7 @@ async def get_ticket_status_pie_chart(helper: User, tz: timezone):
 
     if not url:
         url = "https://hc-cdn.hel1.your-objectstorage.com/s/v3/888f292372d8450449b41dd18767812c72518449_binoculars.png"
-        caption = "looks like heidi's scrounging around for tickets in the trash"
+        caption = "looks like quetzal's scrounging around for tickets in the trash"
 
     return {
         "type": "image",
