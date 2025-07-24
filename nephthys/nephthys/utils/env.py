@@ -19,8 +19,8 @@ class Environment:
         self.slack_app_token = os.environ.get("SLACK_APP_TOKEN")
 
         self.uptime_url = os.environ.get("UPTIME_URL")
-        self.site_url = os.environ.get("SITE_URL", "https://summer.hackclub.com")
-        self.site_api_key = os.environ.get("SITE_API_KEY", "unset")
+        #self.site_url = os.environ.get("SITE_URL", "https://summer.hackclub.com")
+        #self.site_api_key = os.environ.get("SITE_API_KEY", "unset")
 
         self.environment = os.environ.get("ENVIRONMENT", "development")
         self.slack_help_channel = os.environ.get("SLACK_HELP_CHANNEL", "unset")
