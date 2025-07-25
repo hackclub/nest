@@ -243,19 +243,19 @@ export default function Hero() {
         {isExpanded && (
           <pre className="hidden text-xs transition-all duration-300 sm:block xl:text-sm 2xl:text-base">
             {`
- __________________    orpheus@nest 
-< Welcome to Nest! >   ----------- 
- ------------------    OS: Debian GNU/Linux 12 (bookworm) x86_64 
-          \\            Host: KVM/QEMU (Standard PC (i440FX + PIIX, 1996) pc-i440fx-8.1) 
-           \\           Kernel: 6.1.0-21-amd64 
-            \\  __      Uptime: 22 days, 2 hours, 1 min 
-              / _)     Packages: 1448 (dpkg), 104 (nix-user), 51 (nix-default) 
-     _.----._/ /       Shell: bash 5.2.15 
-    /         /        Resolution: 1280x800 
- __/ (| | (  |         Terminal: /dev/pts/88 
-/__.-'|_|--|_|         CPU: AMD EPYC 9454P (80) @ 2.749GHz 
-                       GPU: 00:02.0 Vendor 1234 Device 1111 
-                       Memory: 77808MiB / 150865MiB
+ __________________    orpheus@nest
+< Welcome to Nest! >   -----------
+ ------------------    OS: Debian GNU/Linux 13 (trixie) x86_64
+          \\            Host: KVM/QEMU (Standard PC (i440FX + PIIX, 1996) pc-i440fx-9.2)
+           \\           Kernel: 6.12.35+deb13-amd64
+            \\  __      Uptime: 22 days, 2 hours, 1 min
+              / _)     Packages: 1448 (dpkg), 104 (nix-user), 51 (nix-default)
+     _.----._/ /       Shell: bash 5.2.37
+    /         /        Resolution: 1280x800
+ __/ (| | (  |         Terminal: /dev/pts/0
+/__.-'|_|--|_|         CPU: AMD EPYC 9454P (80) @ 2.749GHz
+                       GPU: 00:02.0 Vendor 1234 Device 1111
+                       Memory: 178875MiB / 231508MiB
             `}
           </pre>
         )}
