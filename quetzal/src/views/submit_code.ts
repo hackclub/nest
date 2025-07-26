@@ -61,13 +61,13 @@ export function submit_code(app: Slack.App) {
         });
       }
     }
-    catch(e) {
+    catch(e: any) {
       return await ack({
         response_action: "errors",
          errors: {
            code: "An error occurred... Please report this to nest administrators, including the following text.\n" + e.stack
         }
       });
-    );
+    };
   });
 }
