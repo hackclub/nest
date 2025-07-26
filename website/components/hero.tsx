@@ -255,7 +255,7 @@ export default function Hero() {
  __/ (| | (  |         Terminal: /dev/pts/0
 /__.-'|_|--|_|         CPU: AMD EPYC 9454P (80) @ 2.749GHz
                        GPU: 00:02.0 Vendor 1234 Device 1111
-                       Memory: 178875MiB / 231508MiB
+                       Memory: 210423MiB / 231508MiB
             `}
           </pre>
         )}
