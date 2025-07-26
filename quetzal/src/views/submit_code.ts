@@ -60,6 +60,6 @@ export function submit_code(app: Slack.App) {
            code: "An error occurred... Please report this to nest administrators, including the following text.\n" + e.stack
         }
       });
-    );
+    };
   });
 }
