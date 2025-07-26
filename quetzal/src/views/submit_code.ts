@@ -43,13 +43,15 @@ export function submit_code(app: Slack.App) {
       });
       console.timeLog("submit_code", "slack-user-lookup-post");
 
+      console.timeLog("submit_code", "slack-ack-success-pre");
       await ack({
         response_action: "update",
         view: register_form(
           profileRes.profile?.display_name ?? profileRes.profile?.real_name ?? "",
         ),
       });
-
+      console.timeLog("submit_code", "slack-ack-success-post");
+      console.timeEnd("submit_code");
       if (code.one_time) {
         await prisma.codes.update({
           where: {
