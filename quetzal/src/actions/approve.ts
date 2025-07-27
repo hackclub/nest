@@ -28,14 +28,14 @@ export function approve(app: Slack.App) {
       type: "section",
       text: {
         type: "mrkdwn",
-        text: `Creating user... (by <@${adminUserId}>)`,
+        text: `Creating user... (by <@${adminUserId}>) TS ${Date.now()}`,
       },
     };
 
     await client.chat.update({
       channel: body.container.channel_id,
       ts: body.container.message_ts,
-      text: `Creating user... (by <@${adminUserId}>)`,
+      text: `Creating user... (by <@${adminUserId}>) TS ${Date.now()}`,
       blocks: msgBlocks,
     });
 
