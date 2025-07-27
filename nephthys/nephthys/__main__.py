@@ -1,6 +1,7 @@
 import asyncio
 import contextlib
 import logging
+import random
 from datetime import datetime
 
 import uvicorn
@@ -29,7 +30,8 @@ logging.basicConfig(level="INFO" if env.environment != "production" else "WARNIN
 
 @contextlib.asynccontextmanager
 async def main(_app: Starlette):
-    await send_heartbeat(":neodog_nom_verified: Bot is online!")
+    neomoji = random.choice([":neocat_nom_verified:", ":neodog_nom_verified:", ":drgn_nom_verified:"])
+    await send_heartbeat(f"{neomoji} Bot is online!")
     async with ClientSession() as session:
         env.session = session
         await env.db.connect()
