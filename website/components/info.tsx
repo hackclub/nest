@@ -82,7 +82,7 @@ const SpecsContent: React.FC = () => (
       </p>
       <ul className="mt-2 list-inside list-disc">
         <li>Secure VM (NixOS): Hosts critical services</li>
-        <li>Nest VM (Debian 12): User-accessible environment</li>
+        <li>Nest VM (Debian 13): User-accessible environment</li>
       </ul>
       <p className="mt-2">
         <Link
