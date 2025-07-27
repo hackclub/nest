@@ -12,7 +12,7 @@ async def resolve(ts: str, resolver: str, client: AsyncWebClient, stale: bool = 
     resolving_user = await env.db.user.find_unique(where={"slackId": resolver})
     if not resolving_user:
         await send_heartbeat(
-            f"User {resolver} attempted to resolve ticket with ts {ts} but isn't in the database.",
+            f"User {resolver} attempted to resolve ticket with ts {ts} but isn't in the database. https://hackclub.slack.com/archives/{env.slack_ticket_channel}/p{ts.replace('.', '')}",
             messages=[f"Ticket TS: {ts}", f"Resolver ID: {resolver}"],
         )
         return
@@ -20,7 +20,7 @@ async def resolve(ts: str, resolver: str, client: AsyncWebClient, stale: bool = 
     allowed = await can_resolve(resolving_user.slackId, resolving_user.id, ts)
     if not allowed:
         await send_heartbeat(
-            f"User {resolver} attempted to resolve ticket with ts {ts} without permission.",
+            f"User {resolver} attempted to resolve ticket with ts {ts} without permission. https://hackclub.slack.com/archives/{env.slack_ticket_channel}/p{ts.replace('.', '')}",
             messages=[f"Ticket TS: {ts}", f"Resolver ID: {resolver}"],
         )
         return
@@ -49,7 +49,7 @@ async def resolve(ts: str, resolver: str, client: AsyncWebClient, stale: bool = 
     )
     if not tkt:
         await send_heartbeat(
-            f"Failed to resolve ticket with ts {ts} by {resolver}. Ticket not found.",
+            f"Failed to resolve ticket with ts {ts} by {resolver}. Ticket not found. https://hackclub.slack.com/archives/{env.slack_ticket_channel}/p{ts.replace('.', '')}",
             messages=[f"Ticket TS: {ts}", f"Resolver ID: {resolver}"],
         )
         return
