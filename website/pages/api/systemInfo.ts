@@ -70,7 +70,7 @@ function getKernel(): string {
   } catch {
     return '6.12.38+deb13-amd64'; //fallback - 31/07/2025
   }
-}
+ }
 
 function getPackageCount(): string {
   try {
@@ -108,7 +108,7 @@ function getShell(): string {
 
 function getTerminal(): string {
   try {
-    // Get the current TTY
+    // Get the current TTY. prolly wont work
     const tty = execSync('tty 2>/dev/null', { encoding: 'utf8' }).trim();
     if (tty && tty !== 'not a tty') {
       return tty;
@@ -124,22 +124,13 @@ function getCPUInfo(): string {
     const cpuinfo = fs.readFileSync('/proc/cpuinfo', 'utf8');
     const modelMatch = cpuinfo.match(/model name\s*:\s*(.+)/);
     const cpuCount = (cpuinfo.match(/processor\s*:/g) || []).length;
-    
+    const cpuFreq = cpuinfo.match(/cpu MHz\s*:\s*([0-9.]+)/);
     if (modelMatch) {
-      // Try to get max freq
-      try {
-        const maxFreq = fs.readFileSync('/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq', 'utf8');
-        const freqGHz = (parseInt(maxFreq.trim()) / 1000000).toFixed(3);
+      if (cpuFreq) {
+        const freqGHz = (parseFloat(cpuFreq[1]) / 1000).toFixed(3);
         return `${modelMatch[1]} (${cpuCount}) @ ${freqGHz}GHz`;
-      } catch {
-        // current frequency from /proc/cpuinfo
-        const cpuFreq = cpuinfo.match(/cpu MHz\s*:\s*([0-9.]+)/);
-        if (cpuFreq) {
-          const freqGHz = (parseFloat(cpuFreq[1]) / 1000).toFixed(3);
-          return `${modelMatch[1]} (${cpuCount}) @ ${freqGHz}GHz`;
-        }
-        return `${modelMatch[1]} (${cpuCount})`;
       }
+      return `${modelMatch[1]} (${cpuCount})`;
     }
     return 'AMD EPYC 9454P (80) @ 2.749GHz';
   } catch {
@@ -197,7 +188,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       cpu: getCPUInfo(),
       gpu: getGPUInfo(),
       memory: getMemoryInfo(),
-    };
+     };
 
     // Cache for 30 seconds
     res.setHeader('Cache-Control', 'public, s-maxage=30, stale-while-revalidate=60');
