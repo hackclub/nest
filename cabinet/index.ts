@@ -78,7 +78,7 @@ app.get("/list/json", async (req, res) => {
 app.post("/domain/new", async (req, res) => {
   let user = req.username;
   req.admin = req.username === "root" || req.username === "nest-internal";
-  if (!validator.isFQDN(req.body.domain) || !/^([a-z0-9-]+\.)*dn42$/i.test(req.body.domain)) {
+  if (!(validator.isFQDN(req.body.domain) || /^([a-z0-9-]+\.)*dn42$/i.test(req.body.domain))) {
     return res
       .status(400)
       .send(
@@ -164,7 +164,7 @@ app.post("/domain/new", async (req, res) => {
 app.post("/domain/delete", async (req, res) => {
   let user = req.username;
 
-  if (!validator.isFQDN(req.body.domain)) {
+  if (!(validator.isFQDN(req.body.domain) || /^([a-z0-9-]+\.)*dn42$/i.test(req.body.domain))) {
     return res
       .status(400)
       .send(
