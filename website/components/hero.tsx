@@ -10,6 +10,36 @@ interface Node {
   vy: number;
 }
 
+interface SystemInfo {
+  hostname: string;
+  os: string;
+  host: string;
+  kernel: string;
+  uptime: string;
+  packages: string;
+  shell: string;
+  resolution: string;
+  terminal: string;
+  cpu: string;
+  gpu: string;
+  memory: string;
+}
+
+const fallback: SystemInfo = { // fallback in case real-time data doesnt work
+  hostname: "orpheus@nest",
+  os: "Debian GNU/Linux 13 (trixie) x86_64",
+  host: "KVM/QEMU (Standard PC (i440FX + PIIX, 1996) pc-i440fx-8.1)",
+  kernel: "6.12.38+deb13-amd64",
+  uptime: "0 min",
+  packages: "0 (dpkg), 0 (nix-user), 0 (nix-default)",
+  shell: "bash 5.2.37",
+  resolution: "1280x800",
+  terminal: "/dev/pts/0",
+  cpu: "Unknown",
+  gpu: "Unknown",
+  memory: "Unknown",
+};
+
 const AnimatedBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -125,6 +155,21 @@ const ButtonLink: React.FC<{
 
 export default function Hero() {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [sysInfo, setSysInfo] = useState<SystemInfo>(fallback);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isExpanded) {
+      setLoading(true);
+      fetch("/api/systemInfo")
+        .then((res) => res.json())
+        .then((data) => {
+          setSysInfo(data);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    }
+  }, [isExpanded]);
 
   return (
     <section className="relative grid grid-cols-1 place-items-center px-8 py-16 lg:grid-cols-3 transition-all duration-200 ease-in-out lg:gap-x-16 lg:px-16 lg:py-24 2xl:px-32 2xl:py-32">
@@ -241,22 +286,24 @@ export default function Hero() {
           )}
         </div>
         {isExpanded && (
-          <pre className="hidden text-xs transition-all duration-300 sm:block xl:text-sm 2xl:text-base">
-            {`
- __________________    orpheus@nest
+          <pre className="hidden text-xs transition-all duration-300 sm:block xl:text-sm 2xl:text-base whitespace-pre-wrap">
+{loading
+  ? "Loading system info..."
+  : `
+ __________________    ${sysInfo.hostname}
 < Welcome to Nest! >   -----------
- ------------------    OS: Debian GNU/Linux 13 (trixie) x86_64
-          \\            Host: KVM/QEMU (Standard PC (i440FX + PIIX, 1996) pc-i440fx-9.2)
-           \\           Kernel: 6.12.35+deb13-amd64
-            \\  __      Uptime: 22 days, 2 hours, 1 min
-              / _)     Packages: 1448 (dpkg), 104 (nix-user), 51 (nix-default)
-     _.----._/ /       Shell: bash 5.2.37
-    /         /        Resolution: 1280x800
- __/ (| | (  |         Terminal: /dev/pts/0
-/__.-'|_|--|_|         CPU: AMD EPYC 9454P (80) @ 2.749GHz
-                       GPU: 00:02.0 Vendor 1234 Device 1111
-                       Memory: 210423MiB / 231508MiB
-            `}
+ ------------------    OS: ${sysInfo.os}
+          \\            Host: ${sysInfo.host}
+           \\           Kernel: ${sysInfo.kernel}
+            \\  __      Uptime: ${sysInfo.uptime}
+              / _)     Packages: ${sysInfo.packages}
+     _.----._/ /       Shell: ${sysInfo.shell}
+    /         /        Resolution: ${sysInfo.resolution}
+ __/ (| | (  |         Terminal: ${sysInfo.terminal}
+/__.-'|_|--|_|         CPU: ${sysInfo.cpu}
+                       GPU: ${sysInfo.gpu}
+                       Memory: ${sysInfo.memory}
+` }
           </pre>
         )}
       </div>
