@@ -84,7 +84,7 @@ function getPackageCount(): string {
     } catch {}
     
     try {
-      nixDefaultCount = execSync('nix-env -p /nix/var/nix/profiles/default -q 2>/dev/null | wc -l', { encoding: 'utf8' }).trim();
+      nixDefaultCount = execSync('nix-store --query --requisites /nix/var/nix/profiles/default 2>/dev/null | wc -l', { encoding: 'utf8' }).trim();
     } catch {}
     
     return `${dpkgCount} (dpkg), ${nixUserCount} (nix-user), ${nixDefaultCount} (nix-default)`;
