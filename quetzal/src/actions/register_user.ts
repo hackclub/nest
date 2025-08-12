@@ -29,7 +29,7 @@ export function register_user(app: Slack.App) {
       })
     ).json()).result;
 
-    const acceptableResponses = ["verified_eligible", "verified_but_over_18"]
+    const acceptableResponses = ["verified_eligible"]
     if (
          !acceptableResponses.includes(verificationResponse1)
     ) {

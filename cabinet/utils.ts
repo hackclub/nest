@@ -63,7 +63,9 @@ export async function reloadCaddy() {
             errors: {
               routes: [], // error routing
             },
-            metrics: {}, // enable metrics: https://caddyserver.com/docs/metrics
+            metrics: {
+              per_host: true
+            }, // enable metrics: https://caddyserver.com/docs/metrics
           },
         },
       },
