@@ -92,6 +92,19 @@ export async function reloadCaddy() {
   const dn42Domains = domains
     .filter((domain) => domain.domain.endsWith(".dn42"))
     .map((domain) => domain.domain);
+  const regularDomains = domains
+    .filter((domain) => !domain.domain.endsWith(".dn42"))
+    .map((domain) => domain.domain);
+  caddy.apps.tls.automation.policies.push({
+    subjects: regularDomains,
+    issuers: [
+      {
+        ca: "https://acme.zerossl.com/v2/DV90",
+        module: "acme",
+        email: "kartikey@hackclub.com"
+      },
+    ],
+  });
   if (dn42Domains.length > 1) {
     caddy.apps.tls.automation.policies.push({
       subjects: dn42Domains,
