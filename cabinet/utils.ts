@@ -101,7 +101,7 @@ export async function reloadCaddy() {
       {
         ca: "https://acme.zerossl.com/v2/DV90",
         module: "acme",
-        email: "zerossl@hackclub.app"
+        email: "kartikey@hackclub.com"
       },
     ],
   });
