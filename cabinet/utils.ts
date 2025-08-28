@@ -95,6 +95,16 @@ export async function reloadCaddy() {
   const regularDomains = domains
     .filter((domain) => !domain.domain.endsWith(".dn42"))
     .map((domain) => domain.domain);
+  caddy.apps.tls.automation.policies.push({
+    subjects: regularDomains,
+    issuers: [
+      {
+        ca: "https://acme.zerossl.com/v2/DV90",
+        module: "acme",
+        email: "zerossl@hackclub.app"
+      },
+    ],
+  });
   if (dn42Domains.length > 1) {
     caddy.apps.tls.automation.policies.push({
       subjects: dn42Domains,
@@ -102,17 +112,6 @@ export async function reloadCaddy() {
         {
           ca: "https://acme.burble.dn42/v1/dn42/acme/directory",
           module: "acme",
-        },
-      ],
-    });
-  } else {
-    caddy.apps.tls.automation.policies.push({
-      subjects: regularDomains,
-      issuers: [
-        {
-          ca: "https://acme.zerossl.com/v2/DV90",
-          module: "acme",
-          email: "zerossl@hackclub.app"
         },
       ],
     });
