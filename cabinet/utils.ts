@@ -96,7 +96,6 @@ export async function reloadCaddy() {
     .filter((domain) => !domain.domain.endsWith(".dn42"))
     .map((domain) => domain.domain);
   caddy.apps.tls.automation.policies.push({
-    subjects: regularDomains,
     issuers: [
       {
         ca: "https://acme.zerossl.com/v2/DV90",
