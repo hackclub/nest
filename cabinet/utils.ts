@@ -131,6 +131,13 @@ export async function reloadCaddy() {
               handle: [
                 {
                   handler: "reverse_proxy",
+                  headers: {
+                    request: {
+                      set: {
+                        "X-Forwarded-For": ["{http.request.remote.host}"],
+                      },
+                    },
+                  },
                   health_checks: {
                     active: {
                       expect_status: 2,
