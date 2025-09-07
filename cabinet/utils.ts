@@ -154,40 +154,6 @@ export async function reloadCaddy() {
       ],
       terminal: true,
     });
-    caddy.apps.http.servers.srv0.routes.push({
-      match: [
-        {
-          host: [domain.domain],
-        },
-      ],
-      handle: [
-        {
-          handler: "subroute",
-          routes: [
-            {
-              handle: [
-                {
-                  handler: "reverse_proxy",
-                  health_checks: {
-                    active: {
-                      expect_status: 2,
-                      interval: "60s",
-                      timeout: "5s",
-                    },
-                  },
-                  upstreams: [
-                    {
-                      dial: domain.proxy,
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-      terminal: true,
-    });
 
     let specifiedEmail = null;
     try {
