@@ -64,7 +64,7 @@ export async function reloadCaddy() {
               routes: [], // error routing
             },
             metrics: {
-              per_host: true
+              per_host: true,
             }, // enable metrics: https://caddyserver.com/docs/metrics
           },
         },
@@ -100,7 +100,7 @@ export async function reloadCaddy() {
       {
         ca: "https://acme.zerossl.com/v2/DV90",
         module: "acme",
-        email: "kartikey@hackclub.com"
+        email: "kartikey@hackclub.com",
       },
     ],
   });
@@ -117,6 +117,43 @@ export async function reloadCaddy() {
   }
 
   for (const domain of domains) {
+    caddy.apps.http.servers.srv0.routes.push({
+      match: [{ host: [domain.domain] }],
+      handle: [
+        {
+          handler: "subroute",
+          routes: [
+            {
+              handle: [
+                {
+                  handler: "reverse_proxy",
+                  headers: {
+                    request: {
+                      set: {
+                        "X-Forwarded-For": ["{http.request.remote.host}"],
+                      },
+                    },
+                  },
+                  health_checks: {
+                    active: {
+                      expect_status: 2,
+                      interval: "60s",
+                      timeout: "5s",
+                    },
+                  },
+                  upstreams: [
+                    {
+                      dial: domain.proxy,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      terminal: true,
+    });
     caddy.apps.http.servers.srv0.routes.push({
       match: [
         {
