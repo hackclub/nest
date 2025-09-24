@@ -103,8 +103,8 @@ export function approve(app: Slack.App) {
       }
       console.log(`Password set for ${username}`);
 
-      // Delay 6 minutes to allow time for caching
-      await new Promise((resolve) => setTimeout(resolve, 1000 * 60 * 6));
+      // Delay 7 minutes to allow time for cache refresh (should refresh every 5 minutes, but adding an extra 2min buffer)
+      await new Promise((resolve) => setTimeout(resolve, 1000 * 60 * 7));
 
       await setup_script(username);
       await home_script(username);
