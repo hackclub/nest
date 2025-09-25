@@ -120,8 +120,6 @@ export function approve(app: Slack.App) {
         checks++;
       }
 
-      // Delay 7 minutes to allow time for cache refresh (should refresh every 5 minutes, but adding an extra 2min buffer)
-
       await setup_script(username);
       await home_script(username);
       await add_root_caddyfile_config(username);
