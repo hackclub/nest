@@ -74,3 +74,11 @@ export async function set_authorized_keys(user: string, keys: string[]) {
 
   console.log(stdout);
 }
+
+export async function is_user_created(username: string) {
+  const { stdout, stderr } = await execPromise(`id ${username}`);
+
+  if (stderr) console.error(stderr);
+
+  return !stdout.includes("no such user");
+}
