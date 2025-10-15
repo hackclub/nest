@@ -13,7 +13,7 @@ export default function unregistered_home() {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: "Hey there, I'm Quetzal! I'll be helping you get started with Nest. Just provide your details and I'll help get you started! If you have any questions, ask in the #nest channel.",
+          text: "Hey there, I'm Quetzal! I'll be helping you get started with Nest. Just provide your details and I'll help get you started! If you have any questions, ask in the #nest-help channel.",
         },
       },
       {

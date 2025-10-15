@@ -29,7 +29,7 @@ app.use((req, res, next) => {
   }
   if (req.username.includes("_")) {
     return res.status(500).json({
-      message: "Invalid username, contact an admin in #nest",
+      message: "Invalid username, contact an admin in #nest-help",
     });
   } else next();
 });
@@ -86,7 +86,7 @@ app.put("/db/:database", async function (req, res) {
     catch(e) {
       console.log(e.stack);
       return res.status(500).json({
-        message: "Failed to create database. Make sure it doesn't already exist... If it doesn't exist already, contact nest admins in #nest."
+        message: "Failed to create database. Make sure it doesn't already exist... If it doesn't exist already, contact nest admins in #nest-help."
       });
     }
     return res.status(200).json({

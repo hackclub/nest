@@ -45,7 +45,7 @@ export default async function approved_home(
         type: "section",
         text: {
           type: "mrkdwn",
-          text: "Welcome to Nest! Here's your profile - if you have any questions, ask in the #nest channel!",
+          text: "Welcome to Nest! Here's your profile - if you have any questions, ask in the #nest-help channel!",
         },
       },
       {

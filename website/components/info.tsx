@@ -166,10 +166,10 @@ export default function Info() {
         </Link>{" "}
         who are happy to help you with any issues you might encounter. The{" "}
         <Link
-          href="https://hackclub.slack.com/archives/C056WDR3MQR"
+          href="https://hackclub.slack.com/archives/C097AL5AUH0"
           className="text-HCPurpleText hover:underline"
         >
-          #nest
+          #nest-help
         </Link>{" "}
         channel on Slack is the best place to ask any questions related to Nest,
         and you can also ask in other channels like{" "}
