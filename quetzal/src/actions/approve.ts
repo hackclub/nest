@@ -7,6 +7,7 @@ import {
   setup_script,
   home_script,
   set_authorized_keys,
+  is_user_created,
 } from "../os/os_functions.js";
 import markdown_message from "../blocks/markdown_message.js";
 
@@ -103,8 +104,21 @@ export function approve(app: Slack.App) {
       }
       console.log(`Password set for ${username}`);
 
-      // Delay 6 minutes to allow time for caching
-      await new Promise((resolve) => setTimeout(resolve, 1000 * 60 * 6));
+      let userCreated = is_user_created(username);
+      let checks = 0;
+      while (!userCreated) {
+        // Cancel and alert if it's been more than 10 minutes
+        if (checks >= 10) {
+          throw new Error(
+            `User ${username} is not on the Nest VM after 10 minutes`,
+          );
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 1000 * 60));
+        userCreated = is_user_created(username);
+
+        checks++;
+      }
 
       await setup_script(username);
       await home_script(username);
