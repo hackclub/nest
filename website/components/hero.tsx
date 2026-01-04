@@ -177,6 +177,10 @@ export default function Hero() {
         <AnimatedBackground />
       </div>
       <div className="relative z-10 mb-6 flex flex-col items-start justify-start gap-y-5 font-dm-mono text-white 2xl:mb-32">
+         <div className="rounded-lg bg-HCPurple p-4 text-white">
+          <span>Due to abusive behavior, Nest servers are heavily restricted. For more info, check #nest in the </span>
+          <Link className="text-HCPurpleText underline hover:text-white transition-colors" href={"https://hackclub.com/slack"}>slack.</Link>
+        </div>
         <h1 className="text-3xl font-medium 2xl:text-4xl">
           <span className="text-HCPurpleText">Nest</span>, a free Linux server
           from{" "}
@@ -187,7 +191,7 @@ export default function Hero() {
         <p className="text-lg 2xl:text-xl">
           Host Discord bots, apps, websites, try out basic computer networking,
           chat with others and more!
-        </p>
+        </p>  
         <div className="flex justify-start gap-x-5 lg:max-tabletxx:w-full lg:max-tabletxx:space-y-3 lg:max-tabletxx:flex-col">
           <ButtonLink
             href="https://guides.hackclub.app/index.php/Quickstart"
@@ -202,7 +206,10 @@ export default function Hero() {
             className="text-HCPurpleText hover:bg-HCPurple hover:text-white text-sm px-[0.5rem]"
           >
             <FaBook className="text-xl" />
-            <span>Read the Docs</span>
+            <span className="flex flex-col">
+              <span className="line-through">Read the Docs</span>
+              <span className="text-xs">Temporaily unavailable</span>
+            </span>
           </ButtonLink>
         </div>
         <pre className="px-10 font-mono text-[4px] sm:hidden">
@@ -256,6 +263,7 @@ export default function Hero() {
                                           ░░░░▓▓▓▓░░                                    `}
         </pre>
       </div>
+      
       <div
         className={`relative z-10 col-span-2 hidden w-full flex-col gap-x-10 rounded-lg py-10 font-dm-mono  text-white sm:flex ${
           isExpanded
