@@ -190,7 +190,7 @@ export default function Hero() {
         </p>
         <div className="flex justify-start gap-x-5 lg:max-tabletxx:w-full lg:max-tabletxx:space-y-3 lg:max-tabletxx:flex-col">
           <ButtonLink
-            href="https://guides.hackclub.app/index.php/Quickstart"
+            href="https://dashboard.hackclub.app"
             className="bg-HCPurple text-white hover:bg-HCPurple text-sm px-[0.5rem]"
           >
             <FaCode className="text-xl" />

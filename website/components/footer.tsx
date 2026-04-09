@@ -13,7 +13,7 @@ const Footer = forwardRef((_: unknown, ref: Ref<HTMLDivElement>) => {
               Ready to get started?
             </h2>
             <Link
-              href="https://guides.hackclub.app/index.php/Quickstart"
+              href="https://dashboard.hackclub.app"
               className="flex items-center gap-x-2 rounded-lg border-2 border-HCPurple bg-HCPurple px-4 py-2 text-base font-medium transition-all duration-300 hover:scale-105 active:scale-95 2xl:text-xl"
             >
               <FaCode className="text-xl" />

@@ -177,9 +177,8 @@ export default function Info() {
         if you have a question related to your project.
         <br />
         <br />
-        Nest also has a team of 5 active admins who are able to assist you with
-        any requests you might have. You can ping them on Slack with the
-        @nestadmins user group.
+        Nest also has a team of 7 active admins who are able to assist you with
+        any requests you might have. For urgent issues you can ping the @nestadmins group on Slack.
       </p>
     ),
   };
@@ -197,8 +196,8 @@ export default function Info() {
         >
           Hetzner AX162-R
         </Link>{" "}
-        dedicated server, located in Helsinki, Finland. Users share a{" "}
-        <span className="italic">virtual machine</span> on the server.
+        dedicated server, located in Helsinki, Finland. Users each get a{" "}
+        <span className="italic">LXC container</span> on the server.
       </p>
       <div className="w-11/12 overflow-hidden rounded-lg bg-gradient-to-b from-[#1a1a2e] to-[#16213e] shadow-lg 2xl:max-w-7xl">
         <div className="flex flex-wrap border-b border-violet-950">
