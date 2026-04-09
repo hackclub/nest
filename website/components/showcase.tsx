@@ -47,7 +47,7 @@ export default function Showcase({ projects }: ShowcaseProps) {
       </div>
       <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row">
         <ButtonLink
-          href="https://guides.hackclub.app/index.php/Quickstart"
+          href="https://dashboard.hackclub.app"
           className="bg-HCPurple text-white"
         >
           Start your project <FaCode className="ml-2" />
