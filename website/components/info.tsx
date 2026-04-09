@@ -197,7 +197,7 @@ export default function Info() {
           Hetzner AX162-R
         </Link>{" "}
         dedicated server, located in Helsinki, Finland. Users each get a{" "}
-        <span className="italic">lxc container</span> on the server.
+        <span className="italic">LXC container</span> on the server.
       </p>
       <div className="w-11/12 overflow-hidden rounded-lg bg-gradient-to-b from-[#1a1a2e] to-[#16213e] shadow-lg 2xl:max-w-7xl">
         <div className="flex flex-wrap border-b border-violet-950">
