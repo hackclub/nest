@@ -7,8 +7,6 @@ import {
   FaBook,
   FaTools,
   FaTerminal,
-  FaCode,
-  FaGithub,
   FaBars,
   FaTimes
 } from "react-icons/fa";
