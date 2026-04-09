@@ -125,15 +125,9 @@ export default function Nav() {
 
       <div className="hidden absolute translate-y-[-20px] animate-[fadeInDown_0.5s_ease-out_forwards] items-center justify-end right-8 py-4 gap-x-4 opacity-0  lg:flex">
         <ActionButton
-          href="https://guides.hackclub.app/index.php/Quickstart"
-          icon={<FaCode className="text-xl " />}
-          text="Join Nest!"
-          primary
-        />
-        <ActionButton
-          href="https://identity.hackclub.app"
+          href="https://dashboard.hackclub.app"
           icon={<FaTerminal className="text-xl" />}
-          text="Login"
+          text="Dashboard"
         />
       </div>
     </nav>
