@@ -1,3 +1,7 @@
+> [!IMPORTANT]
+> This setup guide is outdated, it was written before nest transitioned to an LXC-based setup
+> This guide has to be rewritten
+
 # Nest Setup
 
 This is a complete and comprehensive guide of how Nest is setup!
