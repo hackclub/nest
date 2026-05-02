@@ -6,7 +6,7 @@ export default function Document() {
       <Head>
         <link rel="icon" type="image/png" href="/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <script defer src="https://umami.hackclub.app/script.js" data-domains="hackclub.app" data-website-id="3635bf71-cdca-4403-bdbe-b4c0b90f6741"></script>
+        <script defer src="https://umami.hackclub.app/script.js" data-domains="hackclub.app,nest.hackclub.com" data-website-id="3635bf71-cdca-4403-bdbe-b4c0b90f6741"></script>
         <meta charSet="UTF-8" />
         <meta
           name="description"
