@@ -11,9 +11,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>,
 ) {
-  const users = getent.passwd();
-
-  const nestUsers = users.filter((u: any) => u.uid >= 2000 && u.uid < 30000);
-
-  res.status(200).json({ count: nestUsers.length });
+  // TODO: replace with actual data
+  res.status(200).json({ count: 367 });
 }
