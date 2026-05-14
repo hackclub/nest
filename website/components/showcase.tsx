@@ -22,19 +22,22 @@ const ButtonLink: React.FC<{
   </Link>
 );
 
-export default function Showcase({ projects }: ShowcaseProps) {
+/* export default function Showcase({ projects }: ShowcaseProps) {
   const [count, setCount] = useState(700);
 
   useEffect(() => {
     fetch("/api/userCount")
       .then((r) => r.json())
       .then((d) => setCount(d.count));
-  }, []);
+  }, []); 
+
+  Temporary fix for count
+  */
 
   return (
     <section className="flex flex-col items-center gap-y-4 px-4 py-8 font-dm-mono text-white lg:px-16 lg:py-12 2xl:px-32 2xl:py-16">
       <h2 className="px-2 text-center text-3xl font-medium sm:text-3xl md:text-4xl 2xl:text-5xl">
-        Join <span className="text-HCPurpleText">{count} other teens</span>{" "}
+        Join <span className="text-HCPurpleText">6,500+ other teens</span>{" "}
         using Nest
       </h2>
       <p className="p-4 text-center text-lg 2xl:text-xl">
