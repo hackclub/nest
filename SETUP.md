@@ -369,7 +369,7 @@ https://guides.hackclub.app (MediaWiki) is used for all of Nest's documentation,
 
 [Kener](https://kener.ing/docs) monitors Nest's services and infrastructure, and alerts in Slack (#nest-status channel) when anything goes down. It's running on the logs.hackclub.app Hetzner VPS.
 
-At the moment, it is setup to monitor 13 services:
+At the moment, it is setup to monitor 9 services:
 
 - The dashboard
 - The nest website
@@ -377,7 +377,6 @@ At the moment, it is setup to monitor 13 services:
 - The guides
 - Nephthys
 - nest-prox-1, nest-prox-2, and nest-prox-3
-- ts-router-1, ts-router-2 and ts-router-3
 - Our Proxmox Backup Server
 
 ### ts-router-1/2/3
