@@ -351,7 +351,7 @@ source /etc/network/interfaces.d/*
 ## Nest Services
 
 Forgejo, the dashboard + reverse proxy (caddy), guides and umami (primarily for admins) are running as separate LXC containers on nest-prox-3, with the exception of forgejo which is a VM.
-Uptimekuma and nephthys (slack support bot) are running on the logs.hackclub.app VPS
+Kener and nephthys (slack support bot) are running on the logs.hackclub.app VPS
 
 ### Forgejo
 
@@ -365,14 +365,13 @@ Headscale is used for administering Nest. All Nest admins can connect to it, and
 
 https://guides.hackclub.app (MediaWiki) is used for all of Nest's documentation, with the exception of this document. It's maintained and written by Nest admins and the community, and contains guides and help for anyone using Nest. It is running on nest-prox-3 as a LXC container.
 
-### Uptime Kuma
+### Kener
 
-[Uptime Kuma](https://github.com/louislam/uptime-kuma) monitors Nest's services and infrastructure, and alerts in Slack (#nest-status channel) when anything goes down. It's running on the logs.hackclub.app Hetzner VPS.
+[Kener](https://kener.ing/docs) monitors Nest's services and infrastructure, and alerts in Slack (#nest-status channel) when anything goes down. It's running on the logs.hackclub.app Hetzner VPS.
 
 At the moment, it is setup to monitor 13 services:
 
 - The dashboard
-- The SSH bastion
 - The nest website
 - The site for exporting old nest data
 - The guides
