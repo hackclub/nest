@@ -1,7 +1,0 @@
-{
-  "compilerOptions": {
-    // add Bun type definitions
-    "types": ["@types/bun"],
-    "esModuleInterop": true
-  }
-}

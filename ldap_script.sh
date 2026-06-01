@@ -1,2 +1,0 @@
-#!/bin/bash
-ldapsearch -H 'ldaps://identity.hackclub.app' -x -w '' -D 'cn=ldap-service,ou=users,dc=ldap,dc=secure,dc=vm,dc=hackclub,dc=app' -b 'ou=users,dc=ldap,dc=secure,dc=vm,dc=hackclub,dc=app' "cn=$1" 'sshPublicKey' | sed -n '/^ /{H;d};/sshPublicKey:/x;$g;s/\n *//g;s/sshPublicKey: //gp'
