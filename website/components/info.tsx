@@ -37,10 +37,10 @@ const SpecsContent: React.FC = () => (
   <div className="flex flex-col items-start gap-6">
     <pre className="mb-4 w-full overflow-x-auto text-xs text-HCPurpleText scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-600 sm:w-1/3">
       {`
-                 _   
- _ __   ___  ___| |_ 
+                 _
+ _ __   ___  ___| |_
 | '_ \\ / _ \\/ __| __|
-| | | |  __/\\__ \\ |_ 
+| | | |  __/\\__ \\ |_
 |_| |_|\\___||___/\\__|
 `}
     </pre>
@@ -70,20 +70,17 @@ const SpecsContent: React.FC = () => (
     </div>
     <div className="mt-4 text-sm">
       <p>
-        Nest runs on a{" "}
+        Nest runs on two{" "}
         <Link
           href="https://www.hetzner.com/dedicated-rootserver/ax162-r/"
           className="text-HCPurpleText hover:underline"
         >
           Hetzner AX162-R
         </Link>{" "}
-        dedicated server, located in Helsinki, Finland. It uses Proxmox VE 8.2.2
-        with two main VMs:
+        dedicated servers, located in Helsinki, Finland. It uses Proxmox VE 9
+        and is hosting the LXC containers for all users, nest infra stuff is
+        running on another dedi.
       </p>
-      <ul className="mt-2 list-inside list-disc">
-        <li>Secure VM (NixOS): Hosts critical services</li>
-        <li>Nest VM (Debian 13): User-accessible environment</li>
-      </ul>
       <p className="mt-2">
         <Link
           href="https://github.com/hackclub/nest/blob/main/SETUP.md"
@@ -132,28 +129,6 @@ export default function Info() {
         </Link>
       </p>
     ),
-    Services: (
-      <p>
-        Nest provides a collection of services to help you host your projects!
-        These include{" "}
-        <Link
-          href="https://guides.hackclub.app/index.php/PostgreSQL"
-          className="text-HCPurpleText hover:underline"
-        >
-          Nest Postgres
-        </Link>{" "}
-        (easy to use Postgres database),{" "}
-        <Link href="https://identity.hackclub.app">Nest Identity</Link> for
-        authentication, and{" "}
-        <Link
-          href="https://guides.hackclub.app/index.php/Caddy"
-          className="text-HCPurpleText hover:underline"
-        >
-          Caddy
-        </Link>{" "}
-        for a webserver.
-      </p>
-    ),
     Community: (
       <p>
         As part of Hack Club, Nest has a community of {count} users and others
@@ -177,8 +152,9 @@ export default function Info() {
         if you have a question related to your project.
         <br />
         <br />
-        Nest also has a team of 7 active admins who are able to assist you with
-        any requests you might have. For urgent issues you can ping the @nestadmins group on Slack.
+        Nest also has a team of 9 active admins who are able to assist you with
+        any requests you might have. For *urgent* issues you can ping the
+        @nestadmins group on Slack.
       </p>
     ),
   };
@@ -189,15 +165,15 @@ export default function Info() {
         What makes up <span className="text-HCPurpleText">Nest</span>?
       </h2>
       <p className="mb-8 max-w-4xl text-center text-lg 2xl:text-xl">
-        Nest is a{" "}
+        Nest is two{" "}
         <Link
           href="https://www.hetzner.com/dedicated-rootserver/ax162-r/"
           className="text-HCPurpleText hover:underline"
         >
           Hetzner AX162-R
         </Link>{" "}
-        dedicated server, located in Helsinki, Finland. Users each get a{" "}
-        <span className="italic">LXC container</span> on the server.
+        dedicated servers, located in Helsinki, Finland. Users each get a{" "}
+        <span className="italic">LXC container</span> on one of the server.
       </p>
       <div className="w-11/12 overflow-hidden rounded-lg bg-gradient-to-b from-[#1a1a2e] to-[#16213e] shadow-lg 2xl:max-w-7xl">
         <div className="flex flex-wrap border-b border-violet-950">

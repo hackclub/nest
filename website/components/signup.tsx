@@ -63,23 +63,20 @@ export default function SignupSteps() {
         How to join <span className="text-HCPurpleText">Nest?</span>
       </h2>
       <p className="mb-8 text-center text-lg 2xl:text-xl">
-        Want to become a <span className="text-HCPurpleText">bird?</span> Follow
-        these steps to get started!
+        Want to become a <span className="text-HCPurpleText">bird?</span> Head
+        over to the dashboard to get started!
       </p>
-      <div className="relative mx-auto mt-14 w-full max-w-6xl rounded-lg bg-gradient-to-b from-[#1a1a2e] to-[#16213e] p-6 shadow-lg sm:w-11/12 2xl:max-w-7xl">
-        <div className="mb-3 flex flex-wrap items-center font-mono text-base text-green-400 sm:mb-6 sm:text-xl">
-          <span className="whitespace-nowrap text-blue-400">
-            nest@hackclub:~$
-          </span>
-          <span className="ml-4 whitespace-nowrap">cat signup.txt</span>
-        </div>
-        <div className="max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-track-gray-900 scrollbar-thumb-gray-600 sm:max-h-[800px]">
-          <div className="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-3">
-            {steps.map((step, index) => (
-              <StepCard key={index} step={step} index={index} />
-            ))}
-          </div>
-        </div>
+
+      <div className="flex justify-center">
+        <a
+          href="https://dashboard.hackclub.app"
+          target="_blank"
+          rel="noopener"
+          referrerPolicy="origin"
+          className="hover:bg-HCPurpleTextHover mb-8 inline-block rounded bg-HCPurpleText px-6 py-3 text-lg font-medium text-white"
+        >
+          Go to Dashboard
+        </a>
       </div>
     </section>
   );
