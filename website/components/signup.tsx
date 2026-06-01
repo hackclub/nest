@@ -1,34 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const steps = [
-  {
-    title: "Join Hack Club",
-    image: "/signup-step1.png",
-    description: (
-      <>
-        Join the{" "}
-        <Link
-          href="https://hackclub.com/slack/"
-          className="text-HCPurpleText hover:underline"
-        >
-          Hack Club Slack workspace
-        </Link>
-      </>
-    ),
-  },
-  {
-    title: "Register",
-    image: "/signup-step2.png",
-    description: "Use Quetzal to register for an account",
-  },
-  {
-    title: "Start Nesting",
-    image: "/signup-step3.png",
-    description: "SSH into your Nest account and start building!",
-  },
-];
-
 interface StepCardProps {
   step: {
     title: string;
