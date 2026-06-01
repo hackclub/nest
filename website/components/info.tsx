@@ -4,7 +4,7 @@ import { GoCpu } from "react-icons/go";
 import { BsMemory, BsNvme, BsHddNetwork } from "react-icons/bs";
 import Link from "next/link";
 
-type TabType = "Specs" | "Linux" | "Services" | "Community";
+type TabType = "Specs" | "Linux" | "Community";
 
 interface TabContentProps {
   content: React.ReactNode;
