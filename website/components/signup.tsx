@@ -47,7 +47,7 @@ export default function SignupSteps() {
           referrerPolicy="origin"
           className="hover:bg-HCPurpleTextHover mb-8 inline-block rounded bg-HCPurpleText px-6 py-3 text-lg font-medium text-white"
         >
-          Go to Dashboard
+          Go to the Dashboard
         </a>
       </div>
     </section>
