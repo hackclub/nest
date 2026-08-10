@@ -12,7 +12,7 @@ export default async function handler(
   res: NextApiResponse<ResponseData>,
 ) {
   try {
-    const result = await fetch("https://dashboard.hackclub.app/api/stats");
+    const result = await fetch("https://dashboard.hackclub.app/api/public/stats");
 
     if (!result.ok) {
       return res.status(200).json({ count: 477 }); // user count when i made this code
