@@ -1,0 +1,1 @@
+ALTER TABLE "session" ADD COLUMN "sudo" boolean DEFAULT false NOT NULL;

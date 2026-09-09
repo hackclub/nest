@@ -1,0 +1,54 @@
+{
+	"name": "mocinno",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"start": "bun run --env-file .env --filter \"*\" start",
+		"build": "bun run --env-file .env --filter \"*\" build",
+		"start:prod": "bun run --env-file .env --filter \"*\" build && bun run --env-file .env --filter \"*\" start & bun run --env-file .env --filter \"*\" bastion",
+		"db:push": "bun run --env-file .env --filter \"*\" db:push",
+		"db:migrate": "bun run --env-file .env --filter \"*\" db:migrate",
+		"db:generate": "bun run --env-file .env --filter \"*\" db:generate",
+		"db:studio": "bun run --env-file .env --filter \"*\" db:studio",
+		"dev": "bun run --parallel --env-file .env --filter \"*\" dev",
+		"bastion": "bun run --env-file .env --filter \"*\" bastion",
+		"lint": "prettier --check . && eslint .",
+		"format": "prettier --write ."
+	},
+	"workspaces": [
+		"backend",
+		"frontend"
+	],
+	"catalog": {
+		"@types/bun": "^1.3.14",
+		"typescript": "^6.0.3",
+		"better-auth": "^1.6.20",
+		"@trpc/client": "^11.18.0",
+		"@trpc/server": "^11.18.0",
+		"superjson": "^2.2.6",
+		"zod": "^4.4.3"
+	},
+	"devDependencies": {
+		"@eslint/js": "^10.0.1",
+		"@types/bun": "catalog:",
+		"eslint": "^10.8.1",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-svelte": "^3.22.0",
+		"globals": "^17.11.0",
+		"typescript-eslint": "^8.67.0"
+	},
+	"dependencies": {
+		"@mocinno/backend": "workspace:",
+		"@shopify/prettier-plugin-liquid": "^1.11.0",
+		"prettier": "^3.9.6",
+		"prettier-plugin-svelte": "^4.1.1",
+		"prettier-plugin-tailwindcss": "^0.8.0"
+	},
+	"peerDependencies": {
+		"typescript": "catalog:"
+	},
+	"overrides": {
+		"cpu-features": "npm:@empty",
+		"globals": "npm:globals@17.7.0"
+	}
+}

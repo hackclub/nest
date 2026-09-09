@@ -1,0 +1,1 @@
+ALTER TABLE "applications" DROP CONSTRAINT "applications_user_id_unique";

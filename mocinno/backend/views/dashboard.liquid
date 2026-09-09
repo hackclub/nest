@@ -1,0 +1,856 @@
+{% layout 'parent.liquid' %}
+
+{% block body -%}
+	<div class='bg-background font-geist-sans text-foreground antialiased min-h-screen flex flex-col'>
+		<div class='border-border uk-shadow-sm flex h-14 items-center justify-between border-b px-6 bg-white'>
+			<div class='flex space-x-6 text-md items-center font-bold'>
+				<span>Nest</span>
+				<ul class='uk-subnav uk-subnav-pill mb-0 font-normal' id='main-tabs'>
+					{% if user %}
+						<li class='uk-active'><a href='#' data-target='tab-dashboard'>Dashboard</a></li>
+						<li><a href='#' data-target='tab-domains'>Domains</a></li>
+						<li><a href='#' data-target='tab-ssh-keys'>SSH Keys</a></li>
+						<li><a href='#' data-target='tab-backups'>Backups</a></li>
+					{% else %}
+						<li class='uk-active'><a href='#' data-target='tab-apply'>Apply for Nest</a></li>
+					{% endif %}
+				</ul>
+			</div>
+			<div class='flex items-center space-x-4'>
+				<div class='text-sm font-medium'>{{ profile.name }}</div>
+				{% if admin %}
+					<a href='/api/admin' class='uk-btn uk-btn-default uk-btn-sm'>Admin Panel</a>
+				{% endif %}
+			</div>
+		</div>
+		<div class='flex flex-1 max-w-4xl w-full mx-auto px-4 md:px-0'>
+			<main class='flex-1 py-8 min-w-0'>
+				<div id='tab-content' class='w-full relative'>
+					{% if user %}
+						<div id='tab-dashboard' class='space-y-6 pt-2 block'>
+							<div>
+								<h2 class='text-2xl font-bold tracking-tight'>Your Nest container</h2>
+								<p class='text-muted-foreground mt-1'>
+									From here you may check on the status of your container.
+								</p>
+							</div>
+							<div class='border-border border-t'></div>
+							{% if suspended %}
+								<div class='uk-alert uk-alert-destructive'>
+									<div class='uk-alert-description'>
+										<strong>Your container has been suspended.</strong> Please contact an admin for
+										assistance.
+									</div>
+								</div>
+							{% endif %}
+							<div class='border-border border rounded-xl overflow-hidden shadow-sm bg-white'>
+								<table class='uk-table uk-table-divider uk-table-middle mb-0'>
+									<tbody>
+										<tr>
+											<td class='w-48 font-medium pl-4 py-3'>Username</td>
+											<td class='py-3'>{{ user.username }}</td>
+										</tr>
+										<tr>
+											<td class='font-medium pl-4 py-3'>VMID</td>
+											<td class='py-3'>{{ user.vmid }}</td>
+										</tr>
+										{% if user.ip %}
+											<tr>
+												<td class='font-medium pl-4 py-3'>Private IPv4</td>
+												<td class='py-3'>{{ user.ip }}</td>
+											</tr>
+										{% endif %}
+										{% if user.ipv6 %}
+											<tr>
+												<td class='font-medium pl-4 py-3'>Public IPv6</td>
+												<td class='py-3'>{{ user.ipv6 }}</td>
+											</tr>
+										{% endif %}
+										{% if container %}
+											<tr>
+												<td class='font-medium pl-4 py-3'>Status</td>
+												<td class='py-3'>
+													<span>
+														{{ container.status }}
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td class='font-medium pl-4 py-3'>Hostname</td>
+												<td class='py-3'>{{ container.name }}</td>
+											</tr>
+											<tr>
+												<td class='font-medium pl-4 py-3'>CPU</td>
+												<td class='py-3'>{{ container.cpus }} Cores</td>
+											</tr>
+											<tr>
+												<td class='font-medium pl-4 py-3'>Memory</td>
+												<td class='py-3'>{{ container.maxmem | divided_by: 1048576 }} MB</td>
+											</tr>
+										{% endif %}
+									</tbody>
+								</table>
+							</div>
+							<div class='p-5 border border-border bg-muted/40 rounded-xl flex items-center justify-between shadow-sm'>
+								<div>
+									<span class='font-medium mr-3'>SSH Access:</span>
+									<code class='text-sm font-mono bg-white border border-border px-2.5 py-1.5 rounded-md'
+										>ssh {{ user.username }}@hackclub.app</code
+									>
+								</div>
+							</div>
+							{% unless suspended %}
+								<div class='flex gap-x-3 mt-4 pt-6 border-t border-border'>
+									{% if container.status == 'running' %}
+										<button id='stop-btn' class='uk-btn uk-btn-secondary'>Stop Container</button>
+										<button id='reboot-btn' class='uk-btn uk-btn-default'>Reboot</button>
+									{% else %}
+										<button id='start-btn' class='uk-btn uk-btn-primary'>Start Container</button>
+									{% endif %}
+									<div class='flex-1'></div>
+									<button id='delete-btn' class='uk-btn uk-btn-destructive'>
+										Delete Container
+									</button>
+								</div>
+							{% endunless %}
+							<p id='status-message' class='text-sm font-medium mt-2'></p>
+						</div>
+						<div id='tab-domains' class='space-y-6 pt-2 hidden'>
+							<div>
+								<h2 class='text-2xl font-bold tracking-tight'>Domains</h2>
+								<p class='text-muted-foreground mt-1'>
+									From here you may configure custom domains to point towards your container.
+								</p>
+							</div>
+							<div class='border-border border-t'></div>
+							<div class='border-border border rounded-xl overflow-hidden shadow-sm bg-white'>
+								<table id='domain-table' class='uk-table uk-table-divider uk-table-middle mb-0'>
+									<thead>
+										<tr class='bg-muted/20'>
+											<th class='pl-4'>Domain</th>
+											<th>Target Port</th>
+											<th class='w-24 text-right pr-4'>Actions</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for d in domains %}
+											<tr data-domain='{{ d.domain }}'>
+												<td class='font-medium pl-4'>{{ d.domain }}</td>
+												<td>{{ d.proxy }}</td>
+												<td class='text-right pr-4'>
+													<button
+														class='domain-rm-btn uk-btn uk-btn-text text-destructive hover:underline text-sm'
+														data-domain='{{ d.domain }}'
+													>
+														Remove
+													</button>
+												</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+								{% if domains.size == 0 %}
+									<div class='p-6 text-center text-muted-foreground text-sm bg-white'>
+										No domains added yet.
+									</div>
+								{% endif %}
+							</div>
+							<div class='bg-white p-6 border border-border rounded-xl shadow-sm mt-6'>
+								<h4 class='font-medium text-lg mb-4'>Add New Domain</h4>
+								<div class='flex items-start gap-x-4'>
+									<div class='space-y-1 w-64'>
+										<label class='text-sm font-medium'>Domain</label>
+										<input
+											type='text'
+											id='domain-input'
+											class='uk-input h-10'
+											placeholder='example.com'
+										>
+									</div>
+									<div class='space-y-1 flex-1'>
+										<label class='text-sm font-medium'>Target Port</label>
+										<input
+											type='number'
+											id='proxy-input'
+											class='uk-input h-10'
+											placeholder='example: 8080'
+											inputmode='numeric'
+										>
+									</div>
+								</div>
+								<div class='flex items-center justify-between mt-4'>
+									<div class='uk-form-help text-muted-foreground mt-0' id='domain-message'>
+										You'll need to point your domain to {{ user.username }}.hackclub.app to use
+										this!
+									</div>
+									<button id='domain-add-btn' class='uk-btn uk-btn-primary'>Add Domain</button>
+								</div>
+							</div>
+						</div>
+						<div id='tab-ssh-keys' class='space-y-6 pt-2 hidden'>
+							<div>
+								<h2 class='text-2xl font-bold tracking-tight'>SSH Keys</h2>
+								<p class='text-muted-foreground mt-1'>
+									Manage the SSH public keys that can access your container.
+								</p>
+							</div>
+							<div class='border-border border-t'></div>
+							<div class='border-border border rounded-xl overflow-hidden shadow-sm bg-white'>
+								<table
+									id='ssh-key-table'
+									class='uk-table uk-table-divider uk-table-middle mb-0 table-fixed w-full'
+								>
+									<thead>
+										<tr class='bg-muted/20'>
+											<th class='pl-4'>Key</th>
+											<th class='w-24 text-right pr-4'>Actions</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for k in user.ssh_keys %}
+											<tr data-key='{{ k }}'>
+												<td
+													class='pl-4 font-mono text-sm text-muted-foreground'
+													style='word-break: break-all; white-space: normal; overflow-wrap: anywhere;'
+												>
+													{{ k }}
+												</td>
+												<td class='text-right pr-4'>
+													<button
+														class='ssh-key-rm-btn uk-btn uk-btn-text text-destructive hover:underline text-sm'
+														data-key='{{ k }}'
+													>
+														Remove
+													</button>
+												</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+								{% if user.ssh_keys.size == 0 %}
+									<div class='p-6 text-center text-muted-foreground text-sm bg-white'>
+										No SSH keys found.
+									</div>
+								{% endif %}
+							</div>
+							<div class='bg-white p-6 border border-border rounded-xl shadow-sm mt-6'>
+								<h4 class='font-medium text-lg mb-4'>Add New SSH Key</h4>
+								<div class='space-y-1'>
+									<label class='text-sm font-medium'>Public Key</label>
+									<textarea
+										id='ssh-key-input'
+										class='uk-textarea p-3 h-28 w-full'
+										placeholder='ssh-ed25519 AAAA... or ssh-ecdsa AAAA...'
+									></textarea>
+									<div class='uk-form-help text-muted-foreground mt-1' id='ssh-key-add-status'>
+										Paste your public key here (ssh-ed25519 or ssh-ecdsa).
+									</div>
+								</div>
+								<div class='flex items-center justify-end mt-4'>
+									<button id='ssh-key-add-btn' class='uk-btn uk-btn-primary' disabled>
+										Add Key
+									</button>
+								</div>
+							</div>
+						</div>
+						<div id='tab-backups' class='space-y-6 pt-2 hidden'>
+							<div>
+								<h2 class='text-2xl font-bold tracking-tight'>Backups</h2>
+								<p class='text-muted-foreground mt-1'>View and restore your container backups.</p>
+
+								<div class='border-border border-t my-6'></div>
+
+								<div class='border-border border rounded-xl overflow-hidden shadow-sm bg-white'>
+									<table class='uk-table uk-table-divider uk-table-middle mb-0'>
+										<thead>
+											<tr class='bg-muted/20'>
+												<th class='pl-4'>Backup ID</th>
+												<th>Created At</th>
+												<th>Action</th>
+											</tr>
+										</thead>
+										<tbody>
+											{% for b in backups %}
+												<tr>
+													<td class='pl-4 font-mono'>{{ b.volid }}</td>
+													<td>{{ b.ctime | date: '%Y-%m-%d %H:%M:%S' }}</td>
+													<td>
+														<button
+															id='restore-btn'
+															data-volid='{{ b.volid }}'
+															class='restore-btn uk-btn uk-btn-default uk-btn-sm'
+														>
+															Restore
+														</button>
+													</td>
+												</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					{% else %}
+						<div id='tab-apply' class='space-y-6 pt-2 block'>
+							<div>
+								<h2 class='text-2xl font-bold tracking-tight'>Apply for Nest</h2>
+								<p class='text-muted-foreground mt-1'>
+									Apply for a container on Nest by filling out the details below.
+								</p>
+							</div>
+							<div class='border-border border-t'></div>
+							{% if application %}
+								{% if application.status == 'pending' %}
+									<div class='p-6 border border-border rounded-xl bg-muted/20 shadow-sm mb-6'>
+										<h3 class='font-semibold text-lg mb-2'>Application Pending Review</h3>
+										<p class='text-sm text-muted-foreground mb-4'>
+											You have already submitted a request. An admin will review it soon.
+										</p>
+										<ul class='uk-list uk-list-disc pl-5 text-sm text-muted-foreground'>
+											<li><strong>Username:</strong> {{ application.username }}</li>
+											<li><strong>Submitted:</strong> {{ application.created_at }}</li>
+										</ul>
+									</div>
+								{% elsif application.status == 'rejected' %}
+									<div class='p-4 border border-destructive/40 rounded-xl bg-destructive/10 mb-6 shadow-sm'>
+										<p class='text-destructive font-medium'>
+											Your previous application was rejected. You may submit a new one below.
+										</p>
+									</div>
+								{% endif %}
+							{% endif %}
+							{% if application == null or application.status == 'rejected' %}
+								{% if eligible and hackatime_ban == false %}
+									<div class='bg-white p-8 border border-border rounded-xl shadow-sm space-y-8'>
+										<div class='space-y-3'>
+											<h3 class='text-lg font-medium'>Select operating system</h3>
+											<p class='text-muted-foreground text-sm'>
+												Choose the OS template to initialize on your container.
+											</p>
+											<div class='mt-4 max-w-sm'>
+												<select id='template-input' class='uk-select h-10 w-full'>
+													{% assign s = config.servers[0] %}
+													{% if s.templates.name %}
+														<option value='{{ s.templates.name }}'>{{ s.templates.name }}</option>
+													{% else %}
+														{% for t in s.templates %}
+															<option value='{{ t.name }}'>{{ t.name }}</option>
+														{% endfor %}
+													{% endif %}
+												</select>
+											</div>
+										</div>
+										<div class='border-border border-t'></div>
+										<div class='space-y-3'>
+											<h3 class='text-lg font-medium'>Credentials & Usage</h3>
+											<p class='text-muted-foreground text-sm'>
+												Configure your Nest access details.
+											</p>
+											<div class='space-y-5 pt-2'>
+												<div>
+													<label class='uk-form-label font-medium mb-1.5 block' for='username-input'
+														>System Username</label
+													>
+													<input
+														type='text'
+														id='username-input'
+														class='uk-input h-10 w-full max-w-md'
+														placeholder='e.g. johndoe'
+														maxlength='32'
+													>
+													<div
+														class='uk-form-help text-muted-foreground mt-1.5'
+														id='username-status'
+													>
+														Must be 3-32 characters: letters, numbers, hyphens.
+													</div>
+												</div>
+												<div>
+													<label class='uk-form-label font-medium mb-1.5 block' for='sshkey-input'
+														>SSH Public Key</label
+													>
+													<textarea
+														id='sshkey-input'
+														class='uk-textarea p-3 h-28 w-full'
+														placeholder='ssh-ed25519 AAAA... or ssh-rsa AAAA...'
+													></textarea>
+													<div class='uk-form-help text-muted-foreground mt-1.5' id='sshkey-status'>
+														You'll login with this instead of a password.
+													</div>
+												</div>
+												<div>
+													<label class='uk-form-label font-medium mb-1.5 block' for='reason-input'
+														>Intended Usage</label
+													>
+													<textarea
+														id='reason-input'
+														class='uk-textarea p-3 h-24 w-full'
+														placeholder='Briefly describe what you plan to host or build...'
+													></textarea>
+													<div class='uk-form-help text-muted-foreground mt-1.5' id='reason-status'>
+														Please provide at least 10 characters. It helps us understand what
+														people use Nest for!
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class='pt-6 border-t border-border flex justify-end items-center'>
+											<p id='status-message-form' class='mr-4 text-sm font-medium'>
+												By clicking "Submit Application", I agree to the Acceptable Use Policy and
+												<a href='https://dashboard.hackclub.app/privacy.pdf' target='_blank'
+													>Privacy Policy</a
+												>
+											</p>
+											<p id='status-message-form' class='mr-4 text-sm font-medium'></p>
+											<button id='apply-btn' class='uk-btn uk-btn-primary' disabled>
+												Submit Application
+											</button>
+										</div>
+									</div>
+								{% elsif hackatime_ban == true %}
+									<div class='p-6 border border-destructive/40 rounded-xl bg-destructive/10 shadow-sm text-center'>
+										<p class='mb-4 text-destructive font-medium'>
+											You are not currently eligible for Nest.
+										</p>
+
+										<p class='text-sm text-muted-foreground'>
+											You currently have an active hackatime/fraud ban. If you believe this ban is a
+											mistake please contact @fraudsquad on Slack.
+										</p>
+
+										<p class='text-sm text-muted-foreground mt-2'>
+											If you believe you are not banned then please contact an admin in #nest-help
+											on Slack.
+										</p>
+									</div>
+								{% else %}
+									<div class='p-6 border border-border rounded-xl bg-muted/20 shadow-sm text-center'>
+										<p class='mb-4'>You are not currently eligible for Nest.</p>
+										<p class='text-sm text-muted-foreground mb-4'>
+											You'll need to submit documentation that you can use Nest with Hack Club Auth.
+										</p>
+										<a
+											href='https://auth.hackclub.com'
+											class='uk-btn uk-btn-primary'
+											target='_blank'
+											rel='noopener noreferrer'
+											>Go to auth.hackclub.com</a
+										>
+									</div>
+								{% endif %}
+							{% endif %}
+						</div>
+					{% endif %}
+				</div>
+			</main>
+		</div>
+	</div>
+	<script>
+		document.querySelectorAll('#main-tabs a').forEach((t) => {
+			t.addEventListener('click', (e) => {
+				e.preventDefault();
+				document
+					.querySelectorAll('#main-tabs li')
+					.forEach((li) => li.classList.remove('uk-active'));
+				t.parentElement.classList.add('uk-active');
+				document.querySelectorAll('#tab-content > div').forEach((c) => {
+					c.classList.remove('block');
+					c.classList.add('hidden');
+				});
+				const tgt = document.getElementById(t.dataset.target);
+				if (tgt) {
+					tgt.classList.remove('hidden');
+					tgt.classList.add('block');
+				}
+			});
+		});
+		const msgPanel = document.getElementById('status-message');
+		const msgForm = document.getElementById('status-message-form');
+		const domainMsg = document.getElementById('domain-message');
+		const usernameInput = document.getElementById('username-input');
+		const usernameStatus = document.getElementById('username-status');
+		const applyBtn = document.getElementById('apply-btn');
+		const templateInput = document.getElementById('template-input');
+		let usernameValid = false;
+		let reasonValid = false;
+		let checkTimeout;
+		function updateApplyBtn() {
+			if (applyBtn) applyBtn.disabled = !(usernameValid && reasonValid);
+		}
+		usernameInput?.addEventListener('input', () => {
+			clearTimeout(checkTimeout);
+			usernameValid = false;
+			updateApplyBtn();
+			const val = usernameInput.value;
+
+			if (!val) {
+				usernameStatus.innerText = 'Must be 3-32 characters: letters, numbers, hyphens.';
+				usernameStatus.className = 'uk-form-help text-muted-foreground mt-1.5';
+				return;
+			}
+
+			if (!/^[A-Za-z0-9-]{3,32}$/.test(val)) {
+				usernameStatus.innerText =
+					'Must be 3-32 chars. Only letters (a-z, A-Z), numbers, and hyphens allowed.';
+				usernameStatus.className = 'uk-form-help text-destructive mt-1.5';
+				return;
+			}
+
+			usernameStatus.innerText = 'Checking...';
+			usernameStatus.className = 'uk-form-help text-muted-foreground mt-1.5';
+
+			checkTimeout = setTimeout(async () => {
+				try {
+					const res = await fetch(
+						`/api/application/username/check?username=${encodeURIComponent(val)}`
+					);
+					const data = await res.json();
+					if (usernameInput.value !== val) return;
+					if (data.available) {
+						usernameStatus.innerText = 'Available!';
+						usernameStatus.className = 'uk-form-help text-green-600 mt-1.5';
+						usernameValid = true;
+						updateApplyBtn();
+					} else {
+						usernameStatus.innerText = data.error || 'Taken';
+						usernameStatus.className = 'uk-form-help text-destructive mt-1.5';
+					}
+				} catch {
+					usernameStatus.innerText = 'Error checking username';
+					usernameStatus.className = 'uk-form-help text-destructive mt-1.5';
+				}
+			}, 400);
+		});
+
+		const sshKeyInput = document.getElementById('sshkey-input');
+		const sshKeyStatus = document.getElementById('sshkey-status');
+		sshKeyInput?.addEventListener('input', () => {
+			const val = sshKeyInput.value.trim();
+			updateApplyBtn();
+			if (!val) {
+				sshKeyStatus.innerText = 'Paste your public key here.';
+			} else {
+				sshKeyStatus.innerText = 'Looks good!';
+			}
+		});
+
+		const reasonInput = document.getElementById('reason-input');
+		const reasonStatus = document.getElementById('reason-status');
+		reasonInput?.addEventListener('input', () => {
+			const val = reasonInput.value.trim();
+			reasonValid = false;
+			updateApplyBtn();
+			if (!val) {
+				reasonStatus.innerText = 'At least 10 characters.';
+				reasonStatus.className = 'uk-form-help text-muted-foreground mt-1.5';
+				return;
+			}
+			if (val.length >= 10) {
+				reasonStatus.innerText = 'Looks good!';
+				reasonStatus.className = 'uk-form-help text-green-600 mt-1.5';
+				reasonValid = true;
+				updateApplyBtn();
+			} else {
+				reasonStatus.innerText = 'Please write at least 10 characters.';
+				reasonStatus.className = 'uk-form-help text-destructive mt-1.5';
+			}
+		});
+
+		applyBtn?.addEventListener('click', async () => {
+			if (!usernameValid || !reasonValid) return;
+			const username = usernameInput.value;
+			const sshKey = sshKeyInput.value.trim();
+			const reason = reasonInput.value.trim();
+			const template = templateInput ? templateInput.value : '';
+			if (msgForm) {
+				msgForm.innerText = 'Submitting application...';
+				msgForm.className = 'mr-4 text-sm font-medium text-muted-foreground';
+			}
+			applyBtn.disabled = true;
+			usernameInput.disabled = true;
+			sshKeyInput.disabled = true;
+			reasonInput.disabled = true;
+			if (templateInput) templateInput.disabled = true;
+			try {
+				const res = await fetch('/api/application/submit', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ username, sshKey, reason, template })
+				});
+				const data = await res.json();
+				if (res.ok) {
+					if (msgForm) {
+						msgForm.innerText = 'Application submitted!';
+						msgForm.className = 'mr-4 text-sm font-medium text-green-600';
+					}
+					setTimeout(() => location.reload(), 2000);
+				} else {
+					if (msgForm) {
+						msgForm.innerText = 'Error: ' + data.error;
+						msgForm.className = 'mr-4 text-sm font-medium text-destructive';
+					}
+					applyBtn.disabled = false;
+					usernameInput.disabled = false;
+					sshKeyInput.disabled = false;
+					reasonInput.disabled = false;
+					if (templateInput) templateInput.disabled = false;
+				}
+			} catch (e) {
+				if (msgForm) {
+					msgForm.innerText = 'Failed to connect to API.';
+					msgForm.className = 'mr-4 text-sm font-medium text-destructive';
+				}
+				applyBtn.disabled = false;
+				usernameInput.disabled = false;
+				sshKeyInput.disabled = false;
+				reasonInput.disabled = false;
+				if (templateInput) templateInput.disabled = false;
+			}
+		});
+
+		async function containerAction(action, btnId) {
+			const btn = document.getElementById(btnId);
+			if (!btn) return;
+			btn.addEventListener('click', async () => {
+				btn.disabled = true;
+				if (msgPanel) {
+					let actioning = action + 'ing';
+					if (action === 'Stop') actioning = 'stopping';
+					if (action === 'Reboot') actioning = 'rebooting';
+					if (action === 'Start') actioning = 'starting';
+					msgPanel.innerText = actioning;
+					msgPanel.className = 'mt-4 text-sm font-medium text-muted-foreground';
+				}
+				try {
+					const res = await fetch(`/api/user/container/${action.toLowerCase()}`, {
+						method: 'POST'
+					});
+					const data = await res.json();
+					if (res.ok) {
+						if (msgPanel) {
+							msgPanel.innerText = data.message || 'Success';
+							msgPanel.className = 'mt-4 text-sm font-medium text-green-600';
+						}
+						setTimeout(() => location.reload(), 2000);
+					} else {
+						if (msgPanel) {
+							msgPanel.innerText = 'Error: ' + data.error;
+							msgPanel.className = 'mt-4 text-sm font-medium text-destructive';
+						}
+						btn.disabled = false;
+					}
+				} catch {
+					if (msgPanel) {
+						msgPanel.innerText = 'Failed to connect to API.';
+						msgPanel.className = 'mt-4 text-sm font-medium text-destructive';
+					}
+					btn.disabled = false;
+				}
+			});
+		}
+
+		containerAction('Start', 'start-btn');
+		containerAction('Stop', 'stop-btn');
+		containerAction('Reboot', 'reboot-btn');
+
+		document.getElementById('delete-btn')?.addEventListener('click', async () => {
+			if (!confirm('Are you sure? This will permanently delete all data on your container.'))
+				return;
+			if (msgPanel) {
+				msgPanel.innerText = 'Deleting container...';
+				msgPanel.className = 'mt-4 text-sm font-medium text-muted-foreground';
+			}
+			try {
+				const res = await fetch('/api/user/container/delete', { method: 'POST' });
+				const data = await res.json();
+				if (res.ok) {
+					window.location.href = data.redirect || '/';
+				} else {
+					if (msgPanel) {
+						msgPanel.innerText = 'Error: ' + data.error;
+						msgPanel.className = 'mt-4 text-sm font-medium text-destructive';
+						if (data.redirect) window.location.href = data.redirect;
+					}
+				}
+			} catch (e) {
+				if (msgPanel) {
+					msgPanel.innerText = 'Failed to connect to API.';
+					msgPanel.className = 'mt-4 text-sm font-medium text-destructive';
+				}
+			}
+		});
+
+		document.getElementById('domain-add-btn')?.addEventListener('click', async () => {
+			const domain = document.getElementById('domain-input').value.trim();
+			if (!domain) return;
+			const proxyInput = document.getElementById('proxy-input');
+			const proxyRaw = proxyInput ? proxyInput.value.trim() : '';
+			const proxy = parseInt(proxyRaw, 10);
+			if (!proxyRaw || !Number.isInteger(proxy) || proxy < 1 || proxy > 65535) {
+				domainMsg.innerText = 'Target port must be a number between 1 and 65535.';
+				domainMsg.className = 'uk-form-help text-destructive mt-0';
+				return;
+			}
+			if (domainMsg) {
+				domainMsg.innerText = 'Adding...';
+				domainMsg.className = 'uk-form-help text-muted-foreground mt-0';
+			}
+			try {
+				const res = await fetch('/api/user/domains/add', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ domain, proxy })
+				});
+				const data = await res.json();
+				if (res.ok) {
+					location.reload();
+				} else {
+					if (domainMsg) {
+						domainMsg.innerText = data.error;
+						domainMsg.className = 'uk-form-help text-destructive mt-0';
+					}
+				}
+			} catch {
+				if (domainMsg) {
+					domainMsg.innerText = 'Failed to connect to API.';
+					domainMsg.className = 'uk-form-help text-destructive mt-0';
+				}
+			}
+		});
+
+		document.querySelectorAll('.domain-rm-btn').forEach((btn) => {
+			btn.addEventListener('click', async () => {
+				const domain = btn.dataset.domain;
+				if (!confirm(`Remove ${domain}?`)) return;
+				if (domainMsg) {
+					domainMsg.innerText = 'Removing ' + domain + '...';
+					domainMsg.className = 'uk-form-help text-muted-foreground mt-0';
+				}
+				try {
+					const res = await fetch('/api/user/domains/remove', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ domain })
+					});
+					const data = await res.json();
+					if (res.ok) {
+						btn.closest('tr').remove();
+						if (domainMsg) {
+							domainMsg.innerText = `${domain} removed.`;
+							domainMsg.className = 'uk-form-help text-green-600 mt-0';
+						}
+					} else {
+						if (domainMsg) {
+							domainMsg.innerText = data.error;
+							domainMsg.className = 'uk-form-help text-destructive mt-0';
+						}
+					}
+				} catch {
+					if (domainMsg) {
+						domainMsg.innerText = 'Failed to connect to API.';
+						domainMsg.className = 'uk-form-help text-destructive mt-0';
+					}
+				}
+			});
+		});
+		const newSshKeyInput = document.getElementById('ssh-key-input');
+		const sshKeyAddStatus = document.getElementById('ssh-key-add-status');
+		const sshKeyAddBtn = document.getElementById('ssh-key-add-btn');
+		newSshKeyInput?.addEventListener('input', () => {
+			const val = newSshKeyInput.value.trim();
+			if (!val) {
+				sshKeyAddStatus.innerText =
+					'Paste your public key here (ssh-ed25519, ssh-rsa, or ssh-ecdsa).';
+				sshKeyAddStatus.className = 'uk-form-help text-muted-foreground mt-1';
+				sshKeyAddBtn.disabled = true;
+				return;
+			} else {
+				sshKeyAddStatus.innerText = 'Looks good!';
+				sshKeyAddStatus.className = 'uk-form-help text-muted-foreground mt-1';
+				sshKeyAddBtn.disabled = false;
+			}
+		});
+		sshKeyAddBtn?.addEventListener('click', async () => {
+			const key = newSshKeyInput.value.trim();
+			sshKeyAddBtn.disabled = true;
+			sshKeyAddStatus.innerText = 'Adding key...';
+			sshKeyAddStatus.className = 'uk-form-help text-muted-foreground mt-1';
+			try {
+				const res = await fetch('/api/user/ssh-keys/add', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ key })
+				});
+				const data = await res.json();
+				if (res.ok) {
+					location.reload();
+				} else {
+					sshKeyAddStatus.innerText = data.error;
+					sshKeyAddStatus.className = 'uk-form-help text-destructive mt-1';
+					sshKeyAddBtn.disabled = false;
+				}
+			} catch {
+				sshKeyAddStatus.innerText = 'Failed to connect to API.';
+				sshKeyAddStatus.className = 'uk-form-help text-destructive mt-1';
+				sshKeyAddBtn.disabled = false;
+			}
+		});
+		document.querySelectorAll('.ssh-key-rm-btn').forEach((btn) => {
+			btn.addEventListener('click', async () => {
+				const key = btn.dataset.key;
+				if (!confirm('Remove this SSH key?')) return;
+				try {
+					const res = await fetch('/api/user/ssh-keys/remove', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ key })
+					});
+					const data = await res.json();
+					if (res.ok) {
+						btn.closest('tr').remove();
+					} else {
+						alert(data.error);
+					}
+				} catch {
+					alert('Failed to connect to API.');
+				}
+			});
+		});
+
+		document.querySelectorAll('.restore-btn').forEach((btn) => {
+			btn.addEventListener('click', async () => {
+				const volid = btn.dataset.volid;
+				const confirmRestore = confirm(
+					'Restoring a backup will overwrite all current data on your container. Are you sure you want to proceed?'
+				);
+
+				if (!confirmRestore) return;
+
+				btn.disabled = true;
+				btn.innerText = 'Restoring...';
+
+				try {
+					const res = await fetch('/api/user/backups/restore', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ volid })
+					});
+					const data = await res.json();
+
+					if (res.ok) {
+						alert('Backup restored successfully!');
+						location.reload();
+					} else {
+						alert('Error: ' + data.error);
+						btn.disabled = false;
+						btn.innerText = 'Restore';
+					}
+				} catch (e) {
+					alert('Failed to connect to API.');
+					btn.disabled = false;
+					btn.innerText = 'Restore';
+				}
+			});
+		});
+	</script>
+{%- endblock %}

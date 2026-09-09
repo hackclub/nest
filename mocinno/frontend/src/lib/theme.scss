@@ -1,0 +1,141 @@
+@use 'sass:map';
+@use '@catppuccin/palette/scss/catppuccin';
+@use 'nord/src/sass/nord.scss';
+
+@each $flavor, $color in catppuccin.$palette {
+	*[data-theme='catppuccin_#{$flavor}'] {
+		--background: #{map.get($color, 'base')};
+		--foreground: #{map.get($color, 'text')};
+		--card: #{map.get($color, 'base')};
+		--card-foreground: #{map.get($color, 'text')};
+		--popover: #{map.get($color, 'base')};
+		--popover-foreground: #{map.get($color, 'text')};
+		--primary: #{map.get($color, 'lavender')};
+		--primary-foreground: #{map.get($color, 'base')};
+		--secondary: #{map.get($color, 'surface0')};
+		--secondary-foreground: #{map.get($color, 'text')};
+		--muted: #{map.get($color, 'surface0')};
+		--muted-foreground: #{map.get($color, 'subtext1')};
+		--accent: #{map.get($color, 'surface0')};
+		--accent-foreground: #{map.get($color, 'text')};
+		--destructive: #{map.get($color, 'red')};
+		--border: #{map.get($color, 'surface1')};
+		--input: #{map.get($color, 'surface1')};
+		--ring: #{map.get($color, 'text')};
+		--chart-1: #{map.get($color, 'red')};
+		--chart-2: #{map.get($color, 'teal')};
+		--chart-3: #{map.get($color, 'blue')};
+		--chart-4: #{map.get($color, 'yellow')};
+		--chart-5: #{map.get($color, 'green')};
+		--sidebar: #{map.get($color, 'base')};
+		--sidebar-foreground: #{map.get($color, 'text')};
+		--sidebar-primary: #{map.get($color, 'lavender')};
+		--sidebar-primary-foreground: #{map.get($color, 'base')};
+		--sidebar-accent: #{map.get($color, 'surface0')};
+		--sidebar-accent-foreground: #{map.get($color, 'text')};
+		--sidebar-border: #{map.get($color, 'surface1')};
+		--sidebar-ring: #{map.get($color, 'text')};
+	}
+}
+
+*[data-theme='nord'] {
+	--background: #{nord.$nord0};
+	--foreground: #{nord.$nord7};
+	--card: #{nord.$nord1};
+	--card-foreground: #{nord.$nord4};
+	--popover: #{nord.$nord1};
+	--popover-foreground: #{nord.$nord4};
+	--primary: #{nord.$nord8};
+	--primary-foreground: #{nord.$nord0};
+	--secondary: #{nord.$nord2};
+	--secondary-foreground: #{nord.$nord4};
+	--muted: #{nord.$nord2};
+	--muted-foreground: #{nord.$nord4};
+	--accent: #{nord.$nord2};
+	--accent-foreground: #{nord.$nord4};
+	--destructive: #{nord.$nord11};
+	--border: #{nord.$nord3};
+	--input: #{nord.$nord3};
+	--ring: #{nord.$nord4};
+	--chart-1: #{nord.$nord11};
+	--chart-2: #{nord.$nord8};
+	--chart-3: #{nord.$nord10};
+	--chart-4: #{nord.$nord13};
+	--chart-5: #{nord.$nord14};
+	--sidebar: #{nord.$nord1};
+	--sidebar-foreground: #{nord.$nord4};
+	--sidebar-primary: #{nord.$nord8};
+	--sidebar-primary-foreground: #{nord.$nord0};
+	--sidebar-accent: #{nord.$nord2};
+	--sidebar-accent-foreground: #{nord.$nord4};
+	--sidebar-border: #{nord.$nord3};
+	--sidebar-ring: #{nord.$nord4};
+}
+
+*[data-theme='gruvbox'] {
+	--background: #fbf1c7;
+	--foreground: #3c3836;
+	--card: #ebdbb2;
+	--card-foreground: #3c3836;
+	--popover: #ebdbb2;
+	--popover-foreground: #3c3836;
+	--primary: #d79921;
+	--primary-foreground: #fbf1c7;
+	--secondary: #d5c4a1;
+	--secondary-foreground: #3c3836;
+	--muted: #d5c4a1;
+	--muted-foreground: #655c54;
+	--accent: #d5c4a1;
+	--accent-foreground: #3c3836;
+	--destructive: #9d0006;
+	--border: #d5c4a1;
+	--input: #d5c4a1;
+	--ring: #3c3836;
+	--chart-1: #9d0006;
+	--chart-2: #b8bb26;
+	--chart-3: #83a598;
+	--chart-4: #fabd2f;
+	--chart-5: #d3869b;
+	--sidebar: #ebdbb2;
+	--sidebar-foreground: #3c3836;
+	--sidebar-primary: #d79921;
+	--sidebar-primary-foreground: #fbf1c7;
+	--sidebar-accent: #d5c4a1;
+	--sidebar-accent-foreground: #3c3836;
+	--sidebar-border: #d5c4a1;
+	--sidebar-ring: #3c3836;
+}
+
+.dark[data-theme='gruvbox'] {
+	--background: #282828;
+	--foreground: #ebdbb2;
+	--card: #3c3836;
+	--card-foreground: #ebdbb2;
+	--popover: #3c3836;
+	--popover-foreground: #ebdbb2;
+	--primary: #d79921;
+	--primary-foreground: #282828;
+	--secondary: #504945;
+	--secondary-foreground: #ebdbb2;
+	--muted: #504945;
+	--muted-foreground: #bdae93;
+	--accent: #504945;
+	--accent-foreground: #ebdbb2;
+	--destructive: #fb4934;
+	--border: #504945;
+	--input: #504945;
+	--ring: #ebdbb2;
+	--chart-1: #fb4934;
+	--chart-2: #b8bb26;
+	--chart-3: #83a598;
+	--chart-4: #fabd2f;
+	--chart-5: #d3869b;
+	--sidebar: #3c3836;
+	--sidebar-foreground: #ebdbb2;
+	--sidebar-primary: #d79921;
+	--sidebar-primary-foreground: #282828;
+	--sidebar-accent: #504945;
+	--sidebar-accent-foreground: #ebdbb2;
+	--sidebar-border: #504945;
+	--sidebar-ring: #ebdbb2;
+}

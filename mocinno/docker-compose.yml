@@ -1,0 +1,105 @@
+services:
+  caddy:
+    image: docker.io/caddy:alpine
+    ports:
+      - '${MOCINNO_PORT:-8778}:80'
+    volumes:
+      - ./conf:/etc/caddy
+    networks:
+      - proxy
+  db:
+    image: docker.io/postgres:18
+    restart: unless-stopped
+    expose:
+      - 5432
+    environment:
+      POSTGRES_PASSWORD: 'heythisisnotmeanttobeusedbyyoupubliclythebackendconnectsbyunixsocketsoapasswordisnotneeded'
+    volumes:
+      - pgdata:/var/lib/postgresql
+      - postgres-socket:/var/run/postgresql
+      - ./initrunner.sh:/docker-entrypoint-initdb.d/initrunner.sh:ro
+    networks:
+      - proxy
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 1s
+      timeout: 5s
+      retries: 10
+  migrate:
+    depends_on:
+      db:
+        condition: service_healthy
+    build:
+      context: .
+      target: migrate
+    environment: &env
+      - DATABASE_URL=postgres://root:heythisisnotmeanttobeusedbyyoupubliclythebackendconnectsbyunixsocketsoapasswordisnotneeded@db/mocinno
+      - NODE_ENV=production
+      - MOCINNO_HOSTNAME=0.0.0.0
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:?Please set the ENCRYPTION_KEY environment variable}
+      - PVE_URL=${PVE_URL:?Please set the PVE_URL environment variable}
+      - PVE_TOKEN=${PVE_TOKEN:?Please set the PVE_TOKEN environment variable}
+      - NDP_API_KEY=${NDP_API_KEY:?Please set the NDP_API_KEY environment variable}
+      - DISABLE_SSL=${DISABLE_SSL:-false}
+      - APP_SECURE=${APP_SECURE:-false}
+      - APP_DOMAIN=${APP_DOMAIN:-}
+      - SMTP_HOST=${SMTP_HOST:-localhost}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - SMTP_FROM=${SMTP_FROM:-}
+      - BASTION_PROXY_KEY_PUB=/data/bastion_proxy_key.pub
+      - BASTION_PROXY_KEY=/data/bastion_proxy_key
+      - BASTION_HOST_KEY=/data/bastion_host_key
+      - OAUTH_CLIENT_ID=${OAUTH_CLIENT_ID:?Please set the OAUTH_CLIENT_ID environment variable}
+      - OAUTH_CLIENT_SECRET=${OAUTH_CLIENT_SECRET:?Please set the OAUTH_CLIENT_SECRET environment variable}
+      - ROOTFS=${ROOTFS:-}
+      - OS_TEMPLATE=${OS_TEMPLATE:-}
+      - ADMIN_EMAILS=${ADMIN_EMAILS:-}
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-}
+      - ZEROSSL_EAB_KID=${ZEROSSL_EAB_KID:-}
+      - ZEROSSL_EAB_HMAC_KEY=${ZEROSSL_EAB_HMAC_KEY:-}
+      - PROTOCOL_HEADER=x-forwarded-proto
+      - HOST_HEADER=x-forwarded-host
+      - CONFIG_FILE=/data/config.ts
+    networks:
+      - proxy
+    volumes: &volumes
+      - postgres-socket:/var/run/postgresql
+      - ./bastion_proxy_key.pub:/data/bastion_proxy_key.pub:ro
+      - ./bastion_proxy_key:/data/bastion_proxy_key:ro
+      - ./bastion_host_key:/data/bastion_host_key:ro
+      - ./config.ts:/data/config.ts:ro
+    extra_hosts: &extra_hosts
+      - 'host.docker.internal:host-gateway'
+  backend:
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+    build:
+      context: .
+      target: backend
+    restart: unless-stopped
+    ports:
+      - '${PORT:-80}:80'
+    networks:
+      - proxy
+    environment: *env
+    volumes: *volumes
+    extra_hosts: *extra_hosts
+
+  frontend:
+    build:
+      context: .
+      target: frontend
+    restart: unless-stopped
+    networks:
+      - proxy
+    environment: *env
+volumes:
+  pgdata:
+  postgres-socket:
+networks:
+  proxy:

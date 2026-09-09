@@ -1,0 +1,585 @@
+{% layout 'parent.liquid' %}
+
+{% block body -%}
+	<div class='p-6 lg:p-10 max-w-6xl mx-auto'>
+		<div class='flex items-center justify-between mb-6'>
+			<div class='space-y-0.5'>
+				<h1 class='text-2xl font-bold tracking-tight'>Admin Panel</h1>
+				<p class='text-muted-foreground text-sm'>Manage users, applications, and invites.</p>
+			</div>
+			<a href='/dashboard' class='uk-btn uk-btn-default'>&larr; Back to Dashboard</a>
+		</div>
+
+		<ul class='uk-subnav uk-subnav-pill mb-0' id='admin-tabs'>
+			<li class='uk-active'><a href='#' data-target='tab-stats'>Stats</a></li>
+			<li>
+				<a href='#' data-target='tab-applications'
+					>Applications{% if applications.size > 0 %} ({{ applications.size }}){% endif -%}
+				</a>
+			</li>
+			<li><a href='#' data-target='tab-invites'>Invites</a></li>
+			<li><a href='#' data-target='tab-users'>Users</a></li>
+		</ul>
+
+		<div class='border-border my-6 border-t'></div>
+
+		<div id='admin-tab-content' class='w-full relative'>
+			<div id='tab-stats' class='space-y-6 block'>
+				<div class='flex items-center justify-between'>
+					<h3 class='text-lg font-medium'>Node Stats</h3>
+				</div>
+
+				{% for node in stats %}
+					<div>
+						<h4 class='text-md font-medium mb-4'>{{ node.name }}</h4>
+
+						<div class='grid grid-cols-1 md:grid-cols-3 gap-4'>
+							<div class='border border-border rounded-md p-4'>
+								<h4 class='text-sm font-medium text-muted-foreground'>Total containers</h4>
+								<p class='text-xl font-bold'>{{ node.stats.container_count }}</p>
+							</div>
+							<div class='border border-border rounded-md p-4'>
+								<h4 class='text-sm font-medium text-muted-foreground'>CPU Usage</h4>
+								<p class='text-xl font-bold'>{{ node.stats.cpu_percent }}%</p>
+							</div>
+							<div class='border border-border rounded-md p-4'>
+								<h4 class='text-sm font-medium text-muted-foreground'>Ram Usage</h4>
+								<p class='text-xl font-bold'>
+									{{ node.stats.ram_used_gb }} GB / {{ node.stats.ram_total_gb }} GB (
+									{{- node.stats.ram_percent -}}
+									%)
+								</p>
+							</div>
+							<div class='border border-border rounded-md p-4'>
+								<h4 class='text-sm font-medium text-muted-foreground'>Storage Usage</h4>
+								<p class='text-xl font-bold'>
+									{{ node.stats.rootfs_used_gb }} GB / {{ node.stats.rootfs_total_gb }} GB (
+									{{- node.stats.rootfs_percent -}}
+									%)
+								</p>
+							</div>
+							<div class='border border-border rounded-md p-4'>
+								<h4 class='text-sm font-medium text-muted-foreground'>
+									Load Avg. (&gt; {{ node.stats.core_count }} is bad)
+								</h4>
+								<p class='text-xl font-bold'>{{ node.stats.load_avg }}</p>
+							</div>
+							<div class='border border-border rounded-md p-4'>
+								<h4 class='text-sm font-medium text-muted-foreground'>Uptime</h4>
+								<p class='text-xl font-bold'>{{ node.stats.uptime }}</p>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+
+			<div id='tab-applications' class='space-y-6 hidden'>
+				<div class='flex items-center justify-between'>
+					<h3 class='text-lg font-medium'>Pending Applications ({{ applications.size }})</h3>
+				</div>
+
+				{% if applications.size > 0 %}
+					<div class='border border-border rounded-md'>
+						<table class='uk-table uk-table-divider uk-table-hover uk-table-middle mb-0'>
+							<thead>
+								<tr>
+									<th>Email</th>
+									<th>Username</th>
+									<th>Reason</th>
+									<th>Submitted</th>
+									<th class='w-48 text-right'>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for app in applications %}
+									<tr id='app-{{ app.id }}'>
+										<td class='font-medium'>{{ app.email }}</td>
+										<td>{{ app.username }}</td>
+										<td class='max-w-[300px] break-words whitespace-normal text-sm'>
+											{{ app.reason }}
+										</td>
+										<td class='text-sm text-muted-foreground'>{{ app.created_at }}</td>
+										<td class='text-right space-x-1'>
+											<button
+												class='approve-btn uk-btn uk-btn-primary uk-btn-sm'
+												data-id='{{ app.id }}'
+											>
+												Approve
+											</button>
+											<button
+												class='reject-btn uk-btn uk-btn-destructive uk-btn-sm'
+												data-id='{{ app.id }}'
+											>
+												Reject
+											</button>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				{% else %}
+					<p class='text-muted-foreground text-sm mt-4'>No pending applications.</p>
+				{% endif %}
+
+				<div class='border-border my-6 border-t'></div>
+
+				<div class='flex items-center justify-between mb-4'>
+					<div class='space-y-0.5'>
+						<h3 class='text-lg font-medium'>All Applications</h3>
+					</div>
+				</div>
+
+				{% if allApplications.size > 0 %}
+					<div class='border border-border rounded-md mt-4'>
+						<table class='uk-table uk-table-divider uk-table-hover uk-table-middle mb-0'>
+							<thead>
+								<tr>
+									<th>Email</th>
+									<th>Username</th>
+									<th>Status</th>
+									<th>Reviewed By</th>
+									<th>Submitted</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for app in allApplications %}
+									<tr>
+										<td class='font-medium'>{{ app.email }}</td>
+										<td>{{ app.username }}</td>
+										<td>
+											<span>
+												{{ app.status }}
+											</span>
+										</td>
+										<td class='text-sm text-muted-foreground'>{{ app.reviewed_by }}</td>
+										<td class='text-sm text-muted-foreground'>{{ app.created_at }}</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				{% else %}
+					<p class='text-muted-foreground text-sm mt-4'>No applications yet.</p>
+				{% endif %}
+			</div>
+
+			<div id='tab-invites' class='space-y-6 hidden'>
+				<div class='flex items-center justify-between'>
+					<div class='space-y-0.5'>
+						<h3 class='text-lg font-medium'>Admin Invites</h3>
+						<p class='text-muted-foreground text-sm'>
+							An invite can bypass ID verification. This is useful for hackathons, large gatherings,
+							etc.
+						</p>
+					</div>
+				</div>
+
+				<div class='flex gap-x-2 mt-4 max-w-2xl'>
+					<input
+						type='number'
+						id='invite-max-uses'
+						class='uk-input'
+						placeholder='Max Uses (Empty=Infinite)'
+					>
+					<input
+						type='datetime-local'
+						id='invite-expires'
+						class='uk-input'
+						placeholder='Expires At'
+					>
+					<button id='btn-create-invite' class='uk-btn uk-btn-primary flex-none'>
+						Create Invite
+					</button>
+				</div>
+
+				{% if invites.size > 0 %}
+					<div class='border border-border rounded-md mt-6'>
+						<table class='uk-table uk-table-divider uk-table-hover uk-table-middle mb-0'>
+							<thead>
+								<tr>
+									<th>Code</th>
+									<th>Uses</th>
+									<th>Max Uses</th>
+									<th>Expires</th>
+									<th>Created By</th>
+									<th>Link</th>
+									<th class='w-24 border-none text-right'></th>
+								</tr>
+							</thead>
+							<tbody id='invites-tbody'>
+								{% for inv in invites %}
+									<tr id='invite-row-{{ inv.code }}'>
+										<td class='font-medium'>{{ inv.code }}</td>
+										<td>{{ inv.uses }}</td>
+										<td>{{ inv.max_uses | default: '∞' }}</td>
+										<td class='text-sm text-muted-foreground'>
+											{{ inv.expires_at | default: 'Never' }}
+										</td>
+										<td>{{ inv.admin_email }}</td>
+										<td>
+											<code
+												>https://dashboard.{{ appDomain }}/api/authorization/invite/{{ inv.code -}}
+											</code>
+										</td>
+										<td class='text-right'>
+											<button
+												class='delete-invite-btn uk-btn uk-btn-destructive uk-btn-sm'
+												data-code='{{ inv.code }}'
+											>
+												Revoke
+											</button>
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				{% else %}
+					<p id='no-invites-msg' class='text-muted-foreground text-sm mt-4'>
+						No invites created yet.
+					</p>
+				{% endif %}
+			</div>
+
+			<div id='tab-users' class='space-y-6 hidden'>
+				<div class='flex items-center justify-between mb-4'>
+					<div class='space-y-0.5'>
+						<h3 class='text-lg font-medium'>Users</h3>
+					</div>
+				</div>
+
+				<div class='max-w-md'>
+					<div class='uk-inline w-full'>
+						<span class='uk-form-icon' uk-icon='icon: search'></span>
+						<input
+							type='text'
+							id='user-search'
+							class='uk-input'
+							placeholder='Search by username, VMID, or IP...'
+						>
+					</div>
+				</div>
+
+				<div id='users-table-wrap' class='mt-4'>
+					<p class='text-muted-foreground text-sm'>Loading...</p>
+				</div>
+				<div id='users-paging' class='flex gap-x-2 items-center mt-4'></div>
+			</div>
+		</div>
+
+		<p id='admin-message' class='mt-4 font-medium'></p>
+	</div>
+
+	<script>
+		// ---------- Tab switching (with hash persistence) ----------
+		function activateTab(targetId, push) {
+			const link = document.querySelector(`#admin-tabs a[data-target="${targetId}"]`);
+			if (!link) return;
+			document.querySelectorAll('#admin-tabs li').forEach((li) => li.classList.remove('uk-active'));
+			link.parentElement.classList.add('uk-active');
+			document.querySelectorAll('#admin-tab-content > div').forEach((c) => {
+				c.classList.remove('block');
+				c.classList.add('hidden');
+			});
+			const tgt = document.getElementById(targetId);
+			if (tgt) {
+				tgt.classList.remove('hidden');
+				tgt.classList.add('block');
+			}
+			if (push) {
+				try {
+					history.replaceState(null, '', '#' + targetId);
+				} catch {}
+			}
+		}
+
+		document.querySelectorAll('#admin-tabs a').forEach((t) => {
+			t.addEventListener('click', (e) => {
+				e.preventDefault();
+				activateTab(t.dataset.target, true);
+			});
+		});
+
+		// Restore tab from hash on load (so location.reload() keeps you on the same tab)
+		(function () {
+			const hash = (location.hash || '').replace('#', '');
+			const valid = ['tab-stats', 'tab-applications', 'tab-invites', 'tab-users'];
+			if (valid.includes(hash)) activateTab(hash, false);
+		})();
+
+		const adminMsg = document.getElementById('admin-message');
+
+		// ---------- Invites ----------
+		document.getElementById('btn-create-invite')?.addEventListener('click', async () => {
+			const btn = document.getElementById('btn-create-invite');
+			const maxUses = document.getElementById('invite-max-uses').value;
+			const expiresAt = document.getElementById('invite-expires').value;
+
+			btn.disabled = true;
+			try {
+				const res = await fetch('/api/admin/invites/create', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						maxUses,
+						expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null
+					})
+				});
+				const data = await res.json();
+				if (res.ok) {
+					alert('Invite created: ' + data.invite.code);
+					location.reload();
+				} else {
+					alert(data.error);
+				}
+			} catch {
+				alert('Failed');
+			}
+			btn.disabled = false;
+		});
+
+		document.querySelectorAll('.delete-invite-btn').forEach((btn) => {
+			btn.addEventListener('click', async () => {
+				if (!confirm('Revoke this invite?')) return;
+				btn.disabled = true;
+				try {
+					const res = await fetch('/api/admin/invites/delete', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ code: btn.dataset.code })
+					});
+					if (res.ok) {
+						document.getElementById('invite-row-' + btn.dataset.code)?.remove();
+					}
+				} catch {}
+				btn.disabled = false;
+			});
+		});
+
+		// ---------- Users ----------
+		let usersPage = 1;
+		let usersQuery = '';
+		let usersDebounce = null;
+
+		document.getElementById('user-search').addEventListener('input', (e) => {
+			clearTimeout(usersDebounce);
+			usersDebounce = setTimeout(() => {
+				usersQuery = e.target.value;
+				usersPage = 1;
+				loadUsers();
+			}, 300);
+		});
+
+		async function loadUsers() {
+			const wrap = document.getElementById('users-table-wrap');
+			const params = new URLSearchParams({ page: usersPage, limit: 50 });
+			if (usersQuery) params.set('q', usersQuery);
+			try {
+				const res = await fetch('/api/admin/users?' + params);
+				const data = await res.json();
+				if (!data.users?.length) {
+					wrap.innerHTML = '<p class="text-muted-foreground text-sm mt-4">No users found.</p>';
+					document.getElementById('users-paging').innerHTML = '';
+					return;
+				}
+				let html =
+					'<div class="border border-border rounded-md mt-4"><table class="uk-table uk-table-divider uk-table-hover uk-table-middle mb-0"><thead><tr><th>Username</th><th>VMID</th><th>IP</th><!--<th>Status</th>--><th>Suspended</th><!--<th>Cores</th><th>Mem</th>--><th>Created</th><th class="w-32 text-right border-none"></th></tr></thead><tbody>';
+				for (const u of data.users) {
+					html += `<tr>
+          <td class="font-medium">${esc(u.username)}</td>
+          <td>${u.vmid}</td>
+          <td>${u.ip || ''}</td>
+          <!--<td><span>${u.status || 'unknown'}</span></td>-->
+          <td>${u.suspended ? '<span class="uk-badge uk-badge-destructive">Yes</span>' : 'No'}</td>
+          <!--<td>${u.cores}</td>
+          <td>${u.memory}</td>-->
+          <td class="text-sm text-muted-foreground">${new Date(u.created_at).toLocaleDateString()}</td>
+          <td class="text-right space-x-1 whitespace-nowrap">
+            <!--<button class="uk-btn uk-btn-default uk-btn-sm" onclick="editUser(${u.vmid}, '${esc(u.username)}', ${u.cores}, ${u.memory})">Edit</button>-->
+            ${
+							u.suspended
+								? `<button class="uk-btn uk-btn-secondary uk-btn-sm" onclick="unsuspendUser(${u.vmid})">Unsuspend</button>`
+								: `<button class="uk-btn uk-btn-destructive uk-btn-sm" onclick="suscribeUser(${u.vmid}, '${esc(u.username)}')">Suspend</button>`
+						}
+          </td>
+        </tr>`;
+				}
+				html += '</tbody></table></div>';
+				wrap.innerHTML = html;
+				let paging = `<span class="text-sm font-medium">Page ${data.page} of ${data.pages} (${data.total} users)</span>`;
+				if (data.page > 1)
+					paging += ` <button class="uk-btn uk-btn-default uk-btn-sm ml-2" onclick="usersPage--;loadUsers()">Prev</button>`;
+				if (data.page < data.pages)
+					paging += ` <button class="uk-btn uk-btn-default uk-btn-sm ml-2" onclick="usersPage++;loadUsers()">Next</button>`;
+				document.getElementById('users-paging').innerHTML = paging;
+			} catch {
+				wrap.innerHTML = '<p class="text-destructive mt-4">Failed to load users.</p>';
+			}
+		}
+
+		function esc(s) {
+			const d = document.createElement('div');
+			d.textContent = s;
+			return d.innerHTML;
+		}
+
+		async function editUser(vmid, username, cores, mem) {
+			const newUsername = prompt('Username:', username);
+			if (newUsername === null) return;
+			const newCores = prompt('CPU Cores:', cores);
+			if (newCores === null) return;
+			const newMem = prompt('Memory (MB):', mem);
+			if (newMem === null) return;
+			const body = { vmid };
+			if (newUsername !== username) body.username = newUsername;
+			if (parseInt(newCores) !== cores) body.cores = parseInt(newCores);
+			if (parseInt(newMem) !== mem) body.memory = parseInt(newMem);
+			if (Object.keys(body).length <= 1) {
+				adminMsg.innerText = 'No changes.';
+				adminMsg.className = 'mt-4 font-medium text-muted-foreground';
+				return;
+			}
+			adminMsg.innerText = 'Updating...';
+			adminMsg.className = 'mt-4 font-medium text-muted-foreground';
+			try {
+				const res = await fetch('/api/admin/users/update', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(body)
+				});
+				const data = await res.json();
+				if (res.ok) {
+					adminMsg.innerText = 'User updated.';
+					adminMsg.className = 'mt-4 font-medium text-green-600';
+					loadUsers();
+				} else {
+					adminMsg.innerText = 'Error: ' + data.error;
+					adminMsg.className = 'mt-4 font-medium text-destructive';
+				}
+			} catch {
+				adminMsg.innerText = 'Failed to connect.';
+				adminMsg.className = 'mt-4 font-medium text-destructive';
+			}
+		}
+
+		async function suscribeUser(vmid, username) {
+			const reason = prompt(`Reason for suspending ${username}?`);
+			if (!reason) return;
+			adminMsg.innerText = 'Suspending...';
+			adminMsg.className = 'mt-4 font-medium text-muted-foreground';
+			try {
+				const res = await fetch('/api/admin/users/suspend', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ vmid, reason })
+				});
+				const data = await res.json();
+				if (res.ok) {
+					adminMsg.innerText = 'Suspended.';
+					adminMsg.className = 'mt-4 font-medium text-green-600';
+					loadUsers();
+				} else {
+					adminMsg.innerText = 'Error: ' + data.error;
+					adminMsg.className = 'mt-4 font-medium text-destructive';
+				}
+			} catch {
+				adminMsg.innerText = 'Failed to connect.';
+				adminMsg.className = 'mt-4 font-medium text-destructive';
+			}
+		}
+
+		window.suscribeUser = suscribeUser;
+
+		async function unsuspendUser(vmid) {
+			if (!confirm('Unsuspend this container?')) return;
+			adminMsg.innerText = 'Unsuspending...';
+			adminMsg.className = 'mt-4 font-medium text-muted-foreground';
+			try {
+				const res = await fetch('/api/admin/users/unsuspend', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ vmid })
+				});
+				const data = await res.json();
+				if (res.ok) {
+					adminMsg.innerText = 'Unsuspended.';
+					adminMsg.className = 'mt-4 font-medium text-green-600';
+					loadUsers();
+				} else {
+					adminMsg.innerText = 'Error: ' + data.error;
+					adminMsg.className = 'mt-4 font-medium text-destructive';
+				}
+			} catch {
+				adminMsg.innerText = 'Failed to connect.';
+				adminMsg.className = 'mt-4 font-medium text-destructive';
+			}
+		}
+
+		// ---------- Applications ----------
+		document.querySelectorAll('.approve-btn').forEach((btn) => {
+			btn.addEventListener('click', async () => {
+				const id = btn.dataset.id;
+				if (!confirm('Approve this application? A container will be created.')) return;
+				btn.disabled = true;
+				adminMsg.innerText = 'Approving and creating container...';
+				adminMsg.className = 'mt-4 font-medium text-muted-foreground';
+				try {
+					const res = await fetch('/api/admin/applications/approve', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ id })
+					});
+					const data = await res.json();
+					if (res.ok) {
+						adminMsg.innerText = 'Approved! Container creating or created.';
+						adminMsg.className = 'mt-4 font-medium text-green-600';
+						document.getElementById('app-' + id)?.remove();
+						loadUsers();
+					} else {
+						adminMsg.innerText = 'Error: ' + data.error;
+						adminMsg.className = 'mt-4 font-medium text-destructive';
+						btn.disabled = false;
+					}
+				} catch {
+					adminMsg.innerText = 'Failed to connect.';
+					adminMsg.className = 'mt-4 font-medium text-destructive';
+					btn.disabled = false;
+				}
+			});
+		});
+
+		document.querySelectorAll('.reject-btn').forEach((btn) => {
+			btn.addEventListener('click', async () => {
+				const id = btn.dataset.id;
+				if (!confirm('Reject this application?')) return;
+				btn.disabled = true;
+				adminMsg.innerText = 'Rejecting...';
+				adminMsg.className = 'mt-4 font-medium text-muted-foreground';
+				try {
+					const res = await fetch('/api/admin/applications/reject', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ id })
+					});
+					const data = await res.json();
+					if (res.ok) {
+						adminMsg.innerText = 'Rejected.';
+						adminMsg.className = 'mt-4 font-medium text-green-600';
+						document.getElementById('app-' + id)?.remove();
+					} else {
+						adminMsg.innerText = 'Error: ' + data.error;
+						adminMsg.className = 'mt-4 font-medium text-destructive';
+						btn.disabled = false;
+					}
+				} catch {
+					adminMsg.innerText = 'Failed to connect.';
+					adminMsg.className = 'mt-4 font-medium text-destructive';
+					btn.disabled = false;
+				}
+			});
+		});
+
+		loadUsers();
+	</script>
+{%- endblock %}
