@@ -3,6 +3,7 @@ import { db } from './db/index.ts';
 import {
 	containersTable,
 	domainsTable,
+	projectsTable,
 	applicationsTable,
 	certificatesTable,
 	settingsTable,
@@ -221,6 +222,69 @@ export async function getAllDomains() {
 		.from(domainsTable)
 		.innerJoin(containersTable, eq(domainsTable.container_id, containersTable.id))
 		.orderBy(asc(domainsTable.domain));
+}
+
+export async function getProjectsForUser(containerId: number) {
+	return db
+		.select()
+		.from(projectsTable)
+		.where(eq(projectsTable.container_id, containerId))
+		.orderBy(asc(projectsTable.created_at));
+}
+
+export async function countProjectsForUser(containerId: number) {
+	const [row] = await db
+		.select({ total: count() })
+		.from(projectsTable)
+		.where(eq(projectsTable.container_id, containerId));
+	return Number(row?.total ?? 0);
+}
+
+export async function addProject({
+	containerId,
+	name,
+	demo,
+	repo
+}: {
+	containerId: number;
+	name: string;
+	demo: string;
+	repo: string;
+}) {
+	const [row] = await db
+		.insert(projectsTable)
+		.values({ container_id: containerId, name, demo, repo })
+		.returning();
+	return row;
+}
+
+export async function updateProject({
+	containerId,
+	id,
+	name,
+	demo,
+	repo
+}: {
+	containerId: number;
+	id: number;
+	name: string;
+	demo: string;
+	repo: string;
+}) {
+	const [row] = await db
+		.update(projectsTable)
+		.set({ name, demo, repo, updated_at: new Date() })
+		.where(and(eq(projectsTable.id, id), eq(projectsTable.container_id, containerId)))
+		.returning();
+	return row ?? null;
+}
+
+export async function removeProject(containerId: number, id: number) {
+	const [row] = await db
+		.delete(projectsTable)
+		.where(and(eq(projectsTable.id, id), eq(projectsTable.container_id, containerId)))
+		.returning();
+	return row ?? null;
 }
 
 export async function createApplication({

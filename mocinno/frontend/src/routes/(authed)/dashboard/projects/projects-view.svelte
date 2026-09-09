@@ -2,6 +2,7 @@
 	import * as Table from '$lib/components/ui/table/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
+	import { Spinner } from '$lib/components/ui/spinner/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Form from '$lib/components/ui/form/index.js';
@@ -14,44 +15,39 @@
 	import TriangleAlertIcon from '@lucide/svelte/icons/triangle-alert';
 	import PencilIcon from '@lucide/svelte/icons/pencil';
 	import TrashIcon from '@lucide/svelte/icons/trash';
-	import { formSchema, type FormSchema, type Project } from './schema';
+	import type { RouterOutput } from '$lib/trpc';
+	import trpc from '$lib/trpc';
+	import { invalidateAll } from '$app/navigation';
+	import { getFlash } from 'sveltekit-flash-message';
+	import { page } from '$app/state';
+	import { formSchema, type FormSchema } from './schema';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
+
+	const flash = getFlash(page);
+
+	type Projects = RouterOutput['user']['projects'];
+	type Project = NonNullable<Projects>[number];
 
 	let {
 		projects,
 		form: initialForm
-	}: { projects: Project[]; form: SuperValidated<Infer<FormSchema>> } = $props();
-
-	// TODO(backend): this list is local only for the frontend pass. Once the tRPC
-	// procedures land, drop it and read straight from `projects` + `invalidateAll()`.
-	// svelte-ignore state_referenced_locally
-	let projectList = $state<Project[]>([...projects]);
-
-	let addMessage = $state<string | null>(null);
+	}: { projects: Projects; form: SuperValidated<Infer<FormSchema>> } = $props();
 
 	const form = $derived.by(() =>
 		superForm(initialForm, {
-			SPA: true,
-			validators: zod4Client(formSchema),
-			onUpdate: ({ form: validated }) => {
-				if (!validated.valid) return;
-
-				// TODO(backend): await trpc.user.addProject.mutate(validated.data)
-				projectList.push({ id: crypto.randomUUID(), ...validated.data });
-				addMessage = `Added "${validated.data.name}".`;
-				formData.set({ name: '', demo: '', repo: '' });
-			}
+			validators: zod4Client(formSchema)
 		})
 	);
 
 	// svelte-ignore state_referenced_locally
-	const { form: formData, enhance, errors, submitting } = form;
+	const { form: formData, enhance, message, errors, submitting } = form;
 
 	let editing = $state<Project | null>(null);
 	let editOpen = $state(false);
 	let editValues = $state({ name: '', demo: '', repo: '' });
 	let editErrors = $state<Record<string, string[]>>({});
+	let saving = $state(false);
 
 	const openEdit = (project: Project) => {
 		editing = project;
@@ -60,7 +56,7 @@
 		editOpen = true;
 	};
 
-	const saveEdit = (event: SubmitEvent) => {
+	const saveEdit = async (event: SubmitEvent) => {
 		event.preventDefault();
 		if (!editing) return;
 
@@ -75,12 +71,21 @@
 			return;
 		}
 
-		// TODO(backend): await trpc.user.updateProject.mutate({ id: editing.id, ...parsed.data })
-		const id = editing.id;
-		projectList = projectList.map((p) => (p.id === id ? { id, ...parsed.data } : p));
-		addMessage = `Updated "${parsed.data.name}".`;
-		editOpen = false;
-		editing = null;
+		saving = true;
+		try {
+			const result = await trpc.user.updateProject.mutate({ id: editing.id, ...parsed.data });
+			await invalidateAll();
+			$flash = {
+				message: result.message,
+				type: result.success ? 'success' : 'error'
+			};
+			if (result.success) {
+				editOpen = false;
+				editing = null;
+			}
+		} finally {
+			saving = false;
+		}
 	};
 
 	let deleting = $state<Project | null>(null);
@@ -91,23 +96,26 @@
 		deleteOpen = true;
 	};
 
-	const confirmDelete = () => {
+	const confirmDelete = async () => {
 		if (!deleting) return;
 
-		// TODO(backend): await trpc.user.removeProject.mutate({ id: deleting.id })
 		const id = deleting.id;
-		addMessage = `Removed "${deleting.name}".`;
-		projectList = projectList.filter((p) => p.id !== id);
 		deleteOpen = false;
 		deleting = null;
+
+		const result = await trpc.user.removeProject.mutate({ id });
+		await invalidateAll();
+		$flash = {
+			message: result.message,
+			type: result.success ? 'success' : 'error'
+		};
 	};
 </script>
 
 <div class="flex flex-1 flex-col gap-4">
 	<h2 class="text-2xl font-bold tracking-tight">Projects</h2>
 	<p class="mt-1 text-muted-foreground">
-		List the projects you are running in your container, so others can see what Nest is being used
-		for.
+		List the projects you are running in your container, so we can see what Nest is being used for.
 	</p>
 
 	<Alert.Root class="border-primary/40 bg-primary/10">
@@ -131,7 +139,7 @@
 			</Table.Row>
 		</Table.Header>
 		<Table.Body>
-			{#each projectList as project (project.id)}
+			{#each projects ?? [] as project (project.id)}
 				<Table.Row>
 					<Table.Cell class="font-medium">{project.name}</Table.Cell>
 					<Table.Cell class="max-w-56 truncate">
@@ -176,7 +184,7 @@
 	<Card.Root class="container my-4 w-full flex-1 flex-col">
 		<form use:enhance method="POST">
 			<Card.Content>
-				{#if $errors._errors || addMessage}
+				{#if $errors._errors || $message}
 					<Alert.Root variant={$errors._errors ? 'destructive' : 'default'} class="mb-4">
 						{#if $errors._errors}<AlertCircleIcon />
 						{:else}
@@ -187,8 +195,8 @@
 								{#each $errors._errors ?? [] as error (error)}
 									<li>{error}</li>
 								{/each}
-								{#if addMessage}
-									<li>{addMessage}</li>
+								{#if $message}
+									<li>{$message}</li>
 								{/if}
 							</ul>
 						</Alert.Description>
@@ -239,12 +247,11 @@
 				</div></Card.Content
 			>
 			<Card.Footer class="flex w-full items-center gap-2">
-				<span>
-					All three fields are required, and must match what you ship for a YSWS exactly.
-				</span>
-				<Form.Button class="w-full sm:ms-auto sm:w-auto" disabled={$submitting}>
-					Add Project
-				</Form.Button>
+				<span>All three fields are required, and must match what you ship for a YSWS exactly.</span>
+				<Form.Button class="w-full sm:ms-auto sm:w-auto" disabled={$submitting}
+					>{#if $submitting}<Spinner />
+					{/if} Add Project</Form.Button
+				>
 			</Card.Footer>
 		</form>
 	</Card.Root>
@@ -284,7 +291,9 @@
 			</div>
 			<Dialog.Footer class="mt-4">
 				<Button type="button" variant="outline" onclick={() => (editOpen = false)}>Cancel</Button>
-				<Button type="submit">Save changes</Button>
+				<Button type="submit" disabled={saving}>
+					{#if saving}<Spinner />{/if} Save changes
+				</Button>
 			</Dialog.Footer>
 		</form>
 	</Dialog.Content>

@@ -31,6 +31,20 @@ export const domainsTable = pgTable('domains', {
 	created_at: timestamp('created_at').defaultNow()
 });
 
+export const projectsTable = pgTable('projects', {
+	id: serial('id').primaryKey(),
+	container_id: integer('container_id')
+		.notNull()
+		.references(() => containersTable.id, {
+			onDelete: 'cascade'
+		}),
+	name: text('name').notNull(),
+	demo: text('demo').notNull(),
+	repo: text('repo').notNull(),
+	created_at: timestamp('created_at').defaultNow(),
+	updated_at: timestamp('updated_at').defaultNow()
+});
+
 export const applicationsTable = pgTable('applications', {
 	id: serial('id').primaryKey(),
 	user_id: text('user_id').references(() => auth.user.id, {
@@ -77,12 +91,20 @@ export const containersRelations = relations(containersTable, ({ one, many }) =>
 		fields: [containersTable.user_id],
 		references: [auth.user.id]
 	}),
-	domains: many(domainsTable)
+	domains: many(domainsTable),
+	projects: many(projectsTable)
 }));
 
 export const domainsRelations = relations(domainsTable, ({ one }) => ({
 	container: one(containersTable, {
 		fields: [domainsTable.container_id],
+		references: [containersTable.id]
+	})
+}));
+
+export const projectsRelations = relations(projectsTable, ({ one }) => ({
+	container: one(containersTable, {
+		fields: [projectsTable.container_id],
 		references: [containersTable.id]
 	})
 }));

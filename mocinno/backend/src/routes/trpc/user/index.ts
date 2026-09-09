@@ -31,6 +31,14 @@ import { createEmailAccount, getEmailAccount, resetEmailPassword } from '@/stalw
 
 const domainString = z.stringFormat('domain', z.regexes.domain);
 
+const MAX_PROJECTS = 25;
+
+const projectInput = z.object({
+	name: z.string().trim().min(1).max(100),
+	demo: z.url().trim().min(1),
+	repo: z.url().trim().min(1)
+});
+
 const userRouter = router({
 	pending: authedProcedure.query(async ({ ctx }) => {
 		const container = await db.query.containersTable.findFirst({
@@ -372,6 +380,125 @@ const userRouter = router({
 			await dbHelpers.removeDomain(container.id, input.domain);
 
 			return { success: true, message: `${input.domain} removed` };
+		}),
+	projects: authedProcedure.query(async ({ ctx }) => {
+		const container = await db.query.containersTable.findFirst({
+			where: (container, { eq }) => eq(container.user_id, ctx.user.id),
+			with: {
+				projects: true
+			}
+		});
+
+		if (!container) {
+			return null;
+		}
+
+		return container.projects;
+	}),
+	addProject: authedProcedure.input(projectInput).mutation(async ({ ctx, input }) => {
+		const container = await db.query.containersTable.findFirst({
+			where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+		});
+
+		if (!container) {
+			return {
+				success: false,
+				message: 'No container found'
+			};
+		}
+
+		if (await isContainerSuspended(container)) {
+			return {
+				success: false,
+				message: 'Your container is suspended. Contact an admin.'
+			};
+		}
+
+		if ((await dbHelpers.countProjectsForUser(container.id)) >= MAX_PROJECTS) {
+			return {
+				success: false,
+				message: `Maximum of ${MAX_PROJECTS} projects allowed`
+			};
+		}
+
+		const row = await dbHelpers.addProject({
+			containerId: container.id,
+			name: input.name,
+			demo: input.demo,
+			repo: input.repo
+		});
+
+		return { success: true, message: `${input.name} added`, project: row };
+	}),
+	updateProject: authedProcedure
+		.input(projectInput.extend({ id: z.int().positive() }))
+		.mutation(async ({ ctx, input }) => {
+			const container = await db.query.containersTable.findFirst({
+				where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+			});
+
+			if (!container) {
+				return {
+					success: false,
+					message: 'No container found'
+				};
+			}
+
+			if (await isContainerSuspended(container)) {
+				return {
+					success: false,
+					message: 'Your container is suspended. Contact an admin.'
+				};
+			}
+
+			const row = await dbHelpers.updateProject({
+				containerId: container.id,
+				id: input.id,
+				name: input.name,
+				demo: input.demo,
+				repo: input.repo
+			});
+
+			if (!row) {
+				return {
+					success: false,
+					message: 'Project not found'
+				};
+			}
+
+			return { success: true, message: `${input.name} updated`, project: row };
+		}),
+	removeProject: authedProcedure
+		.input(z.object({ id: z.int().positive() }))
+		.mutation(async ({ ctx, input }) => {
+			const container = await db.query.containersTable.findFirst({
+				where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+			});
+
+			if (!container) {
+				return {
+					success: false,
+					message: 'No container found'
+				};
+			}
+
+			if (await isContainerSuspended(container)) {
+				return {
+					success: false,
+					message: 'Your container is suspended. Contact an admin.'
+				};
+			}
+
+			const row = await dbHelpers.removeProject(container.id, input.id);
+
+			if (!row) {
+				return {
+					success: false,
+					message: 'Project not found'
+				};
+			}
+
+			return { success: true, message: `${row.name} removed` };
 		}),
 	addKey: authedProcedure
 		.input(z.object({ key: z.string().min(1) }))

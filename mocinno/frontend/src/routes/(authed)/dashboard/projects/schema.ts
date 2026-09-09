@@ -17,5 +17,3 @@ export const formSchema = z.object({
 });
 
 export type FormSchema = typeof formSchema;
-
-export type Project = z.infer<typeof formSchema> & { id: string };
