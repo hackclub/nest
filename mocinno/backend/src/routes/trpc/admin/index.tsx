@@ -263,6 +263,116 @@ const adminRouter = router({
 
 			return { data: invites, count: totalInvites, pageCount };
 		}),
+	getProjectStats: adminProcedure.query(async () => {
+		const [projectRows, containerRows] = await Promise.all([
+			db
+				.select({
+					container_id: schema.projectsTable.container_id,
+					repo: schema.projectsTable.repo,
+					created_at: schema.projectsTable.created_at
+				})
+				.from(schema.projectsTable),
+			db.select({ value: count() }).from(schema.containersTable)
+		]);
+
+		const containersTotal = Number(containerRows[0]?.value ?? 0);
+		const containersWithProjects = new Set(projectRows.map((p) => p.container_id)).size;
+
+		const hostCounts = new Map<string, number>();
+		for (const project of projectRows) {
+			let host = 'unknown';
+			try {
+				host = new URL(project.repo).hostname.replace(/^www\./, '');
+			} catch {
+				// Leave as unknown, the repo url was not parseable
+			}
+			hostCounts.set(host, (hostCounts.get(host) ?? 0) + 1);
+		}
+
+		const topHosts = [...hostCounts.entries()]
+			.map(([host, total]) => ({ host, total }))
+			.sort((a, b) => b.total - a.total)
+			.slice(0, 6);
+
+		const now = Date.now();
+		const DAY = 24 * 60 * 60 * 1000;
+		const addedSince = (days: number) =>
+			projectRows.filter((p) => p.created_at && p.created_at.getTime() >= now - days * DAY).length;
+
+		return {
+			totalProjects: projectRows.length,
+			containersTotal,
+			containersWithProjects,
+			containersWithoutProjects: Math.max(0, containersTotal - containersWithProjects),
+			addedLast7Days: addedSince(7),
+			addedLast30Days: addedSince(30),
+			topHosts
+		};
+	}),
+	getProjects: adminProcedure
+		.input(
+			z.object({
+				query: z.string().optional(),
+				page: z.number().min(1).optional().default(1),
+				limit: z.number().optional().default(10)
+			})
+		)
+		.query(async ({ input }) => {
+			const offset = (input.page - 1) * input.limit;
+
+			const queryLike = `%${input.query || ''}%`;
+
+			const where = or(
+				ilike(schema.projectsTable.name, queryLike),
+				ilike(schema.projectsTable.demo, queryLike),
+				ilike(schema.projectsTable.repo, queryLike),
+				inArray(
+					schema.projectsTable.container_id,
+					db
+						.select({ id: schema.containersTable.id })
+						.from(schema.containersTable)
+						.where(ilike(schema.containersTable.username, queryLike))
+				)
+			);
+
+			const projects = await db.query.projectsTable.findMany({
+				limit: input.limit,
+				offset,
+				where,
+				orderBy: [desc(schema.projectsTable.created_at)],
+				with: {
+					container: true
+				}
+			});
+
+			const rowQuery = await db.select({ value: count() }).from(schema.projectsTable).where(where);
+
+			let totalProjects = 0;
+
+			if (rowQuery[0]) {
+				totalProjects = Number(rowQuery[0].value);
+			}
+
+			const pageCount = Math.max(1, Math.ceil(totalProjects / input.limit));
+
+			if (input.page > pageCount) {
+				input.page = pageCount;
+			}
+
+			return { data: projects, count: totalProjects, pageCount };
+		}),
+	deleteProject: adminProcedure.input(z.object({ id: z.int() })).mutation(async ({ input }) => {
+		const [row] = await db
+			.delete(schema.projectsTable)
+			.where(eq(schema.projectsTable.id, input.id))
+			.returning();
+
+		if (!row) {
+			return { success: false, message: 'Project not found' };
+		}
+
+		return { success: true, message: `${row.name} deleted` };
+	}),
 	toggleSuspend: adminProcedure
 		.input(z.object({ id: z.int(), reason: z.string().optional().default('Suspended by admin') }))
 		.mutation(async ({ input }) => {

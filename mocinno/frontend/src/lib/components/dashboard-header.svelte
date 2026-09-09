@@ -110,6 +110,15 @@
 							{/snippet}
 						</NavigationMenu.Link>
 					</NavigationMenu.Item>
+					<NavigationMenu.Item>
+						<NavigationMenu.Link>
+							{#snippet child()}
+								<a href={resolve('/(authed)/admin/projects')} class={navigationMenuTriggerStyle()}
+									>Projects</a
+								>
+							{/snippet}
+						</NavigationMenu.Link>
+					</NavigationMenu.Item>
 				{:else}
 					<NavigationMenu.Item>
 						<NavigationMenu.Link>
