@@ -39,7 +39,7 @@
 
 	const stats = $derived(data.stats);
 
-	const avgPerParticipant = $derived(
+	const avgPerUser = $derived(
 		stats.containersWithProjects > 0
 			? (stats.totalProjects / stats.containersWithProjects).toFixed(1)
 			: '0'
@@ -50,9 +50,7 @@
 
 <div class="flex flex-1 flex-col gap-4">
 	<h2 class="text-2xl font-bold tracking-tight">Projects</h2>
-	<p class="mt-1 text-muted-foreground">
-		What people are actually running in their containers.<br />Handy for checking YSWS ships against
-	</p>
+	<p class="mt-1 text-muted-foreground">What people are actually running in their containers</p>
 	<Separator class="my-4" />
 
 	<div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -68,8 +66,8 @@
 			</p>
 		</div>
 		<div class="rounded-md border border-border p-4">
-			<h4 class="text-sm font-medium text-muted-foreground">Avg. per participant</h4>
-			<p class="text-xl font-bold">{avgPerParticipant}</p>
+			<h4 class="text-sm font-medium text-muted-foreground">Avg. per user</h4>
+			<p class="text-xl font-bold">{avgPerUser}</p>
 		</div>
 		<div class="rounded-md border border-border p-4">
 			<h4 class="text-sm font-medium text-muted-foreground">Added last 7 days</h4>
