@@ -38,7 +38,8 @@ export async function proxyRequest(req: Request, target: string) {
 			method: req.method,
 			headers: reqHeaders,
 			body: req.method !== 'GET' && req.method !== 'HEAD' ? req.body : undefined,
-			redirect: 'manual'
+			redirect: 'manual',
+			signal: AbortSignal.timeout(30 * 1000)
 		});
 
 		const resHeaders = new Headers(proxyRes.headers);
