@@ -37,16 +37,55 @@ export async function refreshWpsStats(): Promise<WpsStats> {
 		return cached;
 	}
 
-	const rows = await db
-		.select({ email: schema.user.email })
-		.from(schema.containersTable)
-		.innerJoin(schema.user, eq(schema.containersTable.user_id, schema.user.id));
+	const [containerRows, applicationRows] = await Promise.all([
+		db
+			.select({
+				sub: schema.containersTable.sub,
+				email: schema.user.email
+			})
+			.from(schema.containersTable)
+			.leftJoin(schema.user, eq(schema.containersTable.user_id, schema.user.id)),
+		db
+			.select({
+				sub: schema.applicationsTable.sub,
+				email: schema.applicationsTable.email,
+				created_at: schema.applicationsTable.created_at
+			})
+			.from(schema.applicationsTable)
+	]);
 
-	const counts = countParticipation(
-		index,
-		rows.map((row) => row.email),
-		Date.now() - RECENT_WINDOW_DAYS * DAY
-	);
+	const emailBySub = new Map<string, { email: string; createdAt: number }>();
+
+	for (const application of applicationRows) {
+		if (!application.sub || !application.email) continue;
+
+		const createdAt = application.created_at?.getTime() ?? 0;
+		const existing = emailBySub.get(application.sub);
+
+		if (!existing || createdAt > existing.createdAt) {
+			emailBySub.set(application.sub, { email: application.email, createdAt });
+		}
+	}
+
+	const emails: string[] = [];
+	let unresolved = 0;
+
+	for (const container of containerRows) {
+		const email = container.email ?? (container.sub ? emailBySub.get(container.sub)?.email : null);
+
+		if (!email) {
+			unresolved++;
+			continue;
+		}
+
+		emails.push(email);
+	}
+
+	if (unresolved > 0) {
+		console.warn(`WPS stats: ${unresolved} container(s) have no email on user or applications`);
+	}
+
+	const counts = countParticipation(index, emails, Date.now() - RECENT_WINDOW_DAYS * DAY);
 
 	cached = {
 		...counts,

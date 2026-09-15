@@ -1,9 +1,5 @@
 import { statSync } from 'node:fs';
 
-/**
- * Minimal RFC4180 parser. The export does contain quoted fields, so splitting on
- * commas is not enough.
- */
 export function parseCsv(text: string): string[][] {
 	const rows: string[][] = [];
 	let row: string[] = [];
@@ -15,7 +11,6 @@ export function parseCsv(text: string): string[][] {
 
 		if (quoted) {
 			if (char === '"') {
-				// A doubled quote inside a quoted field is a literal quote.
 				if (text[i + 1] === '"') {
 					field += '"';
 					i++;
@@ -43,7 +38,6 @@ export function parseCsv(text: string): string[][] {
 		}
 	}
 
-	// Trailing line with no newline terminator.
 	if (field !== '' || row.length > 0) {
 		row.push(field);
 		rows.push(row);
@@ -52,7 +46,6 @@ export function parseCsv(text: string): string[][] {
 	return rows;
 }
 
-/** The export writes `9/14/2026 1:32pm`, which Date cannot parse on its own. */
 export function parseCreated(value: string): number | null {
 	const match = value
 		.trim()
@@ -62,7 +55,6 @@ export function parseCreated(value: string): number | null {
 
 	const [, month, day, year, hour, minute, meridiem] = match;
 
-	// 12am is hour 0 and 12pm is hour 12, so mod before adding the offset.
 	let hours = hour ? Number(hour) % 12 : 0;
 	if (meridiem?.toLowerCase() === 'pm') hours += 12;
 
@@ -80,15 +72,12 @@ export function parseCreated(value: string): number | null {
 export type CsvIndex = {
 	mtimeMs: number;
 	size: number;
-	/** Lowercased email -> timestamp of that email's most recent project. */
 	latestByEmail: Map<string, number>;
-	/** Rows that carried a usable email. */
 	rowsIndexed: number;
 	exportedAt: Date;
 };
 
 export function buildCsvIndex(text: string, mtimeMs: number, size: number, mtime: Date): CsvIndex {
-	// Excel writes a BOM on the first header, which would corrupt that column name.
 	const rows = parseCsv(text.replace(/^﻿/, ''));
 	const header = rows.shift();
 
@@ -96,7 +85,6 @@ export function buildCsvIndex(text: string, mtimeMs: number, size: number, mtime
 		throw new Error('csv is empty');
 	}
 
-	// Looked up by name so a reordered or extended export keeps working.
 	const columns = header.map((column) => column.trim().toLowerCase());
 	const emailIndex = columns.indexOf('email');
 	const createdIndex = columns.indexOf('created');
@@ -114,7 +102,6 @@ export function buildCsvIndex(text: string, mtimeMs: number, size: number, mtime
 
 		rowsIndexed++;
 
-		// An unparseable date still counts as participation, just never as recent.
 		const created = parseCreated(row[createdIndex] ?? '') ?? Number.NEGATIVE_INFINITY;
 		const previous = latestByEmail.get(email);
 
@@ -126,10 +113,6 @@ export function buildCsvIndex(text: string, mtimeMs: number, size: number, mtime
 	return { mtimeMs, size, latestByEmail, rowsIndexed, exportedAt: mtime };
 }
 
-/**
- * Buckets a list of nest-user emails against the index. Emails are deduped and
- * normalised here, so callers can pass raw column values.
- */
 export function countParticipation(
 	index: CsvIndex,
 	emails: string[],
@@ -157,10 +140,6 @@ export function countParticipation(
 
 let cachedIndex: CsvIndex | null = null;
 
-/**
- * Parses the export and indexes it by email. Re-reads only when the file's mtime
- * or size has moved, so the 50k-row parse does not run per request.
- */
 export async function loadCsvIndex(path: string): Promise<CsvIndex> {
 	const stat = statSync(path);
 

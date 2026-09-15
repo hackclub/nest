@@ -8,10 +8,6 @@
 	const total = $derived(recent + stale + none);
 	const pct = (n: number) => (total > 0 ? Math.round((n / total) * 100) : 0);
 
-	// Ordinal, not categorical: none -> stale -> recent is a ramp from "absent" to
-	// "active", so it rides the violet chart ramp with a neutral for the zero state.
-	// The steps differ per theme (see the style block) -- the light step that reads
-	// well on white is invisible on the dark surface, and vice versa.
 	const segments = $derived([
 		{
 			key: 'recent',
@@ -25,7 +21,6 @@
 
 	const RADIUS = 60;
 	const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-	// Surface-coloured gap between arcs, in px along the circumference.
 	const GAP = 4;
 
 	const arcs = $derived.by(() => {
@@ -36,7 +31,6 @@
 			.filter((s) => s.value > 0)
 			.map((s) => {
 				const length = (s.value / total) * CIRCUMFERENCE;
-				// A single full-circle segment needs no gap carved out of it.
 				const gap = s.value === total ? 0 : GAP;
 				const arc = {
 					...s,
@@ -53,8 +47,6 @@
 	const focused = $derived(segments.find((s) => s.key === hovered) ?? null);
 </script>
 
-<!-- @container, not viewport breakpoints: what squeezes the legend is the width of
-     the card this sits in, which is half the grid on md+ regardless of viewport. -->
 <div class="wps-chart @container">
 	<div class="flex flex-col items-center gap-4 @lg:flex-row @lg:items-center @lg:gap-6">
 		<div class="relative shrink-0">
@@ -114,8 +106,6 @@
 						aria-hidden="true"
 					></span>
 					<span class="min-w-0 text-muted-foreground">{segment.label}</span>
-					<!-- nowrap so the count and its percentage stay on one line, and the
-					     values line up in a column even if a label wraps -->
 					<span
 						class="ms-auto shrink-0 whitespace-nowrap font-medium text-foreground tabular-nums"
 					>
@@ -135,9 +125,6 @@
 </div>
 
 <style>
-	/* Steps are picked per theme rather than flipped: each set is checked for arc
-	   separation and for >= 3:1 against its own surface. --chart-5 disappears into
-	   the dark background, --chart-1 washes out on the light one. */
 	.wps-chart {
 		--wps-recent: var(--chart-2);
 		--wps-stale: var(--chart-5);
