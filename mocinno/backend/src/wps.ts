@@ -37,8 +37,6 @@ export async function refreshWpsStats(): Promise<WpsStats> {
 		return cached;
 	}
 
-	// A nest user is someone with a container -- the same population the projects
-	// page counts. Applicants without a container are not nest users yet.
 	const rows = await db
 		.select({ email: schema.user.email })
 		.from(schema.containersTable)
@@ -67,6 +65,4 @@ export async function getWpsStats(): Promise<WpsStats> {
 	return cached;
 }
 
-// The csv changes rarely, but the 90-day window slides and users get added.
-// An unchanged file skips the parse, so this is usually just the one query.
 Bun.cron('*/15 * * * *', refreshWpsStats);
