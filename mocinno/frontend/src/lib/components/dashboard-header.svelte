@@ -122,7 +122,9 @@
 					<NavigationMenu.Item>
 						<NavigationMenu.Link>
 							{#snippet child()}
-								<a href={resolve('/(authed)/admin/wps')} class={navigationMenuTriggerStyle()}>WPs</a>
+								<a href={resolve('/(authed)/admin/unified')} class={navigationMenuTriggerStyle()}
+									>Unified</a
+								>
 							{/snippet}
 						</NavigationMenu.Link>
 					</NavigationMenu.Item>

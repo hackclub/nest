@@ -1,13 +1,13 @@
 import { eq } from 'drizzle-orm';
 
 import { db, schema } from '@/db';
-import { WPS_CSV_PATH } from '@/env';
-import { countParticipation, loadCsvIndex, type CsvIndex } from '@/wps-csv';
+import { UNIFIED_CSV_PATH } from '@/env';
+import { countParticipation, loadCsvIndex, type CsvIndex } from '@/unified-csv';
 
 const DAY = 24 * 60 * 60 * 1000;
 const RECENT_WINDOW_DAYS = 90;
 
-export type WpsStats = {
+export type UnifiedStats = {
 	totalUsers: number;
 	usersWithProjects: number;
 	usersRecent: number;
@@ -15,23 +15,23 @@ export type WpsStats = {
 	csvError: string | null;
 };
 
-let cached: WpsStats | null = null;
+let cached: UnifiedStats | null = null;
 
-export async function refreshWpsStats(): Promise<WpsStats> {
+export async function refreshUnifiedStats(): Promise<UnifiedStats> {
 	let index: CsvIndex;
 
 	try {
-		index = await loadCsvIndex(WPS_CSV_PATH);
+		index = await loadCsvIndex(UNIFIED_CSV_PATH);
 	} catch (err) {
 		const reason = err instanceof Error ? err.message : String(err);
-		console.error('Failed to read the WPS export:', reason);
+		console.error('Failed to read the Unified export:', reason);
 
 		cached = {
 			totalUsers: 0,
 			usersWithProjects: 0,
 			usersRecent: 0,
 			lastImport: null,
-			csvError: `Could not read ${WPS_CSV_PATH}: ${reason}`
+			csvError: `Could not read ${UNIFIED_CSV_PATH}: ${reason}`
 		};
 
 		return cached;
@@ -82,7 +82,7 @@ export async function refreshWpsStats(): Promise<WpsStats> {
 	}
 
 	if (unresolved > 0) {
-		console.warn(`WPS stats: ${unresolved} container(s) have no email on user or applications`);
+		console.warn(`Unified stats: ${unresolved} container(s) have no email on user or applications`);
 	}
 
 	const counts = countParticipation(index, emails, Date.now() - RECENT_WINDOW_DAYS * DAY);
@@ -96,12 +96,12 @@ export async function refreshWpsStats(): Promise<WpsStats> {
 	return cached;
 }
 
-export async function getWpsStats(): Promise<WpsStats> {
+export async function getUnifiedStats(): Promise<UnifiedStats> {
 	if (!cached) {
-		return refreshWpsStats();
+		return refreshUnifiedStats();
 	}
 
 	return cached;
 }
 
-Bun.cron('*/15 * * * *', refreshWpsStats);
+Bun.cron('*/15 * * * *', refreshUnifiedStats);

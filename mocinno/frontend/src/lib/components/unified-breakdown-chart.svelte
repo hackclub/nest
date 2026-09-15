@@ -1,9 +1,5 @@
 <script lang="ts">
-	let {
-		recent,
-		stale,
-		none
-	}: { recent: number; stale: number; none: number } = $props();
+	let { recent, stale, none }: { recent: number; stale: number; none: number } = $props();
 
 	const total = $derived(recent + stale + none);
 	const pct = (n: number) => (total > 0 ? Math.round((n / total) * 100) : 0);
@@ -13,10 +9,15 @@
 			key: 'recent',
 			label: 'Projects in last 90d',
 			value: recent,
-			color: 'var(--wps-recent)'
+			color: 'var(--unified-recent)'
 		},
-		{ key: 'stale', label: 'Projects, older than 90d', value: stale, color: 'var(--wps-stale)' },
-		{ key: 'none', label: 'No projects', value: none, color: 'var(--wps-none)' }
+		{
+			key: 'stale',
+			label: 'Projects, older than 90d',
+			value: stale,
+			color: 'var(--unified-stale)'
+		},
+		{ key: 'none', label: 'No projects', value: none, color: 'var(--unified-none)' }
 	]);
 
 	const RADIUS = 60;
@@ -47,7 +48,7 @@
 	const focused = $derived(segments.find((s) => s.key === hovered) ?? null);
 </script>
 
-<div class="wps-chart @container">
+<div class="unified-chart @container">
 	<div class="flex flex-col items-center gap-4 @lg:flex-row @lg:items-center @lg:gap-6">
 		<div class="relative shrink-0">
 			<svg
@@ -106,9 +107,7 @@
 						aria-hidden="true"
 					></span>
 					<span class="min-w-0 text-muted-foreground">{segment.label}</span>
-					<span
-						class="ms-auto shrink-0 whitespace-nowrap font-medium text-foreground tabular-nums"
-					>
+					<span class="ms-auto shrink-0 font-medium whitespace-nowrap text-foreground tabular-nums">
 						{segment.value.toLocaleString()}
 						<span class="text-muted-foreground">({pct(segment.value)}%)</span>
 					</span>
@@ -125,15 +124,15 @@
 </div>
 
 <style>
-	.wps-chart {
-		--wps-recent: var(--chart-2);
-		--wps-stale: var(--chart-5);
-		--wps-none: oklch(0.556 0 0);
+	.unified-chart {
+		--unified-recent: var(--chart-2);
+		--unified-stale: var(--chart-5);
+		--unified-none: oklch(0.556 0 0);
 	}
 
-	:global(.dark) .wps-chart {
-		--wps-recent: var(--chart-1);
-		--wps-stale: var(--chart-2);
-		--wps-none: oklch(0.556 0 0);
+	:global(.dark) .unified-chart {
+		--unified-recent: var(--chart-1);
+		--unified-stale: var(--chart-2);
+		--unified-none: oklch(0.556 0 0);
 	}
 </style>

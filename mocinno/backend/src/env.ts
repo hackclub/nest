@@ -45,8 +45,8 @@ export const SMTP_PASSWORD = isUndefinedOrEmpty(process.env.SMTP_PASSWORD, undef
 
 export const ROOTFS = isUndefinedOrEmpty(process.env.ROOTFS, 'local-zfs:8');
 
-export const WPS_CSV_PATH = isUndefinedOrEmpty(
-	process.env.WPS_CSV_PATH,
+export const UNIFIED_CSV_PATH = isUndefinedOrEmpty(
+	process.env.UNIFIED_CSV_PATH,
 	resolve(import.meta.dir, '../../wps.csv')
 );
 

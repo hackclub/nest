@@ -20,7 +20,7 @@ import {
 import * as dbHelpers from '@/db-helpers';
 import type { NodeLXCPost, NodeLXCStatusStop } from '@/types';
 import transporter from '@/mail';
-import { getWpsStats } from '@/wps';
+import { getUnifiedStats } from '@/unified';
 import { render } from 'react-email';
 import ApprovedEmail from '@email/approved';
 import RejectedEmail from '@email/rejected';
@@ -264,8 +264,8 @@ const adminRouter = router({
 
 			return { data: invites, count: totalInvites, pageCount };
 		}),
-	getWpsStats: adminProcedure.query(async () => {
-		return getWpsStats();
+	getUnifiedStats: adminProcedure.query(async () => {
+		return getUnifiedStats();
 	}),
 	getProjectStats: adminProcedure.query(async () => {
 		const [projectRows, containerRows] = await Promise.all([
