@@ -119,6 +119,13 @@
 							{/snippet}
 						</NavigationMenu.Link>
 					</NavigationMenu.Item>
+					<NavigationMenu.Item>
+						<NavigationMenu.Link>
+							{#snippet child()}
+								<a href={resolve('/(authed)/admin/wps')} class={navigationMenuTriggerStyle()}>WPs</a>
+							{/snippet}
+						</NavigationMenu.Link>
+					</NavigationMenu.Item>
 				{:else}
 					<NavigationMenu.Item>
 						<NavigationMenu.Link>

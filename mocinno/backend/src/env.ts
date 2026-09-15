@@ -45,6 +45,11 @@ export const SMTP_PASSWORD = isUndefinedOrEmpty(process.env.SMTP_PASSWORD, undef
 
 export const ROOTFS = isUndefinedOrEmpty(process.env.ROOTFS, 'local-zfs:8');
 
+export const WPS_CSV_PATH = isUndefinedOrEmpty(
+	process.env.WPS_CSV_PATH,
+	resolve(import.meta.dir, '../../wps.csv')
+);
+
 export const ENV_BASTION_PROXY_KEY_PUB = isUndefinedOrEmpty(
 	process.env.BASTION_PROXY_KEY_PUB,
 	resolve(import.meta.dir, '../../bastion_proxy_key.pub')
