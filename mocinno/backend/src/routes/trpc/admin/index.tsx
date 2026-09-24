@@ -18,6 +18,7 @@ import {
 	waitForTask
 } from '@/pve-utils';
 import * as dbHelpers from '@/db-helpers';
+import { buildNet0, ipv6ForVmid, syncContainerNetwork } from '@/network';
 import type { NodeLXCPost, NodeLXCStatusStop } from '@/types';
 import transporter from '@/mail';
 import { getUnifiedStats } from '@/unified';
@@ -73,7 +74,7 @@ let migrationJob: MigrationJob | null = null;
 
 async function runMassMigration(
 	job: MigrationJob,
-	containers: { id: number; vmid: number | null }[]
+	containers: { id: number; vmid: number | null; ip: string | null; ipv6: string | null }[]
 ) {
 	const targetConfig = CONFIG.servers.find((s) => s.node === job.to)!;
 
@@ -97,6 +98,9 @@ async function runMassMigration(
 				.update(schema.containersTable)
 				.set({ node: job.to })
 				.where(eq(schema.containersTable.id, container.id));
+
+			// Gateways and ipv6 prefix differ per node
+			await syncContainerNetwork({ ...container, vmid, node: job.to });
 
 			const ndp = await fetch(`http://${targetConfig.hostIP}:9191/add/${vmid}`, {
 				headers: { Authorization: `Bearer ${process.env.NDP_API_KEY}` }
@@ -145,7 +149,12 @@ const adminRouter = router({
 			}
 
 			const containers = await db
-				.select({ id: schema.containersTable.id, vmid: schema.containersTable.vmid })
+				.select({
+					id: schema.containersTable.id,
+					vmid: schema.containersTable.vmid,
+					ip: schema.containersTable.ip,
+					ipv6: schema.containersTable.ipv6
+				})
 				.from(schema.containersTable)
 				.where(
 					and(eq(schema.containersTable.node, input.from), isNotNull(schema.containersTable.vmid))
@@ -582,14 +591,7 @@ const adminRouter = router({
 						serverConfig.ipv4.gateway
 					);
 
-					let net0 = `name=eth0,bridge=vmbr4030,firewall=0,ip=${allocated.ip}/${allocated.prefix},gw=${serverConfig.ipv4?.gateway || allocated.gateway}`;
-
-					if (serverConfig.ipv6) {
-						net0 += `,ip6=${serverConfig.ipv6.prefix}${vmid}/${serverConfig.ipv6.cidr},gw6=${serverConfig.ipv6.gateway}`;
-					}
-
-					console.log('net0: ', net0);
-					console.log('ipv6 config: ', serverConfig.ipv6);
+					const net0 = buildNet0(serverConfig, vmid, allocated.ip);
 
 					const container = await dbHelpers.createContainer({
 						user_id: application.user_id,
@@ -597,7 +599,7 @@ const adminRouter = router({
 						username: application.username,
 						sshKeys: [application.ssh_key],
 						ip: allocated.ip,
-						ipv6: serverConfig.ipv6 ? `${serverConfig.ipv6.prefix}${vmid}` : null,
+						ipv6: ipv6ForVmid(serverConfig, vmid),
 						node
 					});
 

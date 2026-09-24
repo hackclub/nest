@@ -7,6 +7,7 @@ import '@/proxy/index.ts';
 
 //import webRoutes from '@/routes/web';
 import routes from '@/routes';
+import { syncAllContainerNetworks } from '@/network';
 
 const app = route.createApp();
 
@@ -45,6 +46,9 @@ app.use('*', async (c, next) => {
 
 app.route('', webRoutes); */
 app.route('', routes);
+
+// Bring container networking in line with the node config (gateways, ipv6 prefix)
+syncAllContainerNetworks().catch((err) => console.error('[network] Startup sync crashed:', err));
 
 process.on('uncaughtException', (error) => {
 	console.error(error);

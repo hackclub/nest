@@ -1,5 +1,6 @@
 import { route } from '@/middleware';
 import * as db from '@/db-helpers';
+import { buildNet0, ipv6ForVmid } from '@/network';
 import {
 	disableStartOnBoot,
 	enableStartOnBoot,
@@ -226,14 +227,7 @@ app.post('/applications/approve', async (c) => {
 	const password = crypto.randomBytes(12).toString('hex');
 	const allocated = await db.allocateIP(serverConfig.ipv4.cidr, serverConfig.ipv4.gateway);
 
-	let net0 = `name=eth0,bridge=vmbr4030,firewall=0,ip=${allocated.ip}/${allocated.prefix},gw=${serverConfig.ipv4?.gateway || allocated.gateway}`;
-
-	if (serverConfig.ipv6) {
-		net0 += `,ip6=${serverConfig.ipv6.prefix}${vmid}/${serverConfig.ipv6.cidr},gw6=${serverConfig.ipv6.gateway}`;
-	}
-
-	console.log('net0: ', net0);
-	console.log('ipv6 config: ', serverConfig.ipv6);
+	const net0 = buildNet0(serverConfig, vmid, allocated.ip);
 
 	const result = await pveFetch<{ data: NodeLXCPost }>(`/nodes/${node}/lxc`, 'POST', {
 		vmid,
@@ -265,7 +259,7 @@ app.post('/applications/approve', async (c) => {
 		sshKeys: [application.ssh_key],
 		vmid: vmid,
 		ip: allocated.ip,
-		ipv6: serverConfig.ipv6 ? `${serverConfig.ipv6.prefix}${vmid}` : null,
+		ipv6: ipv6ForVmid(serverConfig, vmid),
 		node
 	});
 

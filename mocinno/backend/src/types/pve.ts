@@ -59,6 +59,7 @@ interface FullNodeLXCConfig {
 	//lxc: Array<unknown>;
 	memory: number;
 	//mp is also not an array
+	net0: string;
 	nameserver: string;
 	onboot: boolean;
 	ostype: OSType;
