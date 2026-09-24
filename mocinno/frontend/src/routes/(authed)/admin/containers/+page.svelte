@@ -5,6 +5,7 @@
 	import AdminTable from '$lib/components/tables/admin-table.svelte';
 	import { columns } from '$lib/components/tables/containers-table.js';
 	import type { PaginationState } from '@tanstack/table-core';
+	import MassMigrateDialog from './mass-migrate-dialog.svelte';
 
 	let { data } = $props();
 
@@ -23,6 +24,12 @@
 			});
 	});
 
+	const refresh = () => {
+		trpc.admin.getContainers.query({ query: searchQuery, page: page + 1 }).then((containers) => {
+			containersList = containers;
+		});
+	};
+
 	const onPageChange = (pagination: PaginationState) => {
 		page = pagination.pageIndex;
 		trpc.admin.getContainers
@@ -40,7 +47,10 @@
 <Head title="Containers" />
 
 <div class="flex flex-1 flex-col gap-4">
-	<h2 class="text-2xl font-bold tracking-tight">Containers</h2>
+	<div class="flex items-center justify-between gap-4">
+		<h2 class="text-2xl font-bold tracking-tight">Containers</h2>
+		<MassMigrateDialog onFinished={refresh} />
+	</div>
 	<p class="mt-1 text-muted-foreground">
 		People being dumb? <br />Send them to the void here
 	</p>

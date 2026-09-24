@@ -3,7 +3,7 @@ import { adminProcedure } from '@/modules/trpc';
 
 import { z } from 'zod';
 import { db, schema } from '@/db';
-import { desc, eq, or, inArray, sql, ilike, count } from 'drizzle-orm';
+import { and, desc, eq, or, inArray, isNotNull, sql, ilike, count } from 'drizzle-orm';
 import { CONFIG, ROOTFS, OS_TEMPLATE, BASTION_PROXY_PUB_KEY, SMTP_FROM, APP_DOMAIN } from '@/env';
 import {
 	disableStartOnBoot,
@@ -57,6 +57,67 @@ async function requestNodeStats() {
 // Every min
 Bun.cron('* * * * *', requestNodeStats);
 
+type MigrationJob = {
+	from: string;
+	to: string;
+	total: number;
+	done: number;
+	failed: { vmid: number; error: string }[];
+	current: number | null;
+	running: boolean;
+	startedAt: Date;
+	finishedAt: Date | null;
+};
+
+let migrationJob: MigrationJob | null = null;
+
+async function runMassMigration(
+	job: MigrationJob,
+	containers: { id: number; vmid: number | null }[]
+) {
+	const targetConfig = CONFIG.servers.find((s) => s.node === job.to)!;
+
+	for (const container of containers) {
+		const vmid = container.vmid!;
+		job.current = vmid;
+
+		try {
+			const status = await getContainerStatus({ node: job.from, vmid });
+			const running = status?.status === 'running';
+
+			// LXC can't live migrate, running containers get a restart migration
+			const upid = await pveFetch<{ data: string }>(
+				`/nodes/${job.from}/lxc/${vmid}/migrate`,
+				'POST',
+				running ? { target: job.to, restart: 1, timeout: 60 } : { target: job.to }
+			);
+			await waitForTask(job.from, upid.data, 30 * 60 * 1000);
+
+			await db
+				.update(schema.containersTable)
+				.set({ node: job.to })
+				.where(eq(schema.containersTable.id, container.id));
+
+			const ndp = await fetch(`http://${targetConfig.hostIP}:9191/add/${vmid}`, {
+				headers: { Authorization: `Bearer ${process.env.NDP_API_KEY}` }
+			});
+			if (!ndp.ok) {
+				throw new Error(`Migrated, but NDP add failed: ${ndp.status} ${await ndp.text()}`);
+			}
+		} catch (err) {
+			console.error(`Failed to migrate container ${vmid}:`, err);
+			job.failed.push({ vmid, error: err instanceof Error ? err.message : String(err) });
+		}
+
+		job.done++;
+	}
+
+	job.current = null;
+	job.running = false;
+	job.finishedAt = new Date();
+	setTimeout(requestNodeStats, 0);
+}
+
 const adminRouter = router({
 	getStats: adminProcedure.query(async () => {
 		if (!nodeStats) {
@@ -65,6 +126,61 @@ const adminRouter = router({
 
 		return nodeStats;
 	}),
+	getNodes: adminProcedure.query(() => CONFIG.servers.map((s) => s.node)),
+	getMigrationStatus: adminProcedure.query(() => migrationJob),
+	startMassMigration: adminProcedure
+		.input(z.object({ from: z.string(), to: z.string(), count: z.int().min(1) }))
+		.mutation(async ({ input }) => {
+			if (migrationJob?.running) {
+				return { success: false, message: 'A migration is already running' };
+			}
+
+			if (input.from === input.to) {
+				return { success: false, message: 'Source and target node must differ' };
+			}
+
+			const nodes = CONFIG.servers.map((s) => s.node);
+			if (!nodes.includes(input.from) || !nodes.includes(input.to)) {
+				return { success: false, message: 'Unknown node' };
+			}
+
+			const containers = await db
+				.select({ id: schema.containersTable.id, vmid: schema.containersTable.vmid })
+				.from(schema.containersTable)
+				.where(
+					and(eq(schema.containersTable.node, input.from), isNotNull(schema.containersTable.vmid))
+				)
+				.orderBy(desc(schema.containersTable.vmid))
+				.limit(input.count);
+
+			if (containers.length === 0) {
+				return { success: false, message: `No containers on ${input.from}` };
+			}
+
+			const job: MigrationJob = {
+				from: input.from,
+				to: input.to,
+				total: containers.length,
+				done: 0,
+				failed: [],
+				current: null,
+				running: true,
+				startedAt: new Date(),
+				finishedAt: null
+			};
+			migrationJob = job;
+
+			runMassMigration(job, containers).catch((err) => {
+				console.error('Mass migration crashed:', err);
+				job.running = false;
+				job.finishedAt = new Date();
+			});
+
+			return {
+				success: true,
+				message: `Migrating ${containers.length} containers from ${input.from} to ${input.to}`
+			};
+		}),
 	getContainers: adminProcedure
 		.input(
 			z.object({
