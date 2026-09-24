@@ -183,8 +183,8 @@
 		<Pagination.Root
 			class="justify-end"
 			bind:page={getPage, setPage}
-			count={rowCount || 0}
-			perPage={10}
+			count={rowCount ?? data.length}
+			perPage={pagination.pageSize}
 		>
 			{#snippet children({ pages, currentPage })}
 				<Pagination.Content>

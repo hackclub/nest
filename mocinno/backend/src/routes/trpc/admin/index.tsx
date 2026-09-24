@@ -3,7 +3,7 @@ import { adminProcedure } from '@/modules/trpc';
 
 import { z } from 'zod';
 import { db, schema } from '@/db';
-import { and, desc, eq, or, inArray, isNotNull, sql, ilike, count } from 'drizzle-orm';
+import { and, asc, desc, eq, or, inArray, isNotNull, sql, ilike, count } from 'drizzle-orm';
 import { CONFIG, ROOTFS, OS_TEMPLATE, BASTION_PROXY_PUB_KEY, SMTP_FROM, APP_DOMAIN } from '@/env';
 import {
 	disableStartOnBoot,
@@ -279,29 +279,7 @@ const adminRouter = router({
 			})
 		)
 		.query(async ({ input }) => {
-			const offset = (input.page - 1) * input.limit;
-
 			const queryLike = `%${input.query || ''}%`;
-
-			const applications = await db.query.applicationsTable.findMany({
-				limit: input.limit,
-				where: or(
-					ilike(schema.applicationsTable.username, queryLike),
-					inArray(
-						schema.applicationsTable.user_id,
-						db
-							.select({ id: schema.user.id })
-							.from(schema.user)
-							.where(ilike(schema.user.email, queryLike))
-					)
-				),
-				offset,
-				orderBy: [desc(schema.applicationsTable.created_at)],
-				with: {
-					user: true,
-					reviewer: true
-				}
-			});
 
 			const rowQuery = await db
 				.select({ value: count() })
@@ -331,9 +309,29 @@ const adminRouter = router({
 				input.page = pageCount;
 			}
 
+			const applications = await db.query.applicationsTable.findMany({
+				limit: input.limit,
+				offset: (input.page - 1) * input.limit,
+				where: or(
+					ilike(schema.applicationsTable.username, queryLike),
+					inArray(
+						schema.applicationsTable.user_id,
+						db
+							.select({ id: schema.user.id })
+							.from(schema.user)
+							.where(ilike(schema.user.email, queryLike))
+					)
+				),
+				orderBy: [desc(schema.applicationsTable.created_at)],
+				with: {
+					user: true,
+					reviewer: true
+				}
+			});
+
 			const pendingApplications = await db.query.applicationsTable.findMany({
 				where: eq(schema.applicationsTable.status, 'pending'),
-				orderBy: [desc(schema.applicationsTable.created_at)],
+				orderBy: [asc(schema.applicationsTable.created_at)],
 				with: {
 					user: true,
 					reviewer: true

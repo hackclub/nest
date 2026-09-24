@@ -10,30 +10,28 @@
 
 	let applicationsList = $derived(data.applications);
 	let page = $state(0);
+	let pageSize = $state(10);
 	let searchQuery = $state('');
+	let requestId = 0;
 
 	$effect(() => {
+		const id = ++requestId;
 		trpc.admin.getApplications
 			.query({
 				query: searchQuery,
-				page: page + 1
+				page: page + 1,
+				limit: pageSize
 			})
 			.then((applications) => {
-				applicationsList = applications;
+				if (id === requestId) {
+					applicationsList = applications;
+				}
 			});
 	});
 
 	const onPageChange = (pagination: PaginationState) => {
 		page = pagination.pageIndex;
-		trpc.admin.getApplications
-			.query({
-				query: searchQuery,
-				page: pagination.pageIndex + 1,
-				limit: pagination.pageSize
-			})
-			.then((applications) => {
-				applicationsList = applications;
-			});
+		pageSize = pagination.pageSize;
 	};
 </script>
 
