@@ -23,7 +23,7 @@ const ADMIN_EMAILS = (env.ADMIN_EMAILS || '')
 	.map((e) => e.trim().toLowerCase())
 	.filter(Boolean);
 
-const RESERVED_IPS = new Set(['10.60.0.1', '10.60.0.2', '10.60.0.3']);
+const RESERVED_IPS = new Set(['10.60.0.1', '10.60.0.2', '10.60.0.3', '10.60.0.4', '10.60.0.5', '10.60.0.6', '10.60.0.7', '10.60.0.8']);
 
 function parseCIDR(cidr: string) {
 	const [base, prefixStr] = cidr.split('/');
