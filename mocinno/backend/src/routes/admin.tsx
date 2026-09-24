@@ -248,11 +248,17 @@ app.post('/applications/approve', async (c) => {
 
 	await waitForTask(node, result.data);
 
-	const ndpResult = await fetch(`http://${serverConfig.hostIP}:9191/add/${vmid}`, {
-		headers: { Authorization: `Bearer ${process.env.NDP_API_KEY}` }
-	});
-
-	console.log(`ndp api result: ${ndpResult.status} - ${ndpResult.statusText}`);
+	try {
+		const ndpResult = await fetch(`http://${serverConfig.hostIP}:9191/add/${vmid}`, {
+			headers: { Authorization: `Bearer ${process.env.NDP_API_KEY}` },
+			signal: AbortSignal.timeout(10_000)
+		});
+		const text = await ndpResult.text();
+		console.log(`ndp api result: ${ndpResult.status} ${ndpResult.statusText} ${text}`);
+		if (!ndpResult.ok) console.error(`ndp add failed for ${vmid}`);
+	} catch (err) {
+		console.error(`ndp request failed for ${vmid}:`, err);
+	}
 
 	await db.createContainer({
 		user_id: application.user_id,
