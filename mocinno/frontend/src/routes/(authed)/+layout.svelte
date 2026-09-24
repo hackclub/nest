@@ -34,7 +34,7 @@
 </script>
 
 <div class="[--header-height:calc(--spacing(14))]">
-	<SiteHeader admin={data.admin} />
+	<SiteHeader admin={data.admin} viewer={data.viewer} />
 	<div class="mx-auto flex w-full max-w-4xl flex-1 flex-col py-4 md:px-0">
 		{#if $flash}
 			{#if !Array.isArray($flash)}

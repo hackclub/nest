@@ -55,6 +55,21 @@ export const authedProcedure = publicProcedure.use(async (opts) => {
 	});
 });
 
+export const viewerProcedure = authedProcedure.use(async (opts) => {
+	const { ctx } = opts;
+
+	if (!dbHelpers.isViewer(ctx.user.email)) {
+		throw new TRPCError({
+			code: 'FORBIDDEN',
+			message: 'You must be a viewer to access this resource.'
+		});
+	}
+
+	return opts.next({
+		ctx
+	});
+});
+
 export const adminProcedure = authedProcedure.use(async (opts) => {
 	const { ctx } = opts;
 

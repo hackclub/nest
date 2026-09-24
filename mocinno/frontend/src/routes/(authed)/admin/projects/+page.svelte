@@ -9,6 +9,8 @@
 
 	let { data } = $props();
 
+	const tableColumns = $derived(data.admin ? columns : columns.filter((c) => c.id !== 'actions'));
+
 	let projectsList = $derived(data.projects);
 	let page = $state(0);
 	let searchQuery = $state('');
@@ -117,7 +119,7 @@
 
 	<AdminTable
 		data={projectsList.data}
-		{columns}
+		columns={tableColumns}
 		{onPageChange}
 		bind:searchQuery
 		pageCount={projectsList.pageCount}

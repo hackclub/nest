@@ -1,5 +1,5 @@
 import { router } from '@/modules/trpc';
-import { adminProcedure } from '@/modules/trpc';
+import { adminProcedure, viewerProcedure } from '@/modules/trpc';
 
 import { z } from 'zod';
 import { db, schema } from '@/db';
@@ -123,7 +123,7 @@ async function runMassMigration(
 }
 
 const adminRouter = router({
-	getStats: adminProcedure.query(async () => {
+	getStats: viewerProcedure.query(async () => {
 		if (!nodeStats) {
 			await requestNodeStats();
 		}
@@ -387,10 +387,10 @@ const adminRouter = router({
 
 			return { data: invites, count: totalInvites, pageCount };
 		}),
-	getUnifiedStats: adminProcedure.query(async () => {
+	getUnifiedStats: viewerProcedure.query(async () => {
 		return getUnifiedStats();
 	}),
-	getProjectStats: adminProcedure.query(async () => {
+	getProjectStats: viewerProcedure.query(async () => {
 		const [projectRows, containerRows] = await Promise.all([
 			db
 				.select({
@@ -436,7 +436,7 @@ const adminRouter = router({
 			topHosts
 		};
 	}),
-	getProjects: adminProcedure
+	getProjects: viewerProcedure
 		.input(
 			z.object({
 				query: z.string().optional(),

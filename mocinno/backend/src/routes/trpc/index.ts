@@ -11,6 +11,9 @@ export const appRouter = router({
 	isAdmin: authedProcedure.query(async ({ ctx }) => {
 		return dbHelpers.isAdmin(ctx.user.email);
 	}),
+	isViewer: authedProcedure.query(async ({ ctx }) => {
+		return dbHelpers.isViewer(ctx.user.email);
+	}),
 	user: userRouter,
 	admin: adminRouter,
 	application: applicationRouter,

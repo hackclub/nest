@@ -6,14 +6,16 @@
 	import { getContainerContext } from '$lib/user';
 	import { page } from '$app/state';
 
-	let { admin }: { admin: boolean } = $props();
+	let { admin, viewer }: { admin: boolean; viewer: boolean } = $props();
 
 	const container = getContainerContext();
 </script>
 
 <header class="sticky top-0 z-50 flex w-full items-center border-b bg-background">
 	<div class="flex h-(--header-height) w-full items-center gap-2 px-4">
-		<span class="font-bold">{page.url.pathname.startsWith('/admin') ? 'Nest Admin' : 'Nest'}</span>
+		<span class="font-bold"
+			>{page.url.pathname.startsWith('/admin') ? (admin ? 'Nest Admin' : 'Nest Stats') : 'Nest'}</span
+		>
 		<NavigationMenu.Root>
 			<NavigationMenu.List>
 				{#if container() && !page.url.pathname.startsWith('/admin')}
@@ -82,34 +84,36 @@
 							{/snippet}
 						</NavigationMenu.Link>
 					</NavigationMenu.Item>
-					<NavigationMenu.Item>
-						<NavigationMenu.Link>
-							{#snippet child()}
-								<a
-									href={resolve('/(authed)/admin/applications')}
-									class={navigationMenuTriggerStyle()}>Applications</a
-								>
-							{/snippet}
-						</NavigationMenu.Link>
-					</NavigationMenu.Item>
-					<NavigationMenu.Item>
-						<NavigationMenu.Link>
-							{#snippet child()}
-								<a href={resolve('/(authed)/admin/invites')} class={navigationMenuTriggerStyle()}
-									>Invites</a
-								>
-							{/snippet}
-						</NavigationMenu.Link>
-					</NavigationMenu.Item>
-					<NavigationMenu.Item>
-						<NavigationMenu.Link>
-							{#snippet child()}
-								<a href={resolve('/(authed)/admin/containers')} class={navigationMenuTriggerStyle()}
-									>Containers</a
-								>
-							{/snippet}
-						</NavigationMenu.Link>
-					</NavigationMenu.Item>
+					{#if admin}
+						<NavigationMenu.Item>
+							<NavigationMenu.Link>
+								{#snippet child()}
+									<a
+										href={resolve('/(authed)/admin/applications')}
+										class={navigationMenuTriggerStyle()}>Applications</a
+									>
+								{/snippet}
+							</NavigationMenu.Link>
+						</NavigationMenu.Item>
+						<NavigationMenu.Item>
+							<NavigationMenu.Link>
+								{#snippet child()}
+									<a href={resolve('/(authed)/admin/invites')} class={navigationMenuTriggerStyle()}
+										>Invites</a
+									>
+								{/snippet}
+							</NavigationMenu.Link>
+						</NavigationMenu.Item>
+						<NavigationMenu.Item>
+							<NavigationMenu.Link>
+								{#snippet child()}
+									<a href={resolve('/(authed)/admin/containers')} class={navigationMenuTriggerStyle()}
+										>Containers</a
+									>
+								{/snippet}
+							</NavigationMenu.Link>
+						</NavigationMenu.Item>
+					{/if}
 					<NavigationMenu.Item>
 						<NavigationMenu.Link>
 							{#snippet child()}
@@ -147,6 +151,10 @@
 				{#if admin}
 					<Button href={resolve('/(authed)/admin')}
 						><span class="rainbow-text">Admin Panel</span></Button
+					>
+				{:else if viewer}
+					<Button href={resolve('/(authed)/admin')}
+						><span class="rainbow-text">Stats Panel</span></Button
 					>
 				{/if}
 			{:else}

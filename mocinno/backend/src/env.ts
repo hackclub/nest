@@ -94,6 +94,8 @@ export const OS_TEMPLATE = isUndefinedOrEmpty(
 
 export const ADMIN_EMAILS = isUndefinedOrEmpty(process.env.ADMIN_EMAILS, '');
 
+export const VIEWER_EMAILS = isUndefinedOrEmpty(process.env.VIEWER_EMAILS, '');
+
 export const SLACK_WEBHOOK_URL = isUndefinedOrEmpty(process.env.SLACK_WEBHOOK_URL, undefined);
 
 export const ZEROSSL_EAB_KID = (() => {

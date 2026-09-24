@@ -45,6 +45,7 @@ export const load: LayoutServerLoad = loadFlash(async ({ locals, cookies }) => {
 			session: locals.session
 		},
 		container,
-		admin: await trpc.isAdmin.query()
+		admin: await trpc.isAdmin.query(),
+		viewer: await trpc.isViewer.query()
 	};
 });
