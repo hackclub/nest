@@ -3,6 +3,7 @@
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import UnifiedBreakdownChart from '$lib/components/unified-breakdown-chart.svelte';
 	import UnifiedHistoryChart from '$lib/components/unified-history-chart.svelte';
+	import UnifiedLastShippedChart from '$lib/components/unified-last-shipped-chart.svelte';
 
 	let { data } = $props();
 
@@ -99,6 +100,10 @@
 				</tbody>
 			</table>
 		</div>
+	</div>
+
+	<div class="rounded-md border border-border p-4">
+		<UnifiedLastShippedChart points={stats.lastShipped} />
 	</div>
 
 	<div class="rounded-md border border-border p-4">

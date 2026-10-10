@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm';
 import { db, schema } from '@/db';
 import { UNIFIED_CSV_PATH } from '@/env';
 import { countParticipation, loadCsvIndex, type CsvIndex } from '@/unified-csv';
+import { buildLastShipped, type LastShippedPoint } from '@/unified-last-shipped';
 
 const DAY = 24 * 60 * 60 * 1000;
 const RECENT_WINDOW_DAYS = 90;
@@ -21,6 +22,7 @@ export type UnifiedStats = {
 	totalUsers: number;
 	usersWithProjects: number;
 	usersRecent: number;
+	lastShipped: LastShippedPoint[];
 	history: Record<UnifiedHistoryRange, UnifiedHistoryPoint[]>;
 	lastImport: string | null;
 	csvError: string | null;
@@ -129,6 +131,7 @@ export async function refreshUnifiedStats(): Promise<UnifiedStats> {
 			totalUsers: 0,
 			usersWithProjects: 0,
 			usersRecent: 0,
+			lastShipped: [],
 			history: EMPTY_HISTORY,
 			lastImport: null,
 			csvError: `Could not read ${UNIFIED_CSV_PATH}: ${reason}`
@@ -207,6 +210,7 @@ export async function refreshUnifiedStats(): Promise<UnifiedStats> {
 
 	cached = {
 		...counts,
+		lastShipped: buildLastShipped(users, now),
 		history: {
 			'30d': buildHistory(users, dailyBuckets(now, 30), now.getTime()),
 			'6m': buildHistory(users, weeklyBuckets(now, 26), now.getTime()),
