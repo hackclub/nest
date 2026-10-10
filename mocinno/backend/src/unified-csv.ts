@@ -73,6 +73,7 @@ export type CsvIndex = {
 	mtimeMs: number;
 	size: number;
 	latestByEmail: Map<string, number>;
+	shipsByEmail: Map<string, number[]>;
 	rowsIndexed: number;
 	exportedAt: Date;
 };
@@ -94,6 +95,7 @@ export function buildCsvIndex(text: string, mtimeMs: number, size: number, mtime
 	}
 
 	const latestByEmail = new Map<string, number>();
+	const shipsByEmail = new Map<string, number[]>();
 	let rowsIndexed = 0;
 
 	for (const row of rows) {
@@ -108,9 +110,17 @@ export function buildCsvIndex(text: string, mtimeMs: number, size: number, mtime
 		if (previous === undefined || created > previous) {
 			latestByEmail.set(email, created);
 		}
+
+		const ships = shipsByEmail.get(email);
+		if (ships) ships.push(created);
+		else shipsByEmail.set(email, [created]);
 	}
 
-	return { mtimeMs, size, latestByEmail, rowsIndexed, exportedAt: mtime };
+	for (const ships of shipsByEmail.values()) {
+		ships.sort((a, b) => a - b);
+	}
+
+	return { mtimeMs, size, latestByEmail, shipsByEmail, rowsIndexed, exportedAt: mtime };
 }
 
 export function countParticipation(

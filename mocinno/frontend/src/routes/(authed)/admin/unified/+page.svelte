@@ -2,6 +2,7 @@
 	import Head from '$lib/components/head.svelte';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import UnifiedBreakdownChart from '$lib/components/unified-breakdown-chart.svelte';
+	import UnifiedHistoryChart from '$lib/components/unified-history-chart.svelte';
 
 	let { data } = $props();
 
@@ -98,5 +99,9 @@
 				</tbody>
 			</table>
 		</div>
+	</div>
+
+	<div class="rounded-md border border-border p-4">
+		<UnifiedHistoryChart history={stats.history} />
 	</div>
 </div>
