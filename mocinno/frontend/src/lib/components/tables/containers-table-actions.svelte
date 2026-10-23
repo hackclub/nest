@@ -3,18 +3,18 @@
 </script>
 
 <script lang="ts">
-	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { Label } from '$lib/components/ui/label/index.js';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { Spinner } from '$lib/components/ui/spinner/index.js';
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import { Button, buttonVariants } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Label } from '#lib/components/ui/label/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Spinner } from '#lib/components/ui/spinner/index.js';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
 	import BadgeCheckIcon from '@lucide/svelte/icons/badge-check';
 	import BadgeXIcon from '@lucide/svelte/icons/badge-x';
-	import { invalidateAll } from '$app/navigation';
+	import { refreshAll } from '$app/navigation';
 	import { getFlash } from 'sveltekit-flash-message';
 	import { page } from '$app/state';
-	import trpc from '$lib/trpc';
+	import trpc from '#lib/trpc.js';
 
 	const flash = getFlash(page);
 
@@ -30,7 +30,7 @@
 			id,
 			reason: suspendReason
 		});
-		await invalidateAll();
+		await refreshAll();
 		$flash = {
 			message: result.message,
 			type: result.success ? 'success' : 'error'

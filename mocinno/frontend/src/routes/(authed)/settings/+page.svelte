@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
-	import Head from '$lib/components/head.svelte';
+	import Head from '#lib/components/head.svelte';
 	import ThemeView from './theme-view.svelte';
 
 	let { data }: PageProps = $props();

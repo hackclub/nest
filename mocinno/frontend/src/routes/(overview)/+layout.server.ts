@@ -1,5 +1,5 @@
 import type { LayoutServerLoad } from './$types';
-import trpc from '$lib/server/trpc';
+import trpc from '#lib/server/trpc.js';
 
 export const load = (async ({ locals }) => {
 	const stats = await trpc.getStats.query();

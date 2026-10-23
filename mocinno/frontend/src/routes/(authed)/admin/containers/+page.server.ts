@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 
-import trpc from '$lib/server/trpc';
+import trpc from '#lib/server/trpc.js';
 
 export const load = (async () => {
 	const containers = await trpc.admin.getContainers.query({

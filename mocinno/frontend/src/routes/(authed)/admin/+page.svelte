@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Head from '$lib/components/head.svelte';
-	import { Separator } from '$lib/components/ui/separator/index.js';
+	import Head from '#lib/components/head.svelte';
+	import { Separator } from '#lib/components/ui/separator/index.js';
 
 	let { data } = $props();
 </script>

@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { Separator } from '$lib/components/ui/separator/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
+	import { Separator } from '#lib/components/ui/separator/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
 	import { mode, setTheme as setThemeState } from 'mode-watcher';
 	import { themeInfo, Theme } from './themes';
-	import authClient from '$lib/auth';
-	import { invalidateAll } from '$app/navigation';
+	import authClient from '#lib/auth.js';
+	import { refreshAll } from '$app/navigation';
 
 	let { user }: { user: typeof authClient.$Infer.Session.user } = $props();
 
 	const setTheme = async (theme: Theme) => {
 		setThemeState(theme);
 		await authClient.updateUser({ theme });
-		await invalidateAll();
+		await refreshAll();
 	};
 </script>
 

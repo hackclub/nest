@@ -71,8 +71,7 @@ export const auth = betterAuth({
 					discoveryUrl: 'https://auth.hackclub.com/.well-known/openid-configuration',
 					scopes: ['openid', 'profile', 'email', 'verification_status', 'slack_id'],
 					prompt: 'consent',
-					overrideUserInfoOnSignIn: true,
-					// @ts-expect-error types should be getting inferred but i have no idea why they aren't
+					overrideUserInfo: true,
 					mapProfileToUser: (profile) => ({
 						slack_id: profile.slack_id as string,
 						verification_status: profile.verification_status as string
@@ -81,12 +80,10 @@ export const auth = betterAuth({
 			]
 		})
 	],
-	experimental: {
-		joins: true
-	},
 	advanced: {
 		cookiePrefix: 'mocinno',
-		useSecureCookies: APP_SECURE
+		useSecureCookies: APP_SECURE,
+		trustedProxyHeaders: true
 	},
 	databaseHooks: {
 		session: {
@@ -105,7 +102,7 @@ export const auth = betterAuth({
 							where: (containersTable, { eq }) => eq(containersTable.user_id, session.userId)
 						});
 
-						if (container) {
+						if (additionalData?.sudo && container) {
 							const suspended = await isContainerSuspended(container);
 
 							canSudo = !suspended;

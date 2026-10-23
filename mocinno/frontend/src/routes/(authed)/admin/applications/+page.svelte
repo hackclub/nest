@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Head from '$lib/components/head.svelte';
-	import trpc from '$lib/trpc';
-	import { Separator } from '$lib/components/ui/separator/index.js';
-	import AdminTable from '$lib/components/tables/admin-table.svelte';
-	import { columns } from '$lib/components/tables/applications-table.js';
+	import Head from '#lib/components/head.svelte';
+	import trpc from '#lib/trpc.js';
+	import { Separator } from '#lib/components/ui/separator/index.js';
+	import AdminTable from '#lib/components/tables/admin-table.svelte';
+	import { columns } from '#lib/components/tables/applications-table.js';
 	import type { PaginationState } from '@tanstack/table-core';
 
 	let { data } = $props();

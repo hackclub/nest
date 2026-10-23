@@ -1,8 +1,8 @@
 <script lang="ts">
 	import CodeXml from '@lucide/svelte/icons/code-xml';
-	import FooterPattern from '$lib/assets/footer-pattern.svg?no-inline';
+	import FooterPattern from '#lib/assets/footer-pattern.svg?no-inline';
 	import { page } from '$app/state';
-	import authClient from '$lib/auth';
+	import authClient from '#lib/auth.js';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 
@@ -21,10 +21,10 @@
 				<button
 					onclick={() => {
 						if (user && !page.url.searchParams.get('invite')) {
-							goto(resolve('/dashboard'));
+							goto(resolve('dashboard'));
 						} else {
-							authClient.signIn.oauth2({
-								providerId: 'hackclub',
+							authClient.signIn.social({
+								provider: 'hackclub',
 								callbackURL: '/dashboard',
 								additionalData: {
 									invite_code: page.url.searchParams.get('invite')

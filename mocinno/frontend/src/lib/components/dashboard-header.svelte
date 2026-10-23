@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import * as NavigationMenu from '$lib/components/ui/navigation-menu/index.js';
-	import { navigationMenuTriggerStyle } from '$lib/components/ui/navigation-menu/navigation-menu-trigger.svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { getContainerContext } from '$lib/user';
+	import * as NavigationMenu from '#lib/components/ui/navigation-menu/index.js';
+	import { navigationMenuTriggerStyle } from '#lib/components/ui/navigation-menu/navigation-menu-trigger.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { getContainerContext } from '#lib/user.js';
 	import { page } from '$app/state';
 
 	let { admin, viewer }: { admin: boolean; viewer: boolean } = $props();
@@ -14,7 +14,11 @@
 <header class="sticky top-0 z-50 flex w-full items-center border-b bg-background">
 	<div class="flex h-(--header-height) w-full items-center gap-2 px-4">
 		<span class="font-bold"
-			>{page.url.pathname.startsWith('/admin') ? (admin ? 'Nest Admin' : 'Nest Stats') : 'Nest'}</span
+			>{page.url.pathname.startsWith('/admin')
+				? admin
+					? 'Nest Admin'
+					: 'Nest Stats'
+				: 'Nest'}</span
 		>
 		<NavigationMenu.Root>
 			<NavigationMenu.List>
@@ -107,8 +111,9 @@
 						<NavigationMenu.Item>
 							<NavigationMenu.Link>
 								{#snippet child()}
-									<a href={resolve('/(authed)/admin/containers')} class={navigationMenuTriggerStyle()}
-										>Containers</a
+									<a
+										href={resolve('/(authed)/admin/containers')}
+										class={navigationMenuTriggerStyle()}>Containers</a
 									>
 								{/snippet}
 							</NavigationMenu.Link>

@@ -4,8 +4,8 @@ import { loadFlash } from 'sveltekit-flash-message/server';
 import { setFlash } from 'sveltekit-flash-message/server';
 import * as Sentry from '@sentry/sveltekit';
 
-import trpc from '$lib/server/trpc';
-import type { RouterOutput } from '$lib/trpc';
+import trpc from '#lib/server/trpc.js';
+import type { RouterOutput } from '#lib/trpc.js';
 
 export const load: LayoutServerLoad = loadFlash(async ({ locals, cookies }) => {
 	if (!locals.session || !locals.user) {
@@ -23,10 +23,10 @@ export const load: LayoutServerLoad = loadFlash(async ({ locals, cookies }) => {
 		container = await trpc.user.container.query();
 	} catch (err) {
 		Sentry.captureException(err);
-		error(500, {
-			message:
-				"If you're seeing this there's a potential outage with Proxmox, please check the status page"
-		});
+		error(
+			500,
+			"If you're seeing this there's a potential outage with Proxmox, please check the status page"
+		);
 	}
 	if (locals.session?.sudo && !container?.suspended) {
 		setFlash(

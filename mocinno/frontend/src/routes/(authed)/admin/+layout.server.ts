@@ -1,7 +1,7 @@
 import type { LayoutServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
 
-import trpc from '$lib/server/trpc';
+import trpc from '#lib/server/trpc.js';
 
 const VIEWER_PATHS = ['/admin', '/admin/projects', '/admin/unified'];
 

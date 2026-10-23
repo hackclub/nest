@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Head from '$lib/components/head.svelte';
-	import ProjectCard from '$lib/components/projectCard.svelte';
+	import Head from '#lib/components/head.svelte';
+	import ProjectCard from '#lib/components/projectCard.svelte';
 	import { getProjects, type Project } from '../data.remote';
 
 	let projects = $state<Project[]>(await getProjects());

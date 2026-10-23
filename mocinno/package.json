@@ -20,27 +20,27 @@
 		"frontend"
 	],
 	"catalog": {
-		"@types/bun": "^1.3.14",
+		"@types/bun": "^1.4.4",
 		"typescript": "^6.0.3",
-		"better-auth": "^1.6.20",
-		"@trpc/client": "^11.18.0",
-		"@trpc/server": "^11.18.0",
+		"better-auth": "^1.7.12",
+		"@trpc/client": "^11.19.0",
+		"@trpc/server": "^11.19.0",
 		"superjson": "^2.2.6",
-		"zod": "^4.4.3"
+		"zod": "^4.6.7"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
 		"@types/bun": "catalog:",
-		"eslint": "^10.8.1",
+		"eslint": "^10.13.0",
 		"eslint-config-prettier": "^10.1.8",
-		"eslint-plugin-svelte": "^3.22.0",
-		"globals": "^17.11.0",
-		"typescript-eslint": "^8.67.0"
+		"eslint-plugin-svelte": "^3.23.1",
+		"globals": "^17.13.0",
+		"typescript-eslint": "^8.72.0"
 	},
 	"dependencies": {
 		"@mocinno/backend": "workspace:",
-		"@shopify/prettier-plugin-liquid": "^1.11.0",
-		"prettier": "^3.9.6",
+		"@shopify/prettier-plugin-liquid": "^1.11.2",
+		"prettier": "^3.9.10",
 		"prettier-plugin-svelte": "^4.1.1",
 		"prettier-plugin-tailwindcss": "^0.8.0"
 	},

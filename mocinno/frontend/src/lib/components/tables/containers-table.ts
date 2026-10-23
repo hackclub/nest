@@ -1,29 +1,31 @@
-import type { ColumnDef } from '@tanstack/table-core';
-import { renderComponent, renderSnippet } from '$lib/components/ui/data-table/index.js';
+import { createColumnHelper, renderComponent, renderSnippet } from '@tanstack/svelte-table';
+import type { DataTableFeatures } from './admin-table-features.js';
+import { type RouterOutput } from '#lib/trpc.js';
 import ContainersTableActions, { booleanBadge } from './containers-table-actions.svelte';
-import { type RouterOutput } from '$lib/trpc';
 
-export const columns: ColumnDef<RouterOutput['admin']['getContainers']['data'][number]>[] = [
-	{
-		accessorKey: 'username',
+const columnHelper = createColumnHelper<
+	DataTableFeatures,
+	RouterOutput['admin']['getContainers']['data'][number]
+>();
+
+export const columns = columnHelper.columns([
+	columnHelper.accessor('username', {
 		header: 'Username'
-	},
-	{
-		accessorKey: 'vmid',
+	}),
+	columnHelper.accessor('vmid', {
 		header: 'VMID'
-	},
-	{
-		accessorKey: 'suspended',
+	}),
+	columnHelper.accessor('suspended', {
 		cell: ({ row }) => {
 			return renderSnippet(booleanBadge, { bool: row.original.suspended, colorInverse: true });
 		},
 		header: 'Suspended'
-	},
-	{
-		accessorFn: (row) => row.created_at?.toDateString(),
+	}),
+	columnHelper.accessor('created_at', {
+		cell: (info) => info.getValue()?.toDateString(),
 		header: 'Created'
-	},
-	{
+	}),
+	columnHelper.display({
 		id: 'actions',
 		cell: ({ row }) => {
 			return renderComponent(ContainersTableActions, {
@@ -32,5 +34,5 @@ export const columns: ColumnDef<RouterOutput['admin']['getContainers']['data'][n
 			});
 		},
 		header: 'Actions'
-	}
-];
+	})
+]);

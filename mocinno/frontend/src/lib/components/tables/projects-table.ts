@@ -1,36 +1,37 @@
-import type { ColumnDef } from '@tanstack/table-core';
-import { renderComponent, renderSnippet } from '$lib/components/ui/data-table/index.js';
+import { createColumnHelper, renderComponent, renderSnippet } from '@tanstack/svelte-table';
+import type { DataTableFeatures } from './admin-table-features.js';
+import { type RouterOutput } from '#lib/trpc.js';
 import ProjectsTableActions, { externalLink } from './projects-table-actions.svelte';
-import { type RouterOutput } from '$lib/trpc';
 
-export const columns: ColumnDef<RouterOutput['admin']['getProjects']['data'][number]>[] = [
-	{
-		accessorKey: 'name',
+const columnHelper = createColumnHelper<
+	DataTableFeatures,
+	RouterOutput['admin']['getProjects']['data'][number]
+>();
+
+export const columns = columnHelper.columns([
+	columnHelper.accessor('name', {
 		header: 'Name'
-	},
-	{
-		accessorFn: (row) => row.container?.username,
+	}),
+	columnHelper.accessor((row) => row.container?.username, {
 		header: 'Owner'
-	},
-	{
-		id: 'demo',
+	}),
+	columnHelper.accessor('demo', {
 		cell: ({ row }) => {
 			return renderSnippet(externalLink, { href: row.original.demo });
 		},
 		header: 'Demo'
-	},
-	{
-		id: 'repo',
+	}),
+	columnHelper.accessor('repo', {
 		cell: ({ row }) => {
 			return renderSnippet(externalLink, { href: row.original.repo });
 		},
 		header: 'Repository'
-	},
-	{
-		accessorFn: (row) => row.created_at?.toDateString(),
+	}),
+	columnHelper.accessor('created_at', {
+		cell: (info) => info.getValue()?.toDateString(),
 		header: 'Created'
-	},
-	{
+	}),
+	columnHelper.display({
 		id: 'actions',
 		cell: ({ row }) => {
 			return renderComponent(ProjectsTableActions, {
@@ -39,5 +40,5 @@ export const columns: ColumnDef<RouterOutput['admin']['getProjects']['data'][num
 			});
 		},
 		header: 'Actions'
-	}
-];
+	})
+]);

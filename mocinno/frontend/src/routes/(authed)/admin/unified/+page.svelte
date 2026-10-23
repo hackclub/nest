@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Head from '$lib/components/head.svelte';
-	import { Separator } from '$lib/components/ui/separator/index.js';
-	import UnifiedBreakdownChart from '$lib/components/unified-breakdown-chart.svelte';
-	import UnifiedHistoryChart from '$lib/components/unified-history-chart.svelte';
-	import UnifiedLastShippedChart from '$lib/components/unified-last-shipped-chart.svelte';
+	import Head from '#lib/components/head.svelte';
+	import { Separator } from '#lib/components/ui/separator/index.js';
+	import UnifiedBreakdownChart from '#lib/components/unified-breakdown-chart.svelte';
+	import UnifiedHistoryChart from '#lib/components/unified-history-chart.svelte';
+	import UnifiedLastShippedChart from '#lib/components/unified-last-shipped-chart.svelte';
 
 	let { data } = $props();
 

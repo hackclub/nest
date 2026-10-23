@@ -1,5 +1,5 @@
 <script lang="ts">
-	import NestLogo from '$lib/components/nestlogo.svelte';
+	import NestLogo from '#lib/components/nestlogo.svelte';
 	import Menu from '@lucide/svelte/icons/menu';
 	import Terminal from '@lucide/svelte/icons/terminal';
 	import House from '@lucide/svelte/icons/house';
@@ -8,7 +8,7 @@
 	import Server from '@lucide/svelte/icons/server';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import authClient from '$lib/auth';
+	import authClient from '#lib/auth.js';
 	import type { Component } from 'svelte';
 	import { goto } from '$app/navigation';
 
@@ -23,13 +23,13 @@
 
 	const navItems: NavItem[] = [
 		{
-			href: resolve('/'),
+			href: resolve(''),
 			icon: House,
 			class: 'text-2xl md:mr-2',
 			text: 'Home'
 		},
 		{
-			href: resolve('/projects'),
+			href: resolve('projects'),
 			icon: ToolCase,
 			class: 'text-2xl md:mr-2',
 			text: 'Projects'
@@ -55,13 +55,13 @@
 	class="sticky top-0 z-50 flex items-center justify-between border-b-2 border-violet-950 bg-[#03001c] px-4 py-4 transition-all duration-150 ease-out md:relative lg:border-transparent lg:bg-transparent lg:px-16 lg:py-8 lg:max-tabletx:px-8"
 >
 	<div class="right-0 flex items-end gap-x-4 lg:hidden">
-		<a href={resolve('/')} class="transition-transform hover:scale-105">
+		<a href={resolve('')} class="transition-transform hover:scale-105">
 			<NestLogo width={70} height={70} class="text-foreground" />
 		</a>
 	</div>
 
 	<div class="hidden items-end gap-x-4 font-dm-mono md:gap-x-9 lg:flex">
-		<a href={resolve('/')} class="shrink-0 transition-transform hover:scale-105">
+		<a href={resolve('')} class="shrink-0 transition-transform hover:scale-105">
 			<NestLogo width={85} height={85} class="text-foreground" />
 		</a>
 		{#each navItems as item (item.href)}
@@ -80,9 +80,7 @@
 	</div>
 
 	<div class="flex justify-end bg-[#03001c] shadow-lg lg:hidden">
-		<button class="z-50" onclick={() => (isOpen = !isOpen)}>
-			<Menu class="text-lg" />
-		</button>
+		<button class="z-50" onclick={() => (isOpen = !isOpen)}><Menu class="text-lg" /></button>
 
 		<div
 			class={`${isOpen ? 'absolute' : 'hidden'} right-0 z-40 mt-10 h-screen w-screen gap-y-10 border-t-2 border-violet-950 p-5 backdrop-blur-3xl backdrop-brightness-50`}
@@ -111,10 +109,10 @@
 		<button
 			onclick={() => {
 				if (user && !page.url.searchParams.get('invite')) {
-					goto(resolve('/dashboard'));
+					goto(resolve('dashboard'));
 				} else {
-					authClient.signIn.oauth2({
-						providerId: 'hackclub',
+					authClient.signIn.social({
+						provider: 'hackclub',
 						callbackURL: '/dashboard',
 						additionalData: {
 							invite_code: page.url.searchParams.get('invite')

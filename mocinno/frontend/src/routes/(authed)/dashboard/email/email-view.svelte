@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { Separator } from '$lib/components/ui/separator/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Spinner } from '$lib/components/ui/spinner/index.js';
-	import * as Card from '$lib/components/ui/card/index.js';
-	import * as Alert from '$lib/components/ui/alert/index.js';
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
-	import { Label } from '$lib/components/ui/label/index.js';
+	import { Separator } from '#lib/components/ui/separator/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Spinner } from '#lib/components/ui/spinner/index.js';
+	import * as Card from '#lib/components/ui/card/index.js';
+	import * as Alert from '#lib/components/ui/alert/index.js';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
+	import { Checkbox } from '#lib/components/ui/checkbox/index.js';
+	import { Label } from '#lib/components/ui/label/index.js';
 	import CheckCircle2Icon from '@lucide/svelte/icons/check-circle-2';
-	import type { RouterOutput } from '$lib/trpc';
-	import trpc from '$lib/trpc';
-	import { invalidateAll } from '$app/navigation';
+	import type { RouterOutput } from '#lib/trpc.js';
+	import trpc from '#lib/trpc.js';
+	import { refreshAll } from '$app/navigation';
 	import { getFlash } from 'sveltekit-flash-message';
 	import { page } from '$app/state';
 
@@ -38,7 +38,7 @@
 			} else {
 				$flash = { message: result.message, type: 'error' };
 			}
-			await invalidateAll();
+			await refreshAll();
 		} finally {
 			creating = false;
 		}
@@ -62,7 +62,10 @@
 
 <div class="flex flex-1 flex-col gap-4">
 	<h2 class="text-2xl font-bold tracking-tight">Email</h2>
-	<p class="mt-1 text-muted-foreground">Manage your @user.hackclub.app email. You will need to reset the password after creating an account. Any type of abusive behaviour will lead to a ban</p>
+	<p class="mt-1 text-muted-foreground">
+		Manage your @user.hackclub.app email. You will need to reset the password after creating an
+		account. Any type of abusive behaviour will lead to a ban
+	</p>
 	<Separator class="my-4" />
 
 	{#if password}
@@ -106,7 +109,9 @@
 				<div class="flex-1 space-y-1">
 					<p class="font-medium">{email.address}</p>
 					<p class="text-sm text-muted-foreground">
-						Use your mail via <a href="https://mail.hackclub.app" class="text-primary underline">mail.hackclub.app</a>, or add mx.user.hackclub.app SMTP+IMAP to your email client of choice.
+						Use your mail via <a href="https://mail.hackclub.app" class="text-primary underline"
+							>mail.hackclub.app</a
+						>, or add mx.user.hackclub.app SMTP+IMAP to your email client of choice.
 					</p>
 				</div>
 				<Button
@@ -125,8 +130,8 @@
 				<Dialog.Header>
 					<Dialog.Title>Reset your email password?</Dialog.Title>
 					<Dialog.Description>
-						Every device and app currently signed in to {email.address} will stop working until you
-						enter the new password.
+						Every device and app currently signed in to {email.address} will stop working until you enter
+						the new password.
 					</Dialog.Description>
 				</Dialog.Header>
 				<Dialog.Footer>

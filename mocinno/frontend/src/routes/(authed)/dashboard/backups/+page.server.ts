@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types.js';
 import { redirect } from '@sveltejs/kit';
 
-import trpc from '$lib/server/trpc';
+import trpc from '#lib/server/trpc.js';
 
 export const load: PageServerLoad = async ({ parent }) => {
 	const { container } = await parent();

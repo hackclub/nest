@@ -749,39 +749,39 @@ const userRouter = router({
 		return await getEmailAccount(container.username);
 	}),
 
-  createEmail: authedProcedure.mutation(async ({ ctx }) => {
-    const container = await db.query.containersTable.findFirst({
-      where: (container, { eq }) => eq(container.user_id, ctx.user.id)
-    });
+	createEmail: authedProcedure.mutation(async ({ ctx }) => {
+		const container = await db.query.containersTable.findFirst({
+			where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+		});
 
-    if (!container) {
-      return {
-        success: false,
-        message: 'No container found'
-      };
-    }
+		if (!container) {
+			return {
+				success: false,
+				message: 'No container found'
+			};
+		}
 
-    if (await isContainerSuspended(container)) {
-      return {
-        success: false,
-        message: 'Your container is suspended. Contact an admin.'
-      };
-    }
+		if (await isContainerSuspended(container)) {
+			return {
+				success: false,
+				message: 'Your container is suspended. Contact an admin.'
+			};
+		}
 
-    if (await getEmailAccount(container.username)) {
-      return { success: false, message: 'You already have a mailbox' };
-    }
+		if (await getEmailAccount(container.username)) {
+			return { success: false, message: 'You already have a mailbox' };
+		}
 
-    try {
+		try {
 			const account = await createEmailAccount(container.username);
 			return { success: true, message: `${account.address} created`, account };
 		} catch (e) {
 			console.error(`Failed to create mailbox for ${container.username}:`, e);
 			return { success: false, message: 'Failed to create mailbox' };
 		}
-  }),
+	}),
 
-  resetEmailPassword: authedProcedure.mutation(async ({ ctx }) => {
+	resetEmailPassword: authedProcedure.mutation(async ({ ctx }) => {
 		const container = await db.query.containersTable.findFirst({
 			where: (container, { eq }) => eq(container.user_id, ctx.user.id)
 		});
@@ -793,6 +793,7 @@ const userRouter = router({
 
 		const account = await getEmailAccount(container.username);
 		if (!account) return { success: false, message: 'No mailbox found' };
+		if (!account.id) return { success: false, message: 'Mailbox ID not found' };
 
 		try {
 			const password = await resetEmailPassword(account.id);
@@ -801,7 +802,7 @@ const userRouter = router({
 			console.error(`Failed to reset password for ${container.username}:`, e);
 			return { success: false, message: 'Failed to reset password' };
 		}
-	}),
+	})
 });
 
 export default userRouter;

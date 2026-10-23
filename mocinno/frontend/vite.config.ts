@@ -1,8 +1,8 @@
-import adapter from '@sveltejs/adapter-node';
+import adapter from '@sveltejs/adapter-bun';
 import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
-import { sentrySvelteKit } from '@sentry/sveltekit';
+import { sentrySvelteKit } from '@sentry/sveltekit/vite';
 
 export default defineConfig({
 	plugins: [
@@ -22,18 +22,7 @@ export default defineConfig({
 			},
 			adapter: adapter(),
 			experimental: {
-				remoteFunctions: true,
-				handleRenderingErrors: true,
-				explicitEnvironmentVariables: true,
-				instrumentation: {
-					server: true
-				},
-				tracing: {
-					server: true
-				}
-			},
-			alias: {
-				'@': '../backend/src'
+				remoteFunctions: true
 			}
 		})
 	],

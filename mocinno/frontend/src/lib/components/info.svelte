@@ -4,7 +4,7 @@
 	import Drive from '@lucide/svelte/icons/hard-drive';
 	import Network from '@lucide/svelte/icons/network';
 	import type { Snippet } from 'svelte';
-	import type { RouterOutput } from '$lib/trpc';
+	import type { RouterOutput } from '#lib/trpc.js';
 
 	type TabType = 'Specs' | 'Linux' | 'Community';
 

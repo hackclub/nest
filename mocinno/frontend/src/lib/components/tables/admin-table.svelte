@@ -1,24 +1,17 @@
-<script lang="ts" generics="TData, TValue">
-	import {
-		type ColumnDef,
-		type PaginationState,
-		type SortingState,
-		type VisibilityState,
-		getCoreRowModel,
-		getPaginationRowModel,
-		getSortedRowModel,
-		getFilteredRowModel
-	} from '@tanstack/table-core';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
-	import * as Table from '$lib/components/ui/table/index.js';
-	import Button from '../ui/button/button.svelte';
-	import * as InputGroup from '$lib/components/ui/input-group/index.js';
-	import * as Pagination from '$lib/components/ui/pagination/index.js';
+<script lang="ts" generics="TData extends RowData">
+	import { type ColumnDef, type RowData, createTable, FlexRender } from '@tanstack/svelte-table';
+	import * as Table from '#lib/components/ui/table/index.js';
+	import { features, type DataTableFeatures } from './admin-table-features.js';
+	import { untrack } from 'svelte';
+	import type { PaginationState, SortingState } from '@tanstack/table-core';
+	import Button from '#lib/components/ui/button/button.svelte';
+	import * as DropdownMenu from '#lib/components/ui/dropdown-menu/index.js';
+	import * as InputGroup from '#lib/components/ui/input-group/index.js';
+	import * as Pagination from '#lib/components/ui/pagination/index.js';
 	import SearchIcon from '@lucide/svelte/icons/search';
 
-	type DataTableProps<TData, TValue> = {
-		columns: ColumnDef<TData, TValue>[];
+	type DataTableProps<TData extends RowData> = {
+		columns: ColumnDef<DataTableFeatures, TData>[];
 		data: TData[];
 	};
 
@@ -31,7 +24,7 @@
 		searchQuery = $bindable(''),
 		shouldShowSearchInput = true,
 		isManualPagination = false
-	}: DataTableProps<TData, TValue> & {
+	}: DataTableProps<TData> & {
 		pageCount?: number;
 		rowCount?: number;
 		onPageChange?: (updater: PaginationState) => void;
@@ -42,9 +35,13 @@
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
-	let columnVisibility = $state<VisibilityState>({});
 
-	const table = createSvelteTable({
+	const table = createTable({
+		features,
+		get data() {
+			return data;
+		},
+		columns: untrack(() => columns),
 		get manualPagination() {
 			return isManualPagination;
 		},
@@ -54,50 +51,17 @@
 		get rowCount() {
 			return rowCount;
 		},
-		get data() {
-			return data;
-		},
-		get columns() {
-			return columns;
-		},
-		getCoreRowModel: getCoreRowModel(),
-		getPaginationRowModel: getPaginationRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-		getFilteredRowModel: getFilteredRowModel(),
-		onPaginationChange: (updater) => {
-			if (typeof updater === 'function') {
-				pagination = updater(pagination);
-			} else {
-				pagination = updater;
-			}
-			if (onPageChange) {
-				onPageChange(pagination);
-			}
-		},
-		onSortingChange: (updater) => {
-			if (typeof updater === 'function') {
-				sorting = updater(sorting);
-			} else {
-				sorting = updater;
-			}
-		},
-		onColumnVisibilityChange: (updater) => {
-			if (typeof updater === 'function') {
-				columnVisibility = updater(columnVisibility);
-			} else {
-				columnVisibility = updater;
-			}
-		},
 		state: {
 			get pagination() {
 				return pagination;
 			},
 			get sorting() {
 				return sorting;
-			},
-			get columnVisibility() {
-				return columnVisibility;
 			}
+		},
+		onPaginationChange: (updater) => {
+			pagination = typeof updater === 'function' ? updater(pagination) : updater;
+			onPageChange?.(pagination);
 		}
 	});
 
@@ -135,7 +99,6 @@
 			<DropdownMenu.Content align="end">
 				{#each table.getAllColumns().filter((col) => col.getCanHide()) as column (column.id)}
 					<DropdownMenu.CheckboxItem
-						class="capitalize"
 						bind:checked={() => column.getIsVisible(), (v) => column.toggleVisibility(!!v)}
 					>
 						{column.columnDef.header}
@@ -152,10 +115,7 @@
 						{#each headerGroup.headers as header (header.id)}
 							<Table.Head colspan={header.colSpan}>
 								{#if !header.isPlaceholder}
-									<FlexRender
-										content={header.column.columnDef.header}
-										context={header.getContext()}
-									/>
+									<FlexRender {header} />
 								{/if}
 							</Table.Head>
 						{/each}
@@ -167,7 +127,7 @@
 					<Table.Row data-state={row.getIsSelected() && 'selected'}>
 						{#each row.getVisibleCells() as cell (cell.id)}
 							<Table.Cell>
-								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+								<FlexRender {cell} />
 							</Table.Cell>
 						{/each}
 					</Table.Row>

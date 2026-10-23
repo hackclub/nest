@@ -3,13 +3,13 @@
 </script>
 
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Spinner } from '$lib/components/ui/spinner/index.js';
-	import ConfirmDialog from '$lib/components/confirm-dialog.svelte';
-	import { invalidateAll } from '$app/navigation';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Spinner } from '#lib/components/ui/spinner/index.js';
+	import ConfirmDialog from '#lib/components/confirm-dialog.svelte';
+	import { refreshAll } from '$app/navigation';
 	import { getFlash } from 'sveltekit-flash-message';
 	import { page } from '$app/state';
-	import trpc from '$lib/trpc';
+	import trpc from '#lib/trpc.js';
 
 	const flash = getFlash(page);
 
@@ -21,7 +21,7 @@
 	const deleteProject = async () => {
 		deleteWorking = true;
 		const result = await trpc.admin.deleteProject.mutate({ id });
-		await invalidateAll();
+		await refreshAll();
 		$flash = {
 			message: result.message,
 			type: result.success ? 'success' : 'error'

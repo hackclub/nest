@@ -1,4 +1,4 @@
-import authClient from '$lib/auth';
+import authClient from '#lib/auth.js';
 
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces

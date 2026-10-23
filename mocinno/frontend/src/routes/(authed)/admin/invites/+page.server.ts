@@ -2,7 +2,7 @@ import type { PageServerLoad, Actions } from './$types.js';
 import { fail } from '@sveltejs/kit';
 import { superValidate, message, setError } from 'sveltekit-superforms';
 import { formSchema } from './schema';
-import trpc from '$lib/server/trpc';
+import trpc from '#lib/server/trpc.js';
 import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load: PageServerLoad = async () => {

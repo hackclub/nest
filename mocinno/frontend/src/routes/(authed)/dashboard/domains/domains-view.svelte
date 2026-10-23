@@ -1,17 +1,17 @@
 <script lang="ts">
-	import * as Table from '$lib/components/ui/table/index.js';
-	import { Separator } from '$lib/components/ui/separator/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Spinner } from '$lib/components/ui/spinner/index.js';
-	import type { RouterOutput } from '$lib/trpc';
-	import trpc from '$lib/trpc';
-	import { invalidateAll } from '$app/navigation';
+	import * as Table from '#lib/components/ui/table/index.js';
+	import { Separator } from '#lib/components/ui/separator/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Spinner } from '#lib/components/ui/spinner/index.js';
+	import type { RouterOutput } from '#lib/trpc.js';
+	import trpc from '#lib/trpc.js';
+	import { refreshAll } from '$app/navigation';
 	import { getFlash } from 'sveltekit-flash-message';
 	import { page } from '$app/state';
-	import * as Form from '$lib/components/ui/form/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import * as Alert from '$lib/components/ui/alert/index.js';
-	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Form from '#lib/components/ui/form/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import * as Alert from '#lib/components/ui/alert/index.js';
+	import * as Card from '#lib/components/ui/card/index.js';
 	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import CheckCircle2Icon from '@lucide/svelte/icons/check-circle-2';
 	import { formSchema, type FormSchema } from './schema';
@@ -31,7 +31,7 @@
 
 	const removeDomain = async (domain: string) => {
 		const result = await trpc.user.removeDomain.mutate({ domain });
-		await invalidateAll();
+		await refreshAll();
 		$flash = {
 			message: result.message,
 			type: result.success ? 'success' : 'error'

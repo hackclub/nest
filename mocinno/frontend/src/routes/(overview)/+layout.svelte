@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Nav from '$lib/components/nav.svelte';
-	import Footer from '$lib/components/footer.svelte';
+	import Nav from '#lib/components/nav.svelte';
+	import Footer from '#lib/components/footer.svelte';
 	import { type LayoutProps } from './$types';
 
 	let { children, data }: LayoutProps = $props();

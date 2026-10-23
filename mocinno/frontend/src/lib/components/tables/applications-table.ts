@@ -1,30 +1,34 @@
-import type { ColumnDef } from '@tanstack/table-core';
-import { renderComponent, renderSnippet } from '$lib/components/ui/data-table/index.js';
+import { createColumnHelper, renderComponent, renderSnippet } from '@tanstack/svelte-table';
+import type { DataTableFeatures } from './admin-table-features.js';
 import ApplicationsTableActions, { reasonSnippet } from './applications-table-actions.svelte';
-import { type RouterOutput } from '$lib/trpc';
+import { type RouterOutput } from '#lib/trpc.js';
 
-export const columns: ColumnDef<RouterOutput['admin']['getApplications']['all'][number]>[] = [
-	{
-		accessorFn: (row) => row.user?.email ?? row.email,
+const columnHelper = createColumnHelper<
+	DataTableFeatures,
+	RouterOutput['admin']['getApplications']['all'][number]
+>();
+
+export const columns = columnHelper.columns([
+	columnHelper.accessor((row) => row.email || row.user?.email, {
+		id: 'email',
 		header: 'Email'
-	},
-	{
-		accessorKey: 'username',
+	}),
+	columnHelper.accessor('username', {
 		header: 'Username'
-	},
-	{
+	}),
+	columnHelper.accessor('reason', {
 		cell: ({ row }) => {
 			return renderSnippet(reasonSnippet, {
 				reason: row.original.reason
 			});
 		},
 		header: 'Reason'
-	},
-	{
-		accessorFn: (row) => row.created_at?.toDateString(),
+	}),
+	columnHelper.accessor('created_at', {
+		cell: (info) => info.getValue()?.toDateString(),
 		header: 'Submitted'
-	},
-	{
+	}),
+	columnHelper.display({
 		id: 'actions',
 		cell: ({ row }) => {
 			return renderComponent(ApplicationsTableActions, {
@@ -34,5 +38,5 @@ export const columns: ColumnDef<RouterOutput['admin']['getApplications']['all'][
 			});
 		},
 		header: 'Actions'
-	}
-];
+	})
+]);

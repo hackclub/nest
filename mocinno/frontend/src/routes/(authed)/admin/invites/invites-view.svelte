@@ -1,25 +1,25 @@
 <script lang="ts">
-	import { Separator } from '$lib/components/ui/separator/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { Spinner } from '$lib/components/ui/spinner/index.js';
-	import type { RouterOutput } from '$lib/trpc';
-	import * as Form from '$lib/components/ui/form/index.js';
-	import * as Alert from '$lib/components/ui/alert/index.js';
-	import * as Card from '$lib/components/ui/card/index.js';
+	import { Separator } from '#lib/components/ui/separator/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Spinner } from '#lib/components/ui/spinner/index.js';
+	import type { RouterOutput } from '#lib/trpc.js';
+	import * as Form from '#lib/components/ui/form/index.js';
+	import * as Alert from '#lib/components/ui/alert/index.js';
+	import * as Card from '#lib/components/ui/card/index.js';
 	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import CheckCircle2Icon from '@lucide/svelte/icons/check-circle-2';
 	import { formSchema, type FormSchema } from './schema';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
-	import AdminTable from '$lib/components/tables/admin-table.svelte';
-	import { columns } from '$lib/components/tables/invites-table.js';
+	import AdminTable from '#lib/components/tables/admin-table.svelte';
+	import { columns } from '#lib/components/tables/invites-table.js';
 	import type { PaginationState } from '@tanstack/table-core';
-	import trpc from '$lib/trpc';
+	import trpc from '#lib/trpc.js';
 	import CalendarIcon from '@lucide/svelte/icons/calendar';
 	import { DateFormatter, type DateValue, getLocalTimeZone } from '@internationalized/date';
-	import Calendar from '$lib/components/ui/calendar/calendar.svelte';
-	import * as Popover from '$lib/components/ui/popover/index.js';
-	import { buttonVariants } from '$lib/components/ui/button';
+	import Calendar from '#lib/components/ui/calendar/calendar.svelte';
+	import * as Popover from '#lib/components/ui/popover/index.js';
+	import { buttonVariants } from '#lib/components/ui/button/index.js';
 	import { cn } from 'tailwind-variants';
 
 	type Invites = RouterOutput['admin']['getInvites'];

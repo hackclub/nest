@@ -1,11 +1,11 @@
 <script lang="ts">
-	import * as Table from '$lib/components/ui/table/index.js';
-	import { Separator } from '$lib/components/ui/separator/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Spinner } from '$lib/components/ui/spinner/index.js';
-	import type { RouterOutput } from '$lib/trpc';
-	import trpc from '$lib/trpc';
-	import { invalidateAll } from '$app/navigation';
+	import * as Table from '#lib/components/ui/table/index.js';
+	import { Separator } from '#lib/components/ui/separator/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Spinner } from '#lib/components/ui/spinner/index.js';
+	import type { RouterOutput } from '#lib/trpc.js';
+	import trpc from '#lib/trpc.js';
+	import { refreshAll } from '$app/navigation';
 	import { getFlash } from 'sveltekit-flash-message';
 	import { page } from '$app/state';
 
@@ -20,7 +20,7 @@
 	const restoreBackup = async (volId: string) => {
 		restoring = true;
 		const result = await trpc.user.restoreBackup.mutate({ volId });
-		await invalidateAll();
+		await refreshAll();
 		$flash = {
 			message: result.message,
 			type: result.success ? 'success' : 'error'

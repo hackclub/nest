@@ -34,7 +34,7 @@
 		"typescript": "catalog:"
 	},
 	"dependencies": {
-		"@better-auth/drizzle-adapter": "^1.6.20",
+		"@better-auth/drizzle-adapter": "1.7.12",
 		"@hono/trpc-server": "^0.4.2",
 		"@trpc/client": "catalog:",
 		"@trpc/server": "catalog:",

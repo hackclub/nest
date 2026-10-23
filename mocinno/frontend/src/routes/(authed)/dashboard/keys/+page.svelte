@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Head from '$lib/components/head.svelte';
+	import Head from '#lib/components/head.svelte';
 	import KeysView from './keys-view.svelte';
 
 	let { data } = $props();

@@ -1,13 +1,14 @@
 <script lang="ts">
 	import './layout.css';
-	import '$lib/theme.scss';
+	import '#lib/theme.scss';
 	import { ModeWatcher } from 'mode-watcher';
 	import { onNavigate } from '$app/navigation';
-	import favicon from '$lib/assets/favicon.png';
+	import favicon from '#lib/assets/favicon.png';
 
 	let { children } = $props();
 
 	onNavigate((navigation) => {
+		if (navigation.shallow && navigation.type === 'goto') return;
 		if (!document.startViewTransition) return;
 
 		return new Promise((resolve) => {

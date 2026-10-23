@@ -1,7 +1,6 @@
-import authServer from '$lib/server/auth';
-import { sequence } from '@sveltejs/kit/hooks';
+import authServer from '#lib/server/auth.js';
+import { sequence, type Handle } from '@sveltejs/kit/hooks';
 import * as Sentry from '@sentry/sveltekit';
-import type { Handle } from '@sveltejs/kit';
 
 // Required for browser profiling: the JS Self-Profiling API needs this header
 const documentPolicyHandle: Handle = async ({ event, resolve }) => {

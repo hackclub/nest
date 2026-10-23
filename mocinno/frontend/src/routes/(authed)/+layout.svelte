@@ -1,8 +1,8 @@
 <script lang="ts">
-	import SiteHeader from '$lib/components/dashboard-header.svelte';
+	import SiteHeader from '#lib/components/dashboard-header.svelte';
 	import * as Sentry from '@sentry/sveltekit';
-	import { setUserContext, setContainerContext } from '$lib/user';
-	import * as Alert from '$lib/components/ui/alert/index.js';
+	import { setUserContext, setContainerContext } from '#lib/user.js';
+	import * as Alert from '#lib/components/ui/alert/index.js';
 	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import CheckCircle2Icon from '@lucide/svelte/icons/check-circle-2';
 	import { setTheme, theme } from 'mode-watcher';
