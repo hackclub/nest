@@ -3,9 +3,9 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"start": "bun run --env-file .env --filter \"*\" start",
+		"start": "bun run --env-file .env --filter \"*\" --parallel start",
 		"build": "bun run --env-file .env --filter \"*\" build",
-		"start:prod": "bun run --env-file .env --filter \"*\" build && bun run --env-file .env --filter \"*\" start & bun run --env-file .env --filter \"*\" bastion",
+		"start:prod": "bun run --env-file .env --filter \"*\" build && bun run --parallel --env-file .env --filter \"*\" start & bun run --env-file .env --filter \"*\" bastion",
 		"db:push": "bun run --env-file .env --filter \"*\" db:push",
 		"db:migrate": "bun run --env-file .env --filter \"*\" db:migrate",
 		"db:generate": "bun run --env-file .env --filter \"*\" db:generate",
