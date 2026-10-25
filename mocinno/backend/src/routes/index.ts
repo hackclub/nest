@@ -17,6 +17,20 @@ app.use('/trpc/*', authMiddleware);
 app.use('/auth/*', authMiddleware);
 
 app.on(['POST', 'GET'], '/auth/*', (c) => {
+	const url = new URL(c.req.url);
+
+	// hca redirects to /oauth2/callback/:id, better-auth handles it at /callback/:id
+	if (url.pathname.startsWith('/api/auth/oauth2/callback/')) {
+		url.pathname = url.pathname.replace('/oauth2/callback/', '/callback/');
+		return auth.handler(
+			new Request(url.toString(), {
+				method: c.req.method,
+				headers: c.req.raw.headers,
+				body: c.req.raw.body
+			})
+		);
+	}
+
 	return auth.handler(c.req.raw);
 });
 

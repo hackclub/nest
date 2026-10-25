@@ -5,6 +5,7 @@ import { createAuthMiddleware } from 'better-auth/api';
 import { db, schema } from '@/db';
 import { eq } from 'drizzle-orm';
 import { getOAuthState } from 'better-auth/api';
+import type { BetterAuthPlugin } from 'better-auth';
 
 import {
 	ENCRYPTION_KEY,
@@ -14,6 +15,34 @@ import {
 	OAUTH_CLIENT_SECRET
 } from '@/env';
 import { isContainerSuspended } from '@/pve-utils';
+
+// better-auth 1.7 moved generic oauth callbacks to /callback/:id, keep the
+// /oauth2/callback/:id url that's registered with hca (see routes/index.ts)
+const legacyOAuthCallback = (): BetterAuthPlugin => {
+	const setCallbackPath = (providers: { id: string; callbackPath?: string }[]) => {
+		for (const provider of providers) {
+			if (provider.id === 'hackclub') provider.callbackPath = '/oauth2/callback/hackclub';
+		}
+	};
+
+	return {
+		id: 'legacy-oauth-callback',
+		init: (ctx) => {
+			setCallbackPath(ctx.socialProviders);
+		},
+		hooks: {
+			// generic-oauth re-adds the provider if discovery failed at startup
+			before: [
+				{
+					matcher: () => true,
+					handler: createAuthMiddleware(async (ctx) => {
+						setCallbackPath(ctx.context.socialProviders);
+					})
+				}
+			]
+		}
+	};
+};
 
 export const auth = betterAuth({
 	secret: ENCRYPTION_KEY,
@@ -78,7 +107,8 @@ export const auth = betterAuth({
 					})
 				}
 			]
-		})
+		}),
+		legacyOAuthCallback()
 	],
 	advanced: {
 		cookiePrefix: 'mocinno',
@@ -95,7 +125,7 @@ export const auth = betterAuth({
 
 					const additionalData = await getOAuthState();
 
-					if (ctx.path.startsWith('/oauth2/callback')) {
+					if (ctx.path.startsWith('/callback/')) {
 						let canSudo = true;
 
 						const container = await db.query.containersTable.findFirst({
@@ -122,7 +152,7 @@ export const auth = betterAuth({
 	hooks: {
 		after: createAuthMiddleware(async (ctx) => {
 			switch (true) {
-				case ctx.path.startsWith('/oauth2/callback'): {
+				case ctx.path.startsWith('/callback/'): {
 					if (!ctx.context.newSession) {
 						break;
 					}
