@@ -30,12 +30,12 @@ export const auth = betterAuth({
 			slack_id: {
 				type: 'string',
 				required: true,
-				input: true
+				input: false
 			},
 			verification_status: {
 				type: ['verified', 'pending', 'ineligible', 'needs_submission'],
 				required: true,
-				input: true
+				input: false
 			},
 			theme: {
 				type: 'string',
