@@ -15,6 +15,7 @@ import {
 	OAUTH_CLIENT_SECRET
 } from '@/env';
 import { isContainerSuspended } from '@/pve-utils';
+import { additionalUserFields, protectHcaProfile } from './profile-policy';
 
 // better-auth 1.7 moved generic oauth callbacks to /callback/:id, keep the
 // /oauth2/callback/:id url that's registered with hca (see routes/index.ts)
@@ -55,24 +56,7 @@ export const auth = betterAuth({
 		schema
 	}),
 	user: {
-		additionalFields: {
-			slack_id: {
-				type: 'string',
-				required: true,
-				input: false
-			},
-			verification_status: {
-				type: ['verified', 'pending', 'ineligible', 'needs_submission'],
-				required: true,
-				input: false
-			},
-			theme: {
-				type: 'string',
-				defaultValue: 'system',
-				required: false,
-				input: true
-			}
-		}
+		additionalFields: additionalUserFields
 	},
 	session: {
 		additionalFields: {
@@ -150,6 +134,7 @@ export const auth = betterAuth({
 		}
 	},
 	hooks: {
+		before: protectHcaProfile,
 		after: createAuthMiddleware(async (ctx) => {
 			switch (true) {
 				case ctx.path.startsWith('/callback/'): {
