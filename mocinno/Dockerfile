@@ -1,4 +1,4 @@
-FROM docker.io/oven/bun:1.3 AS build
+FROM docker.io/oven/bun:1.4.3 AS build
 
 WORKDIR /app
 COPY . .
@@ -13,7 +13,7 @@ WORKDIR /app/frontend
 
 RUN bun run build
 
-FROM docker.io/oven/bun:1.3-alpine AS base
+FROM docker.io/oven/bun:1.4.3-alpine AS base
 
 EXPOSE 3000
 
@@ -27,7 +27,7 @@ WORKDIR /app
 
 CMD ["run", "--sql-preconnect", "./index.js"]
 
-FROM docker.io/oven/bun:1.3-alpine as migrate
+FROM docker.io/oven/bun:1.4.3-alpine as migrate
 
 WORKDIR /app
 
