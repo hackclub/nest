@@ -1,4 +1,4 @@
-import { integer, pgTable, text, serial, timestamp } from 'drizzle-orm/pg-core';
+import { date, index, integer, pgTable, text, serial, timestamp } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import * as auth from './auth-schema';
 
@@ -85,6 +85,18 @@ export const settingsTable = pgTable('settings', {
 	key: text('key').primaryKey(),
 	value: text('value').notNull()
 });
+
+// from airbridge
+export const unifiedShipsTable = pgTable(
+	'unified_ships',
+	{
+		record_id: text('record_id').primaryKey(),
+		email: text('email').notNull(),
+		approved_at: date('approved_at', { mode: 'string' }),
+		synced_at: timestamp('synced_at').defaultNow().notNull()
+	},
+	(table) => [index('unified_ships_email_idx').on(table.email)]
+);
 
 export const containersRelations = relations(containersTable, ({ one, many }) => ({
 	user: one(auth.user, {

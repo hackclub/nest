@@ -12,6 +12,7 @@
 		"db:studio": "bun run --env-file .env --filter \"*\" db:studio",
 		"dev": "bun run --parallel --env-file .env --filter \"*\" dev",
 		"bastion": "bun run --env-file .env --filter \"*\" bastion",
+		"unified:backfill": "bun run --env-file .env --filter \"*\" unified:backfill",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write ."
 	},
