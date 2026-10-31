@@ -10,6 +10,7 @@
 		"bastion": "NODE_ENV=production bun run --sql-preconnect src/bastion.ts",
 		"build": "bun build src/index.ts --outdir dist --production --splitting --format esm --minify --target bun",
 		"bastion:dev": "bun run --sql-preconnect --watch src/bastion.ts",
+		"unified:backfill": "NODE_ENV=production bun run --sql-preconnect src/unified-backfill.ts",
 		"db:generate": "drizzle-kit generate",
 		"db:push": "drizzle-kit push",
 		"db:migrate": "drizzle-kit migrate",

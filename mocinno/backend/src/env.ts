@@ -45,9 +45,14 @@ export const SMTP_PASSWORD = isUndefinedOrEmpty(process.env.SMTP_PASSWORD, undef
 
 export const ROOTFS = isUndefinedOrEmpty(process.env.ROOTFS, 'local-zfs:8');
 
-export const UNIFIED_CSV_PATH = isUndefinedOrEmpty(
-	process.env.UNIFIED_CSV_PATH,
-	resolve(import.meta.dir, '../../wps.csv')
+export const AIRBRIDGE_URL = isUndefinedOrEmpty(
+	process.env.AIRBRIDGE_URL,
+	'https://airbridge.hackclub.com/v0.2'
+);
+
+export const AIRBRIDGE_KEY = isUndefinedOrEmpty<string | undefined>(
+	process.env.AIRBRIDGE_KEY,
+	undefined
 );
 
 export const ENV_BASTION_PROXY_KEY_PUB = isUndefinedOrEmpty(

@@ -20,16 +20,26 @@
 <div class="flex flex-1 flex-col gap-4">
 	<h2 class="text-2xl font-bold tracking-tight">Unified</h2>
 	<p class="mt-1 text-muted-foreground">
-		How many nest users have projects in the Unified DB<br />Last import: {stats.lastImport ??
-			'never'}
+		How many nest users have projects in the Unified DB<br />Last synced from Airbridge: {stats.lastSync
+			? new Date(stats.lastSync).toLocaleString()
+			: 'never'}
 	</p>
 	<Separator class="my-4" />
 
-	{#if stats.csvError}
+	{#if !stats.backfill?.startsWith('finished')}
+		<p class="rounded-md border border-border bg-muted p-4 text-sm text-muted-foreground">
+			{stats.backfill
+				? `The one-time backfill ${stats.backfill}, but hasn't finished.`
+				: 'The one-time backfill has not been run.'} Only projects approved in the last 90 days are counted
+			until it does (<code>bun run unified:backfill</code>).
+		</p>
+	{/if}
+
+	{#if stats.sourceError}
 		<p
 			class="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive"
 		>
-			{stats.csvError}
+			{stats.sourceError}
 		</p>
 	{/if}
 
