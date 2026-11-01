@@ -1,4 +1,4 @@
-import { eq, gte, sql } from 'drizzle-orm';
+import { eq, gte, isNull, or, sql } from 'drizzle-orm';
 
 import { db, schema } from '@/db';
 import { getSetting, setSetting } from '@/db-helpers';
@@ -112,7 +112,7 @@ export async function syncRecentShips(now = new Date()) {
 	const key = requireKey();
 	const cutoff = localDate(new Date(now.getTime() - RECENT_SYNC_DAYS * DAY));
 
-	// undated ships aren't in any window, so they're re-fetched every time too
+	// undated ships aren't in any window, so they're replaced every time too
 	const [rows, undated] = await Promise.all([
 		fetchShipRows(AIRBRIDGE_URL, key, sinceFormula(cutoff)),
 		fetchShipRows(AIRBRIDGE_URL, key, UNDATED_FORMULA)
@@ -121,7 +121,12 @@ export async function syncRecentShips(now = new Date()) {
 	await db.transaction(async (tx) => {
 		await tx
 			.delete(schema.unifiedShipsTable)
-			.where(gte(schema.unifiedShipsTable.approved_at, cutoff));
+			.where(
+				or(
+					gte(schema.unifiedShipsTable.approved_at, cutoff),
+					isNull(schema.unifiedShipsTable.approved_at)
+				)
+			);
 		await upsertShips(tx, rows);
 		await upsertShips(tx, undated);
 	});
