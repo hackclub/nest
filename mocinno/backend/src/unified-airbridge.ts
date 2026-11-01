@@ -1,5 +1,9 @@
+import { addMonths, format, isValid, parse, parseISO, startOfMonth } from 'date-fns';
+
 // airbridge errors out if it takes too long
 const FETCH_TIMEOUT_MS = 60 * 1000;
+
+const TABLE_PATH = ['Nest', 'Approved Projects'].map(encodeURIComponent).join('/');
 
 export type AirbridgeRecord = { id?: string; fields?: Record<string, unknown> };
 
@@ -18,32 +22,23 @@ export type ShipIndex = {
 	rowsIndexed: number;
 };
 
-const pad = (n: number) => String(n).padStart(2, '0');
-
 // yyyy-mm-dd in server time
-export const localDate = (d: Date) =>
-	`${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+export const localDate = (d: Date) => format(d, 'yyyy-MM-dd');
 
 // airtable date fields come back as yyyy-mm-dd, date+time fields as iso strings
 export function toApprovedDate(value: unknown): string | null {
 	if (typeof value !== 'string') return null;
 
-	const trimmed = value.trim();
-	if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
-
-	const parsed = Date.parse(trimmed);
-	return Number.isNaN(parsed) ? null : localDate(new Date(parsed));
+	const parsed = parseISO(value.trim());
+	return isValid(parsed) ? localDate(parsed) : null;
 }
 
 // local midnight, not utc, so day/week buckets line up with server time
 export function parseApprovedAt(value: string | null): number | null {
-	const match = value?.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-	if (!match) return null;
+	if (!value) return null;
 
-	const [, year, month, day] = match;
-	const parsed = new Date(Number(year), Number(month) - 1, Number(day));
-
-	return Number.isNaN(parsed.getTime()) ? null : parsed.getTime();
+	const parsed = parse(value, 'yyyy-MM-dd', new Date());
+	return isValid(parsed) ? parsed.getTime() : null;
 }
 
 export function toShipRows(records: AirbridgeRecord[]): ShipRow[] {
@@ -73,12 +68,11 @@ export const DATED_FORMULA = 'NOT({Approved At} = BLANK())';
 
 // [from, to) month windows covering `earliest` through the month containing `now`
 export function monthRanges(earliest: string, now: Date): { from: string; to: string }[] {
-	const [year, month] = earliest.split('-').map(Number);
 	const ranges: { from: string; to: string }[] = [];
 
-	let start = new Date(year!, month! - 1, 1);
-	while (start.getTime() <= now.getTime()) {
-		const end = new Date(start.getFullYear(), start.getMonth() + 1, 1);
+	let start = startOfMonth(parseISO(earliest));
+	while (start <= now) {
+		const end = addMonths(start, 1);
 		ranges.push({ from: localDate(start), to: localDate(end) });
 		start = end;
 	}
@@ -147,7 +141,7 @@ export async function fetchApprovedProjects(
 	authKey: string,
 	select: AirbridgeSelect
 ): Promise<AirbridgeRecord[]> {
-	const url = new URL(`${baseUrl.replace(/\/+$/, '')}/Nest/Approved%20Projects`);
+	const url = new URL(`${baseUrl.replace(/\/+$/, '')}/${TABLE_PATH}`);
 	url.searchParams.set('authKey', authKey);
 	url.searchParams.set('select', JSON.stringify(select));
 

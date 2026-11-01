@@ -1,4 +1,4 @@
-import { gte, sql } from 'drizzle-orm';
+import { eq, gte, sql } from 'drizzle-orm';
 
 import { db, schema } from '@/db';
 import { getSetting, setSetting } from '@/db-helpers';
@@ -76,47 +76,58 @@ export async function backfillShips(now = new Date()) {
 		);
 	}
 
-	const [earliest] = await fetchApprovedProjects(AIRBRIDGE_URL, key, {
-		fields: ['Approved At'],
-		filterByFormula: DATED_FORMULA,
-		sort: [{ field: 'Approved At', direction: 'asc' }],
-		maxRecords: 1
-	});
-	const from = toApprovedDate(earliest?.fields?.['Approved At']) ?? localDate(now);
+	try {
+		const [earliest] = await fetchApprovedProjects(AIRBRIDGE_URL, key, {
+			fields: ['Approved At'],
+			filterByFormula: DATED_FORMULA,
+			sort: [{ field: 'Approved At', direction: 'asc' }],
+			maxRecords: 1
+		});
+		const from = toApprovedDate(earliest?.fields?.['Approved At']) ?? localDate(now);
 
-	let total = 0;
+		let total = 0;
 
-	for (const range of monthRanges(from, now)) {
-		const rows = await fetchShipRows(AIRBRIDGE_URL, key, rangeFormula(range.from, range.to));
-		await upsertShips(db, rows);
+		for (const range of monthRanges(from, now)) {
+			const rows = await fetchShipRows(AIRBRIDGE_URL, key, rangeFormula(range.from, range.to));
+			await upsertShips(db, rows);
 
-		total += rows.length;
-		console.log(`Unified backfill: ${range.from} → ${rows.length} ships`);
+			total += rows.length;
+			console.log(`Unified backfill: ${range.from} → ${rows.length} ships`);
+		}
+
+		const undated = await fetchShipRows(AIRBRIDGE_URL, key, UNDATED_FORMULA);
+		await upsertShips(db, undated);
+		total += undated.length;
+
+		await setSetting(BACKFILLED_KEY, `finished ${new Date().toISOString()}`);
+		console.log(`Unified backfill: done, ${total} ships`);
+	} catch (err) {
+		// release the claim so a failed run can be retried; upserts make reruns safe
+		await db.delete(schema.settingsTable).where(eq(schema.settingsTable.key, BACKFILLED_KEY));
+		throw err;
 	}
-
-	const undated = await fetchShipRows(AIRBRIDGE_URL, key, UNDATED_FORMULA);
-	await upsertShips(db, undated);
-	total += undated.length;
-
-	await setSetting(BACKFILLED_KEY, `finished ${new Date().toISOString()}`);
-	console.log(`Unified backfill: done, ${total} ships`);
 }
 
 export async function syncRecentShips(now = new Date()) {
 	const key = requireKey();
 	const cutoff = localDate(new Date(now.getTime() - RECENT_SYNC_DAYS * DAY));
 
-	const rows = await fetchShipRows(AIRBRIDGE_URL, key, sinceFormula(cutoff));
+	// undated ships aren't in any window, so they're re-fetched every time too
+	const [rows, undated] = await Promise.all([
+		fetchShipRows(AIRBRIDGE_URL, key, sinceFormula(cutoff)),
+		fetchShipRows(AIRBRIDGE_URL, key, UNDATED_FORMULA)
+	]);
 
 	await db.transaction(async (tx) => {
 		await tx
 			.delete(schema.unifiedShipsTable)
 			.where(gte(schema.unifiedShipsTable.approved_at, cutoff));
 		await upsertShips(tx, rows);
+		await upsertShips(tx, undated);
 	});
 
 	await setSetting(SYNCED_KEY, new Date().toISOString());
-	console.log(`Unified sync: ${rows.length} ships since ${cutoff}`);
+	console.log(`Unified sync: ${rows.length} ships since ${cutoff}, ${undated.length} undated`);
 }
 
 let lastError: string | null = null;

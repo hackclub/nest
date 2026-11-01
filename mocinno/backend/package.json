@@ -41,6 +41,7 @@
 		"@trpc/server": "catalog:",
 		"acme-client": "^5.4.0",
 		"better-auth": "catalog:",
+		"date-fns": "^4.4.0",
 		"drizzle-orm": "^0.45.2",
 		"hono": "^4.12.27",
 		"hono-sessions": "^0.8.1",
