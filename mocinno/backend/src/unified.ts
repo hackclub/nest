@@ -1,9 +1,9 @@
 import { eq } from 'drizzle-orm';
 
 import { db, schema } from '@/db';
-import { UNIFIED_CSV_PATH } from '@/env';
-import { countParticipation, loadCsvIndex, type CsvIndex } from '@/unified-csv';
+import { buildShipIndex, countParticipation } from '@/unified-airbridge';
 import { buildLastShipped, type LastShippedPoint } from '@/unified-last-shipped';
+import { getBackfillStatus, getLastSync, getSyncError, syncShips } from '@/unified-sync';
 
 const DAY = 24 * 60 * 60 * 1000;
 const RECENT_WINDOW_DAYS = 90;
@@ -24,8 +24,10 @@ export type UnifiedStats = {
 	usersRecent: number;
 	lastShipped: LastShippedPoint[];
 	history: Record<UnifiedHistoryRange, UnifiedHistoryPoint[]>;
-	lastImport: string | null;
-	csvError: string | null;
+	lastSync: string | null;
+	// null until `bun run unified:backfill` has been run, then 'started …' or 'finished …'
+	backfill: string | null;
+	sourceError: string | null;
 };
 
 type Bucket = { start: Date; end: Date };
@@ -114,33 +116,18 @@ function buildHistory(
 	});
 }
 
-const EMPTY_HISTORY: UnifiedStats['history'] = { '30d': [], '6m': [], '1y': [] };
-
 let cached: UnifiedStats | null = null;
 
 export async function refreshUnifiedStats(): Promise<UnifiedStats> {
-	let index: CsvIndex;
-
-	try {
-		index = await loadCsvIndex(UNIFIED_CSV_PATH);
-	} catch (err) {
-		const reason = err instanceof Error ? err.message : String(err);
-		console.error('Failed to read the Unified export:', reason);
-
-		cached = {
-			totalUsers: 0,
-			usersWithProjects: 0,
-			usersRecent: 0,
-			lastShipped: [],
-			history: EMPTY_HISTORY,
-			lastImport: null,
-			csvError: `Could not read ${UNIFIED_CSV_PATH}: ${reason}`
-		};
-
-		return cached;
-	}
-
-	const [containerRows, applicationRows] = await Promise.all([
+	const [shipRows, lastSync, backfill, containerRows, applicationRows] = await Promise.all([
+		db
+			.select({
+				email: schema.unifiedShipsTable.email,
+				approvedAt: schema.unifiedShipsTable.approved_at
+			})
+			.from(schema.unifiedShipsTable),
+		getLastSync(),
+		getBackfillStatus(),
 		db
 			.select({
 				sub: schema.containersTable.sub,
@@ -200,6 +187,7 @@ export async function refreshUnifiedStats(): Promise<UnifiedStats> {
 		console.warn(`Unified stats: ${unresolved} container(s) have no email on user or applications`);
 	}
 
+	const index = buildShipIndex(shipRows);
 	const now = new Date();
 	const counts = countParticipation(index, emails, now.getTime() - RECENT_WINDOW_DAYS * DAY);
 
@@ -216,8 +204,9 @@ export async function refreshUnifiedStats(): Promise<UnifiedStats> {
 			'6m': buildHistory(users, weeklyBuckets(now, 26), now.getTime()),
 			'1y': buildHistory(users, monthlyBuckets(now, 12), now.getTime())
 		},
-		lastImport: index.exportedAt.toISOString().slice(0, 10),
-		csvError: null
+		lastSync,
+		backfill,
+		sourceError: getSyncError()
 	};
 
 	return cached;
@@ -231,4 +220,13 @@ export async function getUnifiedStats(): Promise<UnifiedStats> {
 	return cached;
 }
 
+// daily 90-day sync; older history only comes from `bun run unified:backfill`
+syncShips()
+	.then(refreshUnifiedStats)
+	.catch((err) => console.error('Failed to refresh Unified stats after sync:', err));
+
+Bun.cron('0 4 * * *', async () => {
+	await syncShips({ force: true });
+	await refreshUnifiedStats();
+});
 Bun.cron('*/15 * * * *', refreshUnifiedStats);
