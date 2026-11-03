@@ -21,6 +21,7 @@
 	import * as Popover from '#lib/components/ui/popover/index.js';
 	import { buttonVariants } from '#lib/components/ui/button/index.js';
 	import { cn } from 'tailwind-variants';
+	import { untrack } from 'svelte';
 
 	type Invites = RouterOutput['admin']['getInvites'];
 
@@ -61,13 +62,13 @@
 		dateStyle: 'long'
 	});
 
-	const form = $derived.by(() =>
-		superForm(initialForm, {
+	const form = superForm(
+		untrack(() => initialForm),
+		{
 			validators: zod4Client(formSchema)
-		})
+		}
 	);
 
-	// svelte-ignore state_referenced_locally
 	const { form: formData, enhance, message, errors, submitting } = form;
 
 	let dateValue = $state<DateValue | undefined>();
