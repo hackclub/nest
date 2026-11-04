@@ -134,7 +134,9 @@ const applicationRouter = router({
 		)
 		.mutation(async ({ ctx, input }) => {
 			const container = await db.query.containersTable.findFirst({
-				where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+				where: {
+					user_id: ctx.user.id
+				}
 			});
 
 			if (container) {

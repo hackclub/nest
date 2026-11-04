@@ -1,0 +1,103 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "3ebd5cd9-7c1c-48a0-9d9b-a82c172863f0",
+  "prevIds": [
+    "a4fdb974-b5a0-4745-bf13-1d28d49d4679"
+  ],
+  "footprints": [
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "users",
+        "ssh_keys"
+      ],
+      "writes": [
+        "s|col|public.users.ssh_keys",
+        "n|col|public.users.ssh_keys",
+        "e|col|public.users.ssh_keys"
+      ],
+      "reads": [
+        "n|tbl|public.users",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "users",
+        "ipv6"
+      ],
+      "writes": [
+        "s|col|public.users.ipv6",
+        "n|col|public.users.ipv6",
+        "e|col|public.users.ipv6"
+      ],
+      "reads": [
+        "n|tbl|public.users",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "drop_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "users",
+        "ssh_key"
+      ],
+      "writes": [
+        "s|col|public.users.ssh_key",
+        "n|col|public.users.ssh_key",
+        "e|col|public.users.ssh_key"
+      ],
+      "reads": [
+        "n|tbl|public.users",
+        "n|sch|public"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "users",
+        "name": "ssh_keys",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 1,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "users",
+        "name": "ipv6",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "drop",
+      "key": "columns\u0000[\"public\",\"users\",\"ssh_key\"]"
+    }
+  ]
+}

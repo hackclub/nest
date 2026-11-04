@@ -1,0 +1,63 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "bd14079b-b7b0-4760-a8c4-6a3dcb8e72f2",
+  "prevIds": [
+    "07c9697d-2009-49c6-86aa-9f1c219830e9"
+  ],
+  "footprints": [
+    {
+      "statementType": "alter_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "user",
+        "slack_id"
+      ],
+      "writes": [
+        "s|colprop|public.user.slack_id.notNull"
+      ],
+      "reads": [
+        "n|tbl|public.user",
+        "n|sch|public",
+        "n|col|public.user.slack_id"
+      ],
+      "sqlHash": "b06f0ee9a656611a"
+    },
+    {
+      "statementType": "alter_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "user",
+        "verification_status"
+      ],
+      "writes": [
+        "s|colprop|public.user.verification_status.notNull"
+      ],
+      "reads": [
+        "n|tbl|public.user",
+        "n|sch|public",
+        "n|col|public.user.verification_status"
+      ],
+      "sqlHash": "fff7813407ed5b83"
+    }
+  ],
+  "deltas": [
+    {
+      "op": "alter",
+      "key": "columns\u0000[\"public\",\"user\",\"slack_id\"]",
+      "set": {
+        "notNull": true
+      }
+    },
+    {
+      "op": "alter",
+      "key": "columns\u0000[\"public\",\"user\",\"verification_status\"]",
+      "set": {
+        "notNull": true
+      }
+    }
+  ]
+}

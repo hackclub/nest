@@ -1,4 +1,4 @@
-import { CONFIG } from '@/env';
+import { CONFIG } from '@/files';
 
 const NDP_PORT = 9191;
 const NDP_TIMEOUT_MS = 10_000;

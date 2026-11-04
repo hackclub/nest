@@ -10,11 +10,11 @@ import {
 	type WindowChangeInfo
 } from 'ssh2';
 import * as db from './db-helpers';
-import * as env from './env';
+import * as files from './files';
 import { isContainerSuspended, pveFetch, waitForTask } from './pve-utils';
 import type { NodeLXCInterfaces, NodeLXCStatusCurrent, NodeLXCStatusStart } from './types/pve';
 
-const specialHosts = env.CONFIG.specialHosts;
+const specialHosts = files.CONFIG.specialHosts;
 
 function parseTarget(target: string) {
 	const idx = target.lastIndexOf(':');
@@ -211,7 +211,7 @@ async function resolveContainer(
 	return container;
 }
 
-const server = new Server({ hostKeys: [env.BASTION_HOST_PRIV_KEY] }, (client) => {
+const server = new Server({ hostKeys: [files.BASTION_HOST_PRIV_KEY] }, (client) => {
 	let username: string | null = null;
 	let containerPromise: Promise<
 		Partial<Awaited<ReturnType<typeof findContainerByUsername>>>
@@ -489,7 +489,7 @@ function proxyToContainer(
 		host: ip,
 		port,
 		username,
-		privateKey: env.BASTION_PROXY_PRIV_KEY
+		privateKey: files.BASTION_PROXY_PRIV_KEY
 	});
 }
 

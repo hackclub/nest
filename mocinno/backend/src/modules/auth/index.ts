@@ -1,5 +1,5 @@
 import { betterAuth } from 'better-auth/minimal';
-import { drizzleAdapter } from '@better-auth/drizzle-adapter';
+import { drizzleAdapter } from '@better-auth/drizzle-adapter/relations-v2';
 import { bearer, genericOAuth } from 'better-auth/plugins';
 import { createAuthMiddleware } from 'better-auth/api';
 import { db, schema } from '@/db';
@@ -14,8 +14,8 @@ import {
 	OAUTH_CLIENT_ID,
 	OAUTH_CLIENT_SECRET
 } from '@/env';
-import { isContainerSuspended } from '@/pve-utils';
-import { additionalUserFields, protectHcaProfile } from './profile-policy';
+import { isContainerSuspended } from '@/pve-utils'; // if you need to regenerate auth schema you'll have to comment this out - Laura
+import { additionalUserFields } from './profile-policy';
 
 // better-auth 1.7 moved generic oauth callbacks to /callback/:id, keep the
 // /oauth2/callback/:id url that's registered with hca (see routes/index.ts)
@@ -113,7 +113,9 @@ export const auth = betterAuth({
 						let canSudo = true;
 
 						const container = await db.query.containersTable.findFirst({
-							where: (containersTable, { eq }) => eq(containersTable.user_id, session.userId)
+							where: {
+								user_id: ctx.context.newSession?.user.id
+							}
 						});
 
 						if (additionalData?.sudo && container) {
@@ -134,7 +136,6 @@ export const auth = betterAuth({
 		}
 	},
 	hooks: {
-		before: protectHcaProfile,
 		after: createAuthMiddleware(async (ctx) => {
 			switch (true) {
 				case ctx.path.startsWith('/callback/'): {
@@ -156,8 +157,31 @@ export const auth = betterAuth({
 						break;
 					}
 
+					const fetchUserInfoResponse = await fetch('https://auth.hackclub.com/oauth/userinfo', {
+						headers: {
+							Authorization: `Bearer ${hca.accessToken}`
+						}
+					});
+
+					if (!fetchUserInfoResponse.ok) {
+						console.error('Failed to fetch user info from Hack Club OAuth provider.');
+						break;
+					}
+
+					const userInfo = (await fetchUserInfoResponse.json()) as {
+						slack_id: string;
+						verification_status: 'verified' | 'pending' | 'ineligible' | 'needs_submission';
+					};
+
+					ctx.context.internalAdapter.updateUser(ctx.context.newSession.user.id, {
+						slack_id: userInfo.slack_id,
+						verification_status: userInfo.verification_status
+					});
+
 					const container = await db.query.containersTable.findFirst({
-						where: (containersTable, { eq }) => eq(containersTable.sub, hca.accountId)
+						where: {
+							sub: hca.accountId
+						}
 					});
 
 					if (container) {
@@ -171,7 +195,9 @@ export const auth = betterAuth({
 					}
 
 					const applications = await db.query.applicationsTable.findMany({
-						where: (applicationsTable, { eq }) => eq(applicationsTable.sub, hca.accountId)
+						where: {
+							sub: hca.accountId
+						}
 					});
 
 					for (const application of applications) {
@@ -186,8 +212,9 @@ export const auth = betterAuth({
 					}
 
 					const reviewerApplications = await db.query.applicationsTable.findMany({
-						where: (applicationsTable, { eq }) =>
-							eq(applicationsTable.reviewed_by, ctx.context.newSession!.user.email)
+						where: {
+							reviewed_by: ctx.context.newSession!.user.email
+						}
 					});
 
 					for (const application of reviewerApplications) {

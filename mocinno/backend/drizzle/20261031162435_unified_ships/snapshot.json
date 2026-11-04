@@ -1,0 +1,162 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "07c9697d-2009-49c6-86aa-9f1c219830e9",
+  "prevIds": [
+    "7786dde7-0816-4fbf-9719-b3cc004fb489"
+  ],
+  "footprints": [
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "unified_ships"
+      ],
+      "writes": [
+        "s|tbl|public.unified_ships",
+        "n|tbl|public.unified_ships",
+        "e|tbl|public.unified_ships",
+        "n|rel|public.unified_ships",
+        "n|type|public.unified_ships",
+        "n|rel|public.unified_ships_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "unified_ships",
+        "unified_ships_email_idx"
+      ],
+      "writes": [
+        "s|idx|public.unified_ships_email_idx",
+        "n|idx|public.unified_ships_email_idx",
+        "e|idx|public.unified_ships_email_idx",
+        "n|rel|public.unified_ships_email_idx"
+      ],
+      "reads": [
+        "n|tbl|public.unified_ships",
+        "n|sch|public",
+        "n|col|public.unified_ships.email"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "unified_ships",
+        "isRlsEnabled": false,
+        "entityType": "tables"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "unified_ships",
+        "name": "record_id",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "unified_ships",
+        "name": "email",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "unified_ships",
+        "name": "approved_at",
+        "type": "date",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "unified_ships",
+        "name": "synced_at",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "unified_ships",
+        "name": "unified_ships_email_idx",
+        "nameExplicit": true,
+        "columns": [
+          {
+            "value": "email",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "unified_ships",
+        "name": "unified_ships_pkey",
+        "columns": [
+          "record_id"
+        ],
+        "nameExplicit": false,
+        "entityType": "pks"
+      }
+    }
+  ]
+}
