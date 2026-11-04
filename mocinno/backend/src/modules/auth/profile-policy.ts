@@ -3,7 +3,7 @@ import type { BetterAuthOptions } from 'better-auth';
 export const additionalUserFields = {
 	slack_id: {
 		type: 'string',
-		required: true,
+		required: false,
 		input: false
 	},
 	verification_status: {
