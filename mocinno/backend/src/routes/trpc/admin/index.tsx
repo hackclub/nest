@@ -474,19 +474,6 @@ const adminRouter = router({
 
 			const queryLike = `%${input.query || ''}%`;
 
-			const where = or(
-				ilike(schema.projectsTable.name, queryLike),
-				ilike(schema.projectsTable.demo, queryLike),
-				ilike(schema.projectsTable.repo, queryLike),
-				inArray(
-					schema.projectsTable.container_id,
-					db
-						.select({ id: schema.containersTable.id })
-						.from(schema.containersTable)
-						.where(ilike(schema.containersTable.username, queryLike))
-				)
-			);
-
 			const projects = await db.query.projectsTable.findMany({
 				limit: input.limit,
 				offset,
@@ -522,7 +509,23 @@ const adminRouter = router({
 				}
 			});
 
-			const rowQuery = await db.select({ value: count() }).from(schema.projectsTable).where(where);
+			const rowQuery = await db
+				.select({ value: count() })
+				.from(schema.projectsTable)
+				.where(
+					or(
+						ilike(schema.projectsTable.name, queryLike),
+						ilike(schema.projectsTable.demo, queryLike),
+						ilike(schema.projectsTable.repo, queryLike),
+						inArray(
+							schema.projectsTable.container_id,
+							db
+								.select({ id: schema.containersTable.id })
+								.from(schema.containersTable)
+								.where(ilike(schema.containersTable.username, queryLike))
+						)
+					)
+				);
 
 			let totalProjects = 0;
 
