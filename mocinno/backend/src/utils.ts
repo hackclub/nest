@@ -1,7 +1,7 @@
 import { resolve } from 'node:dns/promises';
 import * as crypto from 'node:crypto';
 import reservedUsernames from '@/reservedUsernames';
-import { CONFIG } from '@/env';
+import { CONFIG } from '@/files';
 
 import * as dbHelpers from '@/db-helpers';
 

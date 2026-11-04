@@ -7,7 +7,7 @@ import {
 	waitForTask
 } from '@/pve-utils';
 import * as db from '@/db-helpers';
-import * as env from '@/env';
+import * as files from '@/files';
 import type { NodeLXCStatusStart } from '@/types/pve';
 
 const app = route.createApp();
@@ -84,7 +84,7 @@ app.post('/config', localOnly, denyForward, async (c) => {
 				port: 22,
 				usernamePassThrough: false,
 				username: 'root',
-				privateKey: env.BASTION_PROXY_PRIV_KEY
+				privateKey: files.BASTION_PROXY_PRIV_KEY
 			}
 		}
 	});

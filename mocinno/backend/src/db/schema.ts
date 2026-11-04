@@ -1,5 +1,4 @@
 import { date, index, integer, pgTable, text, serial, timestamp } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
 import * as auth from './auth-schema';
 
 export const containersTable = pgTable('containers', {
@@ -97,39 +96,5 @@ export const unifiedShipsTable = pgTable(
 	},
 	(table) => [index('unified_ships_email_idx').on(table.email)]
 );
-
-export const containersRelations = relations(containersTable, ({ one, many }) => ({
-	user: one(auth.user, {
-		fields: [containersTable.user_id],
-		references: [auth.user.id]
-	}),
-	domains: many(domainsTable),
-	projects: many(projectsTable)
-}));
-
-export const domainsRelations = relations(domainsTable, ({ one }) => ({
-	container: one(containersTable, {
-		fields: [domainsTable.container_id],
-		references: [containersTable.id]
-	})
-}));
-
-export const projectsRelations = relations(projectsTable, ({ one }) => ({
-	container: one(containersTable, {
-		fields: [projectsTable.container_id],
-		references: [containersTable.id]
-	})
-}));
-
-export const applicationsRelations = relations(applicationsTable, ({ one }) => ({
-	user: one(auth.user, {
-		fields: [applicationsTable.user_id],
-		references: [auth.user.id]
-	}),
-	reviewer: one(auth.user, {
-		fields: [applicationsTable.reviewed_by],
-		references: [auth.user.id]
-	})
-}));
 
 export * from './auth-schema';

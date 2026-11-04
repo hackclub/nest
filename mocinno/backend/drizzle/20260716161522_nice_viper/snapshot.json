@@ -1,0 +1,47 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "9ec6f7f5-51cc-45a7-8b3c-24790a100ffa",
+  "prevIds": [
+    "e129e682-187a-4cf8-8364-225f238c2bd9"
+  ],
+  "footprints": [
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "session",
+        "sudo"
+      ],
+      "writes": [
+        "s|col|public.session.sudo",
+        "n|col|public.session.sudo",
+        "e|col|public.session.sudo"
+      ],
+      "reads": [
+        "n|tbl|public.session",
+        "n|sch|public"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "session",
+        "name": "sudo",
+        "type": "boolean",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "false",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    }
+  ]
+}

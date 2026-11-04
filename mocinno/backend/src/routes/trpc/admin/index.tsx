@@ -3,8 +3,9 @@ import { adminProcedure, viewerProcedure } from '@/modules/trpc';
 
 import { z } from 'zod';
 import { db, schema } from '@/db';
-import { and, asc, desc, eq, or, inArray, isNotNull, sql, ilike, count } from 'drizzle-orm';
-import { CONFIG, ROOTFS, OS_TEMPLATE, BASTION_PROXY_PUB_KEY, SMTP_FROM, APP_DOMAIN } from '@/env';
+import { eq, or, inArray, sql, ilike, count } from 'drizzle-orm';
+import { ROOTFS, OS_TEMPLATE, SMTP_FROM, APP_DOMAIN } from '@/env';
+import { CONFIG, BASTION_PROXY_PUB_KEY } from '@/files';
 import {
 	disableStartOnBoot,
 	enableStartOnBoot,
@@ -148,19 +149,11 @@ const adminRouter = router({
 				return { success: false, message: 'Unknown node' };
 			}
 
-			const containers = await db
-				.select({
-					id: schema.containersTable.id,
-					vmid: schema.containersTable.vmid,
-					ip: schema.containersTable.ip,
-					ipv6: schema.containersTable.ipv6
-				})
-				.from(schema.containersTable)
-				.where(
-					and(eq(schema.containersTable.node, input.from), isNotNull(schema.containersTable.vmid))
-				)
-				.orderBy(desc(schema.containersTable.vmid))
-				.limit(input.count);
+			const containers = await db.query.containersTable.findMany({
+				where: {
+					AND: [{ node: input.from }, { vmid: { isNotNull: true } }]
+				}
+			});
 
 			if (containers.length === 0) {
 				return { success: false, message: `No containers on ${input.from}` };
@@ -206,19 +199,29 @@ const adminRouter = router({
 			const containers = await db.query.containersTable.findMany({
 				limit: input.limit,
 				offset,
-				where: or(
-					ilike(schema.containersTable.username, queryLike),
-					ilike(schema.containersTable.ip, queryLike),
-					ilike(sql`CAST(${schema.containersTable.vmid} AS TEXT)`, queryLike),
-					inArray(
-						schema.containersTable.user_id,
-						db
-							.select({ id: schema.user.id })
-							.from(schema.user)
-							.where(ilike(schema.user.email, queryLike))
-					)
-				),
-				orderBy: [desc(schema.containersTable.created_at)]
+				where: {
+					OR: [
+						{
+							username: { ilike: queryLike }
+						},
+						{
+							ip: { ilike: queryLike }
+						},
+						{
+							vmid: { ilike: queryLike }
+						},
+						{
+							user: {
+								id: {
+									ilike: queryLike
+								}
+							}
+						}
+					]
+				},
+				orderBy: {
+					created_at: 'desc'
+				}
 			});
 
 			const usersWithStatus: Array<
@@ -312,17 +315,23 @@ const adminRouter = router({
 			const applications = await db.query.applicationsTable.findMany({
 				limit: input.limit,
 				offset: (input.page - 1) * input.limit,
-				where: or(
-					ilike(schema.applicationsTable.username, queryLike),
-					inArray(
-						schema.applicationsTable.user_id,
-						db
-							.select({ id: schema.user.id })
-							.from(schema.user)
-							.where(ilike(schema.user.email, queryLike))
-					)
-				),
-				orderBy: [desc(schema.applicationsTable.created_at)],
+				where: {
+					OR: [
+						{
+							username: { ilike: queryLike }
+						},
+						{
+							user: {
+								id: {
+									ilike: queryLike
+								}
+							}
+						}
+					]
+				},
+				orderBy: {
+					created_at: 'desc'
+				},
 				with: {
 					user: true,
 					reviewer: true
@@ -330,8 +339,12 @@ const adminRouter = router({
 			});
 
 			const pendingApplications = await db.query.applicationsTable.findMany({
-				where: eq(schema.applicationsTable.status, 'pending'),
-				orderBy: [asc(schema.applicationsTable.created_at)],
+				where: {
+					status: 'pending'
+				},
+				orderBy: {
+					created_at: 'asc'
+				},
 				with: {
 					user: true,
 					reviewer: true
@@ -360,7 +373,19 @@ const adminRouter = router({
 			const invites = await db.query.invitesTable.findMany({
 				limit: input.limit,
 				offset,
-				orderBy: [desc(schema.invitesTable.code)]
+				where: {
+					OR: [
+						{
+							code: { ilike: queryLike }
+						},
+						{
+							admin_email: { ilike: queryLike }
+						}
+					]
+				},
+				orderBy: {
+					created_at: 'desc'
+				}
 			});
 
 			const rowQuery = await db
@@ -465,8 +490,33 @@ const adminRouter = router({
 			const projects = await db.query.projectsTable.findMany({
 				limit: input.limit,
 				offset,
-				where,
-				orderBy: [desc(schema.projectsTable.created_at)],
+				where: {
+					OR: [
+						{
+							name: { ilike: queryLike }
+						},
+						{
+							demo: { ilike: queryLike }
+						},
+						{
+							repo: { ilike: queryLike }
+						},
+						{
+							container: {
+								username: { ilike: queryLike }
+							}
+						},
+						{
+							container: {
+								user_id: queryLike
+							}
+						},
+						{ container: { user: { email: { ilike: queryLike } } } }
+					]
+				},
+				orderBy: {
+					created_at: 'desc'
+				},
 				with: {
 					container: true
 				}
@@ -504,7 +554,9 @@ const adminRouter = router({
 		.input(z.object({ id: z.int(), reason: z.string().optional().default('Suspended by admin') }))
 		.mutation(async ({ input }) => {
 			const container = await db.query.containersTable.findFirst({
-				where: eq(schema.containersTable.id, input.id)
+				where: {
+					id: input.id
+				}
 			});
 
 			if (!container || !container.vmid) {
@@ -548,7 +600,9 @@ const adminRouter = router({
 		)
 		.mutation(async ({ ctx, input }) => {
 			const application = await db.query.applicationsTable.findFirst({
-				where: eq(schema.applicationsTable.id, input.id),
+				where: {
+					id: input.id
+				},
 				with: {
 					user: true
 				}

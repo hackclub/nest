@@ -1,0 +1,40 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "be873cb0-9bc5-4e33-a38e-270409ce36b5",
+  "prevIds": [
+    "2572150b-8080-44f5-8315-a23198237966"
+  ],
+  "footprints": [
+    {
+      "statementType": "drop_unique",
+      "statementTarget": [
+        "table",
+        "public",
+        "applications"
+      ],
+      "writes": [
+        "s|uq|public.applications.applications_user_id_unique",
+        "n|uq|public.applications.applications_user_id_unique",
+        "e|uq|public.applications.applications_user_id_unique",
+        "n|con|public.applications.applications_user_id_unique",
+        "n|rel|public.applications_user_id_unique"
+      ],
+      "reads": [
+        "n|tbl|public.applications",
+        "n|sch|public",
+        "e|col|public.applications.user_id"
+      ],
+      "sharedWrites": [
+        "e|uniqueness|public.applications.user_id"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "drop",
+      "key": "uniques\u0000[\"public\",\"applications\",\"applications_user_id_unique\"]"
+    }
+  ]
+}
