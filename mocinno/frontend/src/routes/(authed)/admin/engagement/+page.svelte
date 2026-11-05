@@ -33,17 +33,6 @@
 		}
 		return 'just now';
 	}
-
-	const formatDay = (day: string) => {
-		const [y, m, d] = day.split('-').map(Number);
-		return new Date(y, m - 1, d).toLocaleDateString(undefined, {
-			month: 'long',
-			day: 'numeric',
-			year: 'numeric'
-		});
-	};
-
-	const lastLogin = $derived(stats.recentLogins[0] ?? null);
 </script>
 
 <Head title="Engagement" />
@@ -55,18 +44,7 @@
 	</p>
 	<Separator class="my-4" />
 
-	<p class="rounded-md border border-border bg-muted p-4 text-sm text-muted-foreground">
-		{#if stats.trackingSince}
-			SSH activity has been tracked since {formatDay(stats.trackingSince)}. Anything before then
-			isn't counted, so active users, "SSHed in" and "Came back" will read low until there's more
-			history.
-		{:else}
-			No SSH activity recorded yet. Numbers will start filling in once the bastion with tracking is
-			deployed and people SSH in.
-		{/if}
-	</p>
-
-	<div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+	<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
 		<div class="rounded-md border border-border p-4">
 			<h4 class="text-sm font-medium text-muted-foreground">Active today</h4>
 			<p class="text-xl font-bold tabular-nums">{stats.dau.toLocaleString()}</p>
@@ -79,65 +57,15 @@
 			<h4 class="text-sm font-medium text-muted-foreground">Active, last 30 days</h4>
 			<p class="text-xl font-bold tabular-nums">{stats.mau.toLocaleString()}</p>
 		</div>
-		<div class="rounded-md border border-border p-4">
-			<h4 class="text-sm font-medium text-muted-foreground">Last SSH</h4>
-			{#if lastLogin}
-				<p class="truncate text-xl font-bold" title={lastLogin.username}>{lastLogin.username}</p>
-				<p class="text-sm text-muted-foreground" title={new Date(lastLogin.at).toLocaleString()}>
-					{ago(lastLogin.at)}
-				</p>
-			{:else}
-				<p class="text-xl font-bold text-muted-foreground">–</p>
-			{/if}
-		</div>
 	</div>
 
 	<div class="rounded-md border border-border p-4">
 		<SshActivityChart daily={stats.daily} />
 	</div>
 
-	<div class="rounded-md border border-border p-4">
-		<EngagementFunnel funnel={stats.funnel} />
-		<p class="mt-4 text-xs text-muted-foreground">
-			Median time to review an application (last 30 days):
-			<span class="font-medium text-foreground tabular-nums">
-				{stats.medianReviewHours === null
-					? '–'
-					: stats.medianReviewHours < 48
-						? `${stats.medianReviewHours}h`
-						: `${Math.round((stats.medianReviewHours / 24) * 10) / 10} days`}
-			</span>
-		</p>
-	</div>
-
-	<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-		<div class="rounded-md border border-border p-4">
-			<h4 class="mb-4 text-sm font-medium text-muted-foreground">Recent SSH logins</h4>
-			{#if stats.recentLogins.length === 0}
-				<p class="text-sm text-muted-foreground">Nobody yet.</p>
-			{:else}
-				<table class="w-full text-sm">
-					<thead>
-						<tr class="border-b border-border text-left text-muted-foreground">
-							<th class="pb-2 font-medium">User</th>
-							<th class="pb-2 text-end font-medium">Last SSH</th>
-						</tr>
-					</thead>
-					<tbody>
-						{#each stats.recentLogins as login (login.username)}
-							<tr class="border-b border-border last:border-0">
-								<td class="py-2 break-all">{login.username}</td>
-								<td
-									class="py-2 text-end whitespace-nowrap"
-									title={new Date(login.at).toLocaleString()}
-								>
-									{ago(login.at)}
-								</td>
-							</tr>
-						{/each}
-					</tbody>
-				</table>
-			{/if}
+	<div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+		<div class="rounded-md border border-border p-4 lg:col-span-2">
+			<EngagementFunnel funnel={stats.funnel} medianReviewHours={stats.medianReviewHours} />
 		</div>
 
 		<div class="rounded-md border border-border p-4">

@@ -10,9 +10,12 @@
 		shipped: number;
 	};
 	type Range = '30d' | '90d' | 'all';
-	type StageKey = Exclude<keyof Funnel, 'pending'>;
+	type StageKey = 'signedUp' | 'eligible' | 'applied' | 'approved' | 'sshed' | 'returned';
 
-	let { funnel }: { funnel: Record<Range, Funnel> } = $props();
+	let {
+		funnel,
+		medianReviewHours
+	}: { funnel: Record<Range, Funnel>; medianReviewHours: number | null } = $props();
 
 	const RANGES: { key: Range; label: string }[] = [
 		{ key: '30d', label: '30 days' },
@@ -20,58 +23,71 @@
 		{ key: 'all', label: 'All time' }
 	];
 
-	// `from` is the stage this one converts from; shipped branches off approved
-	const STAGES: {
-		key: StageKey;
-		label: string;
-		hint: string;
-		from?: { key: StageKey; label: string };
-	}[] = [
+	// strictly nested, so every stage is a subset of the one above it
+	const STAGES: { key: StageKey; label: string; hint: string }[] = [
 		{ key: 'signedUp', label: 'Signed up', hint: 'Logged in to Nest' },
-		{
-			key: 'eligible',
-			label: 'Eligible',
-			hint: 'Verified, or has an invite',
-			from: { key: 'signedUp', label: 'signed up' }
-		},
-		{
-			key: 'applied',
-			label: 'Applied',
-			hint: 'Submitted an application',
-			from: { key: 'eligible', label: 'eligible' }
-		},
-		{
-			key: 'approved',
-			label: 'Approved',
-			hint: 'Has a container',
-			from: { key: 'applied', label: 'applied' }
-		},
-		{
-			key: 'sshed',
-			label: 'SSHed in',
-			hint: 'At least once',
-			from: { key: 'approved', label: 'approved' }
-		},
-		{
-			key: 'returned',
-			label: 'Came back',
-			hint: 'SSHed in on 2+ days',
-			from: { key: 'sshed', label: 'SSHed in' }
-		},
-		{
-			key: 'shipped',
-			label: 'Shipped',
-			hint: 'Has a project in Unified',
-			from: { key: 'approved', label: 'approved' }
-		}
+		{ key: 'eligible', label: 'Eligible', hint: 'Verified, or has an invite' },
+		{ key: 'applied', label: 'Applied', hint: 'Submitted an application' },
+		{ key: 'approved', label: 'Approved', hint: 'Has a container' },
+		{ key: 'sshed', label: 'SSHed in', hint: 'Through the bastion, at least once' },
+		{ key: 'returned', label: 'Came back', hint: 'SSHed in on 2+ days' }
 	];
 
+	// a step conversion below this is flagged as the place people drop off
+	const DROP_OFF = 0.5;
+
+	const ROW = 40;
+	const GAP = 2;
+	const NECK = 14;
+	const MIN_W = 6;
+
 	let range = $state<Range>('30d');
+	let hovered = $state<number | null>(null);
+	let width = $state(0);
 
 	const data = $derived(funnel[range]);
-	const top = $derived(Math.max(1, data.signedUp));
+	const height = STAGES.length * ROW;
 
-	const pct = (n: number, of: number) => (of > 0 ? `${Math.round((n / of) * 100)}%` : '–');
+	const ratio = (n: number, of: number) => (of > 0 ? n / of : null);
+	const pct = (r: number | null) => (r === null ? '–' : `${Math.round(r * 100)}%`);
+
+	const rows = $derived(
+		STAGES.map((stage, i) => {
+			const value = data[stage.key];
+			const prev = i === 0 ? value : data[STAGES[i - 1].key];
+			return {
+				...stage,
+				value,
+				step: ratio(value, prev),
+				ofTop: ratio(value, data.signedUp)
+			};
+		})
+	);
+
+	const bandW = (value: number) =>
+		data.signedUp > 0 ? Math.max(MIN_W, (value / data.signedUp) * width) : MIN_W;
+
+	// each band starts at the previous band's width and curves in to its own
+	const paths = $derived(
+		rows.map((row, i) => {
+			const c = width / 2;
+			const p = bandW(i === 0 ? row.value : rows[i - 1].value) / 2;
+			const w = bandW(row.value) / 2;
+			const y0 = i * ROW;
+			const y1 = y0 + ROW - GAP;
+			const n = y0 + NECK;
+			const m = y0 + NECK / 2;
+			return `M${c - p},${y0}H${c + p}C${c + p},${m} ${c + w},${m} ${c + w},${n}V${y1}H${c - w}V${n}C${c - w},${m} ${c - p},${m} ${c - p},${y0}Z`;
+		})
+	);
+
+	// lighter further down the funnel, same hue throughout; mixed toward white rather than
+	// faded with opacity so the lower stages don't sink into a dark background
+	const shade = (i: number) =>
+		`color-mix(in oklab, var(--funnel-bar), white ${Math.round((i / Math.max(1, STAGES.length - 1)) * 55)}%)`;
+
+	const formatHours = (h: number | null) =>
+		h === null ? '–' : h < 48 ? `${h}h` : `${Math.round((h / 24) * 10) / 10} days`;
 </script>
 
 <div class="engagement-funnel flex flex-col gap-4">
@@ -93,50 +109,107 @@
 		</div>
 	</div>
 
-	<ol class="flex flex-col gap-3">
-		{#each STAGES as stage (stage.key)}
-			{@const value = data[stage.key]}
-			<li
-				class="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1.5 sm:grid-cols-[10rem_1fr_9rem] {stage.key ===
-				'shipped'
-					? 'border-t border-dashed border-border pt-3'
+	<div
+		class="grid grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] gap-x-4"
+		style="grid-template-rows: repeat({STAGES.length}, {ROW}px)"
+	>
+		{#each rows as row, i (row.key)}
+			<p
+				class="col-start-1 flex items-center pb-0.5 text-sm transition-colors {hovered !== null &&
+				hovered !== i
+					? 'text-muted-foreground'
 					: ''}"
+				style="grid-row: {i + 1}"
 			>
-				<div class="col-start-1 row-start-1 min-w-0">
-					<p class="text-sm font-medium">{stage.label}</p>
-					<p class="text-xs text-muted-foreground">{stage.hint}</p>
-				</div>
-
-				<div
-					class="col-span-2 row-start-2 h-5 rounded-sm bg-muted sm:col-span-1 sm:col-start-2 sm:row-start-1"
-					aria-hidden="true"
+				{row.label}
+			</p>
+			<p
+				class="col-start-3 flex items-center justify-end gap-1 pb-0.5 text-sm whitespace-nowrap tabular-nums"
+				style="grid-row: {i + 1}"
+			>
+				<span class="font-semibold">{row.value.toLocaleString()}</span>
+				<span
+					class={row.step !== null && row.step < DROP_OFF
+						? 'text-destructive'
+						: 'text-muted-foreground'}
 				>
-					{#if value > 0}
-						<div
-							class="h-full rounded-sm bg-(--funnel-bar) transition-[width]"
-							style="width: max(4px, {(value / top) * 100}%)"
-						></div>
-					{/if}
-				</div>
-
-				<div class="col-start-2 row-start-1 text-end text-sm tabular-nums sm:col-start-3">
-					<span class="font-semibold">{value.toLocaleString()}</span>
-					<span class="text-muted-foreground">· {pct(value, data.signedUp)}</span>
-					{#if stage.from}
-						<p class="text-xs text-muted-foreground">
-							{pct(value, data[stage.from.key])} of {stage.from.label}
-						</p>
-					{/if}
-				</div>
-
-				{#if stage.key === 'approved' && data.pending > 0}
-					<p class="col-span-2 text-xs text-muted-foreground sm:col-start-2">
-						{data.pending.toLocaleString()} more still waiting for review
-					</p>
-				{/if}
-			</li>
+					· {pct(row.step)}
+				</span>
+			</p>
 		{/each}
-	</ol>
+
+		<div class="relative col-start-2 row-span-full" bind:clientWidth={width}>
+			{#if width > 0}
+				<svg {width} {height} role="img" aria-label="Funnel from sign-up to returning SSH users">
+					{#each paths as d, i (rows[i].key)}
+						<path
+							{d}
+							fill={shade(i)}
+							opacity={hovered !== null && hovered !== i ? 0.5 : 1}
+							class="transition-opacity"
+						/>
+					{/each}
+					{#each rows as row, i (row.key)}
+						<rect
+							x="0"
+							y={i * ROW}
+							{width}
+							height={ROW}
+							fill="transparent"
+							role="button"
+							tabindex="0"
+							aria-label="{row.label}: {row.value} users, {pct(row.step)} of the previous stage"
+							class="outline-none"
+							onpointerenter={() => (hovered = i)}
+							onpointerleave={() => (hovered = null)}
+							onfocus={() => (hovered = i)}
+							onblur={() => (hovered = null)}
+						/>
+					{/each}
+				</svg>
+
+				{#if hovered !== null}
+					{@const row = rows[hovered]}
+					<div
+						class="pointer-events-none absolute left-1/2 z-10 w-56 -translate-x-1/2 rounded-md border border-border bg-popover p-2.5 text-xs text-popover-foreground shadow-md"
+						style="top: {(hovered + 1) * ROW + 4}px"
+					>
+						<p class="font-medium">{row.label}</p>
+						<p class="mb-1.5 text-muted-foreground">{row.hint}</p>
+						<p>
+							<span class="font-semibold tabular-nums">{row.value.toLocaleString()}</span>
+							<span class="text-muted-foreground">users</span>
+						</p>
+						{#if hovered > 0}
+							<p class="text-muted-foreground">
+								{pct(row.step)} of {rows[hovered - 1].label.toLowerCase()}
+							</p>
+						{/if}
+						<p class="text-muted-foreground">{pct(row.ofTop)} of everyone who signed up</p>
+					</div>
+				{/if}
+			{/if}
+		</div>
+	</div>
+
+	<dl
+		class="flex flex-wrap gap-x-6 gap-y-1 border-t border-border pt-3 text-xs text-muted-foreground"
+	>
+		<div class="flex gap-1">
+			<dt>Shipped (of approved):</dt>
+			<dd class="font-medium text-foreground tabular-nums">
+				{data.shipped.toLocaleString()} · {pct(ratio(data.shipped, data.approved))}
+			</dd>
+		</div>
+		<div class="flex gap-1">
+			<dt>Waiting for review:</dt>
+			<dd class="font-medium text-foreground tabular-nums">{data.pending.toLocaleString()}</dd>
+		</div>
+		<div class="flex gap-1">
+			<dt>Median review time (last 30 days):</dt>
+			<dd class="font-medium text-foreground tabular-nums">{formatHours(medianReviewHours)}</dd>
+		</div>
+	</dl>
 </div>
 
 <style>

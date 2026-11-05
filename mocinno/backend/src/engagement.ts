@@ -1,4 +1,4 @@
-import { desc, gte, isNotNull, min, sql, sum } from 'drizzle-orm';
+import { gte, sql, sum } from 'drizzle-orm';
 
 import { db, schema } from '@/db';
 import { localDay } from '@/ssh-activity';
@@ -6,7 +6,6 @@ import { localDay } from '@/ssh-activity';
 const DAY = 24 * 60 * 60 * 1000;
 const CACHE_MS = 5 * 60 * 1000;
 const DAU_DAYS = 30;
-const RECENT_LOGINS = 10;
 const FAILURE_DAYS = 7;
 
 export type FunnelRange = '30d' | '90d' | 'all';
@@ -29,11 +28,9 @@ export type EngagementStats = {
 	wau: number;
 	mau: number;
 	daily: { day: string; users: number }[];
-	recentLogins: { username: string; at: string }[];
 	failures: { reason: string; count: number }[];
 	funnel: Record<FunnelRange, Funnel>;
 	medianReviewHours: number | null;
-	trackingSince: string | null;
 	generatedAt: string;
 };
 
@@ -96,50 +93,29 @@ async function getMedianReviewHours(since: Date) {
 }
 
 export async function computeEngagementStats(now = new Date()): Promise<EngagementStats> {
-	const [
-		dau,
-		wau,
-		mau,
-		dailyRows,
-		recentRows,
-		failureRows,
-		trackingRows,
-		funnelAll,
-		funnel90,
-		funnel30,
-		medianReviewHours
-	] = await Promise.all([
-		distinctActive(daysAgo(now, 0)),
-		distinctActive(daysAgo(now, 6)),
-		distinctActive(daysAgo(now, DAU_DAYS - 1)),
-		db
-			.select({ day: schema.sshActivityTable.day, users: sql<number>`count(*)::int` })
-			.from(schema.sshActivityTable)
-			.where(gte(schema.sshActivityTable.day, daysAgo(now, DAU_DAYS - 1)))
-			.groupBy(schema.sshActivityTable.day),
-		db
-			.select({
-				username: schema.containersTable.username,
-				at: schema.containersTable.last_ssh_at
-			})
-			.from(schema.containersTable)
-			.where(isNotNull(schema.containersTable.last_ssh_at))
-			.orderBy(desc(schema.containersTable.last_ssh_at))
-			.limit(RECENT_LOGINS),
-		db
-			.select({
-				reason: schema.sshFailuresTable.reason,
-				count: sql<number>`${sum(schema.sshFailuresTable.count)}::int`
-			})
-			.from(schema.sshFailuresTable)
-			.where(gte(schema.sshFailuresTable.day, daysAgo(now, FAILURE_DAYS - 1)))
-			.groupBy(schema.sshFailuresTable.reason),
-		db.select({ first: min(schema.sshActivityTable.day) }).from(schema.sshActivityTable),
-		getFunnel(null),
-		getFunnel(new Date(now.getTime() - 90 * DAY)),
-		getFunnel(new Date(now.getTime() - 30 * DAY)),
-		getMedianReviewHours(new Date(now.getTime() - 30 * DAY))
-	]);
+	const [dau, wau, mau, dailyRows, failureRows, funnelAll, funnel90, funnel30, medianReviewHours] =
+		await Promise.all([
+			distinctActive(daysAgo(now, 0)),
+			distinctActive(daysAgo(now, 6)),
+			distinctActive(daysAgo(now, DAU_DAYS - 1)),
+			db
+				.select({ day: schema.sshActivityTable.day, users: sql<number>`count(*)::int` })
+				.from(schema.sshActivityTable)
+				.where(gte(schema.sshActivityTable.day, daysAgo(now, DAU_DAYS - 1)))
+				.groupBy(schema.sshActivityTable.day),
+			db
+				.select({
+					reason: schema.sshFailuresTable.reason,
+					count: sql<number>`${sum(schema.sshFailuresTable.count)}::int`
+				})
+				.from(schema.sshFailuresTable)
+				.where(gte(schema.sshFailuresTable.day, daysAgo(now, FAILURE_DAYS - 1)))
+				.groupBy(schema.sshFailuresTable.reason),
+			getFunnel(null),
+			getFunnel(new Date(now.getTime() - 90 * DAY)),
+			getFunnel(new Date(now.getTime() - 30 * DAY)),
+			getMedianReviewHours(new Date(now.getTime() - 30 * DAY))
+		]);
 
 	// fill in days with no logins so the chart has a continuous axis
 	const byDay = new Map(dailyRows.map((r) => [r.day, r.users]));
@@ -153,11 +129,9 @@ export async function computeEngagementStats(now = new Date()): Promise<Engageme
 		wau,
 		mau,
 		daily,
-		recentLogins: recentRows.map((r) => ({ username: r.username, at: r.at!.toISOString() })),
 		failures: failureRows.sort((a, b) => b.count - a.count),
 		funnel: { all: funnelAll, '90d': funnel90, '30d': funnel30 },
 		medianReviewHours,
-		trackingSince: trackingRows[0]?.first ?? null,
 		generatedAt: now.toISOString()
 	};
 }
