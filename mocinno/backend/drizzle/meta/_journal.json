@@ -99,6 +99,13 @@
 			"when": 1793463875675,
 			"tag": "0013_unified_ships",
 			"breakpoints": true
+		},
+		{
+			"idx": 14,
+			"version": "7",
+			"when": 1793753328502,
+			"tag": "0014_ssh_activity",
+			"breakpoints": true
 		}
 	]
 }

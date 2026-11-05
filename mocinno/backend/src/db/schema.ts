@@ -1,4 +1,13 @@
-import { date, index, integer, pgTable, text, serial, timestamp } from 'drizzle-orm/pg-core';
+import {
+	date,
+	index,
+	integer,
+	pgTable,
+	primaryKey,
+	text,
+	serial,
+	timestamp
+} from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import * as auth from './auth-schema';
 
@@ -16,6 +25,7 @@ export const containersTable = pgTable('containers', {
 	ip: text('ip'),
 	ipv6: text('ipv6'),
 	node: text('node').default('nest-prox-2'),
+	last_ssh_at: timestamp('last_ssh_at'),
 	created_at: timestamp('created_at').defaultNow()
 });
 
@@ -96,6 +106,37 @@ export const unifiedShipsTable = pgTable(
 		synced_at: timestamp('synced_at').defaultNow().notNull()
 	},
 	(table) => [index('unified_ships_email_idx').on(table.email)]
+);
+
+// one row per container per day with at least one authenticated bastion connection
+export const sshActivityTable = pgTable(
+	'ssh_activity',
+	{
+		container_id: integer('container_id')
+			.notNull()
+			.references(() => containersTable.id, {
+				onDelete: 'cascade'
+			}),
+		day: date('day', { mode: 'string' }).notNull(),
+		connections: integer('connections').notNull().default(1),
+		first_at: timestamp('first_at').defaultNow().notNull(),
+		last_at: timestamp('last_at').defaultNow().notNull()
+	},
+	(table) => [
+		primaryKey({ columns: [table.container_id, table.day] }),
+		index('ssh_activity_day_idx').on(table.day)
+	]
+);
+
+// bastion connection failures for known users, counted per day and reason
+export const sshFailuresTable = pgTable(
+	'ssh_failures',
+	{
+		day: date('day', { mode: 'string' }).notNull(),
+		reason: text('reason').notNull(),
+		count: integer('count').notNull().default(1)
+	},
+	(table) => [primaryKey({ columns: [table.day, table.reason] })]
 );
 
 export const containersRelations = relations(containersTable, ({ one, many }) => ({

@@ -12,6 +12,7 @@ import {
 import * as db from './db-helpers';
 import * as env from './env';
 import { isContainerSuspended, pveFetch, waitForTask } from './pve-utils';
+import { recordSshFailure, recordSshLogin, type SshFailureReason } from './ssh-activity';
 import type { NodeLXCInterfaces, NodeLXCStatusCurrent, NodeLXCStatusStart } from './types/pve';
 
 const specialHosts = env.CONFIG.specialHosts;
@@ -56,6 +57,7 @@ async function findContainerByUsername(username: string) {
 
 	const suspended = await isContainerSuspended(user);
 	return {
+		id: user.id,
 		vmid: user.vmid,
 		ip,
 		status,
@@ -85,6 +87,31 @@ function verifyClientKey(
 	return parsed.verify(ctx.blob!, ctx.signature, ctx.hashAlgo);
 }
 
+// metrics for one client connection: at most one login or one failure is recorded,
+// and only for real containers (special hosts and unknown usernames are ignored)
+type ConnectionTracker = {
+	login: (containerId: number | undefined) => void;
+	fail: (reason: SshFailureReason) => void;
+};
+
+function createTracker(): ConnectionTracker {
+	let recorded = false;
+	const once = (fn: () => Promise<unknown>) => {
+		if (recorded) return;
+		recorded = true;
+		fn().catch((e) =>
+			console.error('[bastion] Failed to record ssh metrics:', e instanceof Error ? e.message : e)
+		);
+	};
+
+	return {
+		login: (containerId) => {
+			if (containerId) once(() => recordSshLogin(containerId));
+		},
+		fail: (reason) => once(() => recordSshFailure(reason))
+	};
+}
+
 function writeAndClose(stream: ServerChannel, message: string) {
 	stream.write(`\r\n${message}\r\n`);
 	stream.close(() => console.log('[bastion] Stream closed after message:', message));
@@ -94,7 +121,8 @@ async function resolveContainer(
 	containerPromise: Promise<Partial<Awaited<ReturnType<typeof findContainerByUsername>>>> | null,
 	username: string,
 	client: Connection,
-	stream: ServerChannel | null
+	stream: ServerChannel | null,
+	tracker: ConnectionTracker
 ) {
 	if (!containerPromise) {
 		console.warn(`[bastion] No container promise for ${username}`);
@@ -116,6 +144,7 @@ async function resolveContainer(
 		} else {
 			console.error(`[bastion] Lookup failed for ${username}, unknown error:`, e);
 		}
+		tracker.fail('lookup_error');
 		if (stream) writeAndClose(stream, 'Error looking up your container.');
 		client.end();
 		return null;
@@ -130,6 +159,7 @@ async function resolveContainer(
 
 	if (container.suspended) {
 		console.warn(`[bastion] Container for ${username} is suspended`);
+		tracker.fail('suspended');
 		if (stream)
 			writeAndClose(
 				stream,
@@ -147,6 +177,7 @@ async function resolveContainer(
 		try {
 			if (!container.node || !container.vmid) {
 				console.error(`[bastion] Missing node or vmid for ${username}'s container:`, container);
+				tracker.fail('config_error');
 				if (stream)
 					writeAndClose(
 						stream,
@@ -174,6 +205,7 @@ async function resolveContainer(
 				}
 			}
 			if (!container.ip) {
+				tracker.fail('no_ip');
 				if (stream)
 					writeAndClose(
 						stream,
@@ -189,6 +221,7 @@ async function resolveContainer(
 			} else {
 				console.error(`[bastion] Failed to start container for ${username}, unknown error:`, e);
 			}
+			tracker.fail('start_failed');
 			if (stream) writeAndClose(stream, 'Failed to start your container. Please try again later.');
 			client.end();
 			return null;
@@ -197,6 +230,7 @@ async function resolveContainer(
 
 	if (!container.ip) {
 		console.warn(`[bastion] No IP for ${username}`);
+		tracker.fail('no_ip');
 		if (stream)
 			writeAndClose(stream, 'Could not determine your container IP. Try again in a moment.');
 		client.end();
@@ -208,6 +242,7 @@ async function resolveContainer(
 	console.log(
 		`[bastion] Routing ${username} -> ${container.upstreamUser ?? 'root'}@${container.ip}:${port} (${label})`
 	);
+	tracker.login(container.id);
 	return container;
 }
 
@@ -216,6 +251,11 @@ const server = new Server({ hostKeys: [env.BASTION_HOST_PRIV_KEY] }, (client) =>
 	let containerPromise: Promise<
 		Partial<Awaited<ReturnType<typeof findContainerByUsername>>>
 	> | null = null;
+	const tracker = createTracker();
+	let authenticated = false;
+	// set when a known user fails auth; only recorded if the connection never authenticates,
+	// since clients routinely try several keys before the right one
+	let authFailure: SshFailureReason | null = null;
 
 	client.on('authentication', async (ctx) => {
 		username = ctx.username;
@@ -252,6 +292,7 @@ const server = new Server({ hostKeys: [env.BASTION_HOST_PRIV_KEY] }, (client) =>
 			const container = await containerPromise;
 
 			if (!container?.sshKeys?.length) {
+				if (container) authFailure = 'no_keys';
 				console.warn(`[bastion] No SSH keys on record for ${username}`);
 				return ctx.reject(['publickey']);
 			}
@@ -259,7 +300,9 @@ const server = new Server({ hostKeys: [env.BASTION_HOST_PRIV_KEY] }, (client) =>
 			if (container.sshKeys.some((key) => verifyClientKey(ctx, key))) {
 				return ctx.accept();
 			}
+			authFailure = 'key_rejected';
 		} catch (e) {
+			authFailure = 'lookup_error';
 			if (e instanceof Error) {
 				console.error(`[bastion] Auth lookup failed for ${username}: ${e.message}`);
 			} else {
@@ -271,6 +314,7 @@ const server = new Server({ hostKeys: [env.BASTION_HOST_PRIV_KEY] }, (client) =>
 	});
 
 	client.on('ready', () => {
+		authenticated = true;
 		console.log(`[bastion] ${username} authenticated`);
 
 		client.on('session', (accept) => {
@@ -318,7 +362,13 @@ const server = new Server({ hostKeys: [env.BASTION_HOST_PRIV_KEY] }, (client) =>
 
 			session.on('shell', async (accept) => {
 				const stream = accept();
-				const container = await resolveContainer(containerPromise, username!, client, stream);
+				const container = await resolveContainer(
+					containerPromise,
+					username!,
+					client,
+					stream,
+					tracker
+				);
 				if (!container) return;
 				proxyToContainer(container.ip!, stream, client, {
 					getPty: () => pty,
@@ -333,7 +383,13 @@ const server = new Server({ hostKeys: [env.BASTION_HOST_PRIV_KEY] }, (client) =>
 
 			session.on('exec', async (accept, reject, info) => {
 				const stream = accept();
-				const container = await resolveContainer(containerPromise, username!, client, stream);
+				const container = await resolveContainer(
+					containerPromise,
+					username!,
+					client,
+					stream,
+					tracker
+				);
 				if (!container) return;
 				proxyToContainer(container.ip!, stream, client, {
 					command: info.command,
@@ -350,7 +406,13 @@ const server = new Server({ hostKeys: [env.BASTION_HOST_PRIV_KEY] }, (client) =>
 			session.on('subsystem', async (accept, reject, info) => {
 				if (info.name === 'sftp') {
 					const stream = accept();
-					const container = await resolveContainer(containerPromise, username!, client, stream);
+					const container = await resolveContainer(
+						containerPromise,
+						username!,
+						client,
+						stream,
+						tracker
+					);
 					if (!container) return;
 					proxyToContainer(container.ip!, stream, client, {
 						subsystem: 'sftp',
@@ -362,6 +424,10 @@ const server = new Server({ hostKeys: [env.BASTION_HOST_PRIV_KEY] }, (client) =>
 				}
 			});
 		});
+	});
+
+	client.on('close', () => {
+		if (!authenticated && authFailure) tracker.fail(authFailure);
 	});
 
 	client.on('error', (err) => {
