@@ -12,6 +12,7 @@ const app = route.createApp().basePath('/api');
 
 app.use('/trpc/*', authMiddleware);
 app.use('/auth/*', authMiddleware);
+app.use('/mcp', authMiddleware);
 
 app.on(['POST', 'GET'], '/auth/*', (c) => {
 	const url = new URL(c.req.url);

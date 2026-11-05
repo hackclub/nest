@@ -1,8 +1,8 @@
 {
-	"mcpServers": {
-		"nest": {
-			"url": "http://localhost:5173/api/mcp",
-			"type": "http"
-		}
-	}
+  "mcpServers": {
+    "nest": {
+      "url": "https://willowedforest.klipspringer-vector.ts.net/api/mcp",
+      "type": "http"
+    }
+  }
 }

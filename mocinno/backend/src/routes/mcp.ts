@@ -1,45 +1,102 @@
 import { createMcpHonoApp } from '@modelcontextprotocol/hono';
-import { mount } from 'hono/mount';
 import { createMcpHandler, McpServer } from '@modelcontextprotocol/server';
-import { requireMcpAuth } from '@better-auth/mcp';
 import { auth } from '@/modules/auth';
 import { z } from 'zod';
 import { APP_DOMAIN, APP_SECURE } from '@/env';
+import type { Context } from 'hono';
+import {
+	createDpopReplayStore,
+	isInsufficientScopeError,
+	requestToResourceInput,
+	verifyAccessTokenRequest,
+	type VerifyAccessTokenRequestOptions
+} from 'better-auth/oauth2';
+import type { JWTPayload } from 'better-auth';
+import { createResourceServerChallenge } from '@better-auth/oauth-provider';
+import type { HeadersInit } from 'bun';
 
-const handler = createMcpHandler(
-	() => {
-		const server = new McpServer({ name: 'nest', version: '1.0.0' });
-		server.registerTool(
-			'add-note',
-			{
-				description: 'Save a note',
-				inputSchema: z.object({ text: z.string() })
+function toChallengeResponse(
+	error: unknown,
+	resource: string,
+	opts?: Parameters<typeof createResourceServerChallenge>[2]
+): Response {
+	const challenge = createResourceServerChallenge(error, resource, opts);
+	if (!challenge) throw error;
+	const headers = new Headers(challenge.headers as HeadersInit);
+	headers.set('Content-Type', 'application/json');
+	return new Response(
+		JSON.stringify({
+			jsonrpc: '2.0',
+			error: { code: -32000, message: challenge.message },
+			id: null
+		}),
+		{ status: challenge.statusCode, headers }
+	);
+}
+
+const handler = createMcpHandler(() => {
+	const server = new McpServer({ name: 'nest', version: '1.0.0' });
+	server.registerTool(
+		'add-note',
+		{
+			description: 'Save a note',
+			inputSchema: z.object({ text: z.string() })
+		},
+		async ({ text }) => ({ content: [{ type: 'text', text: `Saved: ${text}` }] })
+	);
+	return server;
+});
+
+const app = createMcpHonoApp({
+	allowedHosts: ['nest.hackclub.com', APP_DOMAIN || '']
+});
+// handler.fetch(c.req.raw, { parsedBody: c.get('parsedBody') })
+
+const resourceHandler = async (req: Request, accessTokenClaims: JWTPayload): Promise<Response> => {
+	console.log('accessTokenClaims', accessTokenClaims);
+	return handler.fetch(req, { parsedBody: null });
+};
+
+app.all('/', async (c: Context) => {
+	try {
+		const { internalAdapter } = await auth.$context;
+
+		const url = new URL(c.req.url);
+
+		const resource = `${APP_SECURE ? 'https' : 'http'}://${APP_DOMAIN}/api/mcp`;
+
+		const accessTokenVerificationOptions: VerifyAccessTokenRequestOptions = {
+			verifyOptions: {
+				requiredClaims: ['azp'],
+				issuer: `${url.origin}/api/auth`,
+				audience: resource
 			},
-			async ({ text }) => ({ content: [{ type: 'text', text: `Saved: ${text}` }] })
-		);
-		return server;
-	},
-	{
-		legacy: 'reject'
-	}
-);
-
-const app = createMcpHonoApp();
-
-app.post(
-	'/',
-	mount(
-		requireMcpAuth(
-			auth,
-			(request, accessTokenClaims) => {
-				console.log(accessTokenClaims);
-				return handler.fetch(request);
-			},
-			{
-				resource: `${APP_SECURE ? 'https' : 'http'}://${APP_DOMAIN}/api/mcp`
+			jwksUrl: `${url.origin}/api/auth/jwks`,
+			dpop: {
+				replayStore: createDpopReplayStore(internalAdapter)
 			}
-		)
-	)
-);
+		};
+
+		let accessTokenClaims: JWTPayload;
+		try {
+			accessTokenClaims = await verifyAccessTokenRequest(
+				requestToResourceInput(c.req.raw),
+				accessTokenVerificationOptions
+			);
+		} catch (error) {
+			return toChallengeResponse(error, resource);
+		}
+		try {
+			return await resourceHandler(c.req.raw, accessTokenClaims);
+		} catch (error) {
+			if (isInsufficientScopeError(error)) {
+				return toChallengeResponse(error, resource);
+			}
+			throw error;
+		}
+	} catch (err) {
+		console.error(err);
+	}
+});
 
 export default app;
