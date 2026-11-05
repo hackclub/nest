@@ -1,7 +1,19 @@
 <script lang="ts">
-	type Point = { day: string; users: number };
+	type Series = 'either' | 'ssh' | 'web';
+	type Point = { day: string } & Record<Series, number>;
 
 	let { daily }: { daily: Point[] } = $props();
+
+	const SERIES: { key: Series; label: string; title: string }[] = [
+		{ key: 'either', label: 'Either', title: 'SSHed in or used the dashboard' },
+		{ key: 'ssh', label: 'SSH', title: 'SSHed in through the bastion' },
+		{ key: 'web', label: 'Dashboard', title: 'Used the dashboard while signed in' }
+	];
+
+	// one series at a time, so the chart stays a single colour
+	let series = $state<Series>('either');
+	const value = (p: Point) => p[series];
+	const current = $derived(SERIES.find((s) => s.key === series)!);
 
 	let showTable = $state(false);
 	let hovered = $state<number | null>(null);
@@ -31,7 +43,7 @@
 	const plotH = HEIGHT - PAD.top - PAD.bottom;
 
 	const ticks = $derived.by(() => {
-		const max = Math.max(1, ...daily.map((p) => p.users));
+		const max = Math.max(1, ...daily.map(value));
 		const rough = max / 4;
 		const magnitude = 10 ** Math.floor(Math.log10(Math.max(1, rough)));
 		const step = Math.max(1, ([1, 2, 5, 10].find((m) => m * magnitude >= rough) ?? 10) * magnitude);
@@ -58,8 +70,8 @@
 	const bars = $derived(
 		daily.map((p, i) => {
 			const x = PAD.left + band * i + (band - barW) / 2;
-			const top = y(p.users);
-			return { x, d: p.users > 0 ? roundedTop(x, top, barW, y(0) - top) : null };
+			const top = y(value(p));
+			return { x, d: value(p) > 0 ? roundedTop(x, top, barW, y(0) - top) : null };
 		})
 	);
 
@@ -73,14 +85,42 @@
 	});
 </script>
 
-<div class="ssh-activity flex flex-col gap-4">
-	<h4 class="text-sm font-medium text-muted-foreground">Users who SSHed in, per day</h4>
+<div class="activity-chart flex flex-col gap-4">
+	<div class="flex flex-wrap items-center justify-between gap-3">
+		<h4 class="text-sm font-medium text-muted-foreground">Active users per day: {current.title}</h4>
+		<div
+			class="inline-flex rounded-md border border-border p-0.5"
+			role="group"
+			aria-label="Activity"
+		>
+			{#each SERIES as s (s.key)}
+				<button
+					type="button"
+					class="rounded-sm px-2.5 py-1 text-xs font-medium transition-colors {series === s.key
+						? 'bg-accent text-accent-foreground'
+						: 'text-muted-foreground hover:text-foreground'}"
+					aria-pressed={series === s.key}
+					onclick={() => {
+						series = s.key;
+						hovered = null;
+					}}
+				>
+					{s.label}
+				</button>
+			{/each}
+		</div>
+	</div>
 
 	<div class="relative" bind:clientWidth={width}>
 		{#if daily.length === 0}
 			<p class="flex h-50 items-center justify-center text-sm text-muted-foreground">No data yet</p>
 		{:else if width > 0}
-			<svg {width} height={HEIGHT} role="img" aria-label="Daily active users over the last 30 days">
+			<svg
+				{width}
+				height={HEIGHT}
+				role="img"
+				aria-label="Daily active users over the last 30 days: {current.title}"
+			>
 				{#each ticks as tick (tick)}
 					<line
 						x1={PAD.left}
@@ -105,7 +145,7 @@
 					{#if bar.d}
 						<path
 							d={bar.d}
-							fill="var(--ssh-active)"
+							fill="var(--activity-bar)"
 							opacity={hovered !== null && hovered !== i ? 0.45 : 1}
 							class="transition-opacity"
 						/>
@@ -131,7 +171,7 @@
 						fill="transparent"
 						role="button"
 						tabindex="0"
-						aria-label="{fullLabel(point)}: {point.users} users"
+						aria-label="{fullLabel(point)}: {value(point)} users"
 						class="outline-none"
 						onpointerenter={() => (hovered = i)}
 						onpointerleave={() => (hovered = null)}
@@ -147,10 +187,16 @@
 					style="left: {tooltipLeft}px; width: {TOOLTIP_W}px"
 				>
 					<p class="mb-1 font-medium">{fullLabel(tooltip)}</p>
-					<p>
-						<span class="font-semibold tabular-nums">{tooltip.users.toLocaleString()}</span>
-						<span class="text-muted-foreground">{tooltip.users === 1 ? 'user' : 'users'}</span>
-					</p>
+					<ul class="flex flex-col gap-0.5">
+						{#each SERIES as s (s.key)}
+							<li class="flex gap-2 {s.key === series ? '' : 'text-muted-foreground'}">
+								<span class="tabular-nums {s.key === series ? 'font-semibold' : ''}">
+									{tooltip[s.key].toLocaleString()}
+								</span>
+								<span class="ms-auto">{s.label}</span>
+							</li>
+						{/each}
+					</ul>
 				</div>
 			{/if}
 		{:else}
@@ -173,14 +219,18 @@
 					<thead class="sticky top-0 bg-background">
 						<tr class="border-b border-border text-left text-muted-foreground">
 							<th class="pb-2 font-medium">Day</th>
-							<th class="pb-2 text-end font-medium">Users</th>
+							{#each SERIES as s (s.key)}
+								<th class="pb-2 text-end font-medium">{s.label}</th>
+							{/each}
 						</tr>
 					</thead>
 					<tbody>
 						{#each [...daily].reverse() as p (p.day)}
 							<tr class="border-b border-border last:border-0">
 								<td class="py-1.5">{fullLabel(p)}</td>
-								<td class="py-1.5 text-end tabular-nums">{p.users.toLocaleString()}</td>
+								{#each SERIES as s (s.key)}
+									<td class="py-1.5 text-end tabular-nums">{p[s.key].toLocaleString()}</td>
+								{/each}
 							</tr>
 						{/each}
 					</tbody>
@@ -192,11 +242,11 @@
 
 <style>
 	/* same per-theme step as the primary series in the unified charts */
-	.ssh-activity {
-		--ssh-active: var(--chart-2);
+	.activity-chart {
+		--activity-bar: var(--chart-2);
 	}
 
-	:global(.dark) .ssh-activity {
-		--ssh-active: var(--chart-1);
+	:global(.dark) .activity-chart {
+		--activity-bar: var(--chart-1);
 	}
 </style>

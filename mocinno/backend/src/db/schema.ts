@@ -138,4 +138,22 @@ export const sshFailuresTable = pgTable(
 	(table) => [primaryKey({ columns: [table.day, table.reason] })]
 );
 
+// one row per signed-in user per day they loaded the dashboard (any page that resolves a session)
+export const webActivityTable = pgTable(
+	'web_activity',
+	{
+		user_id: text('user_id')
+			.notNull()
+			.references(() => auth.user.id, {
+				onDelete: 'cascade'
+			}),
+		day: date('day', { mode: 'string' }).notNull(),
+		first_at: timestamp('first_at').defaultNow().notNull()
+	},
+	(table) => [
+		primaryKey({ columns: [table.user_id, table.day] }),
+		index('web_activity_day_idx').on(table.day)
+	]
+);
+
 export * from './auth-schema';

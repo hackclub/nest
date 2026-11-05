@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Head from '#lib/components/head.svelte';
 	import EngagementFunnel from '#lib/components/engagement-funnel.svelte';
-	import SshActivityChart from '#lib/components/ssh-activity-chart.svelte';
+	import ActivityChart from '#lib/components/activity-chart.svelte';
 	import { Separator } from '#lib/components/ui/separator/index.js';
 
 	let { data } = $props();
@@ -17,6 +17,12 @@
 		lookup_error: 'Lookup error',
 		config_error: 'Container misconfigured'
 	};
+
+	const TILES = [
+		{ key: 'today', label: 'Active today' },
+		{ key: 'week', label: 'Active, last 7 days' },
+		{ key: 'month', label: 'Active, last 30 days' }
+	] as const;
 
 	const failureTotal = $derived(stats.failures.reduce((n, f) => n + f.count, 0));
 
@@ -40,27 +46,27 @@
 <div class="flex flex-1 flex-col gap-4">
 	<h2 class="text-2xl font-bold tracking-tight">Engagement</h2>
 	<p class="mt-1 text-muted-foreground">
-		Who's using their Nest, based on SSH through the bastion<br />Updated {ago(stats.generatedAt)}
+		Who's using Nest: SSH through the bastion, or the dashboard while signed in<br />Updated {ago(
+			stats.generatedAt
+		)}
 	</p>
 	<Separator class="my-4" />
 
 	<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-		<div class="rounded-md border border-border p-4">
-			<h4 class="text-sm font-medium text-muted-foreground">Active today</h4>
-			<p class="text-xl font-bold tabular-nums">{stats.dau.toLocaleString()}</p>
-		</div>
-		<div class="rounded-md border border-border p-4">
-			<h4 class="text-sm font-medium text-muted-foreground">Active, last 7 days</h4>
-			<p class="text-xl font-bold tabular-nums">{stats.wau.toLocaleString()}</p>
-		</div>
-		<div class="rounded-md border border-border p-4">
-			<h4 class="text-sm font-medium text-muted-foreground">Active, last 30 days</h4>
-			<p class="text-xl font-bold tabular-nums">{stats.mau.toLocaleString()}</p>
-		</div>
+		{#each TILES as tile (tile.key)}
+			{@const counts = stats.active[tile.key]}
+			<div class="rounded-md border border-border p-4">
+				<h4 class="text-sm font-medium text-muted-foreground">{tile.label}</h4>
+				<p class="text-xl font-bold tabular-nums">{counts.either.toLocaleString()}</p>
+				<p class="text-xs text-muted-foreground tabular-nums">
+					{counts.ssh.toLocaleString()} SSH · {counts.web.toLocaleString()} dashboard
+				</p>
+			</div>
+		{/each}
 	</div>
 
 	<div class="rounded-md border border-border p-4">
-		<SshActivityChart daily={stats.daily} />
+		<ActivityChart daily={stats.daily} />
 	</div>
 
 	<div class="grid grid-cols-1 gap-4 lg:grid-cols-3">

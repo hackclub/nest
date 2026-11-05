@@ -1,4 +1,4 @@
-import { gte, sql, sum } from 'drizzle-orm';
+import { gte, sql, sum, type SQL } from 'drizzle-orm';
 
 import { db, schema } from '@/db';
 import { localDay } from '@/ssh-activity';
@@ -23,11 +23,12 @@ export type Funnel = {
 	shipped: number;
 };
 
+// `either` counts a person once if they SSHed in, used the dashboard, or both
+export type ActiveCounts = { either: number; ssh: number; web: number };
+
 export type EngagementStats = {
-	dau: number;
-	wau: number;
-	mau: number;
-	daily: { day: string; users: number }[];
+	active: { today: ActiveCounts; week: ActiveCounts; month: ActiveCounts };
+	daily: ({ day: string } & ActiveCounts)[];
 	failures: { reason: string; count: number }[];
 	funnel: Record<FunnelRange, Funnel>;
 	medianReviewHours: number | null;
@@ -37,12 +38,64 @@ export type EngagementStats = {
 const daysAgo = (now: Date, days: number) =>
 	localDay(new Date(now.getFullYear(), now.getMonth(), now.getDate() - days));
 
-async function distinctActive(sinceDay: string) {
-	const [row] = await db
-		.select({ n: sql<number>`count(distinct ${schema.sshActivityTable.container_id})::int` })
-		.from(schema.sshActivityTable)
-		.where(gte(schema.sshActivityTable.day, sinceDay));
-	return row?.n ?? 0;
+// ssh and web activity keyed by the same person: the container's user, or the container
+// itself for older containers that were never linked to a user
+const activity = (sinceDay: string) => sql`
+	with act as (
+		select coalesce('u:' || c.user_id, 'c:' || c.id::text) as who, s.day, 'ssh' as kind
+		from ssh_activity s
+		join containers c on c.id = s.container_id
+		where s.day >= ${sinceDay}
+		union all
+		select 'u:' || w.user_id, w.day, 'web'
+		from web_activity w
+		where w.day >= ${sinceDay}
+	)
+`;
+
+// either/ssh/web distinct-person counts under one filter; `prefix` is a fixed alias, never input
+const counts = (prefix: string, where: SQL) => sql`
+	count(distinct who) filter (where ${where})::int as ${sql.raw(`"${prefix}_either"`)},
+	count(distinct who) filter (where ${where} and kind = 'ssh')::int as ${sql.raw(`"${prefix}_ssh"`)},
+	count(distinct who) filter (where ${where} and kind = 'web')::int as ${sql.raw(`"${prefix}_web"`)}
+`;
+
+const pick = (row: Record<string, number>, prefix: string): ActiveCounts => ({
+	either: row[`${prefix}_either`] ?? 0,
+	ssh: row[`${prefix}_ssh`] ?? 0,
+	web: row[`${prefix}_web`] ?? 0
+});
+
+async function getActive(now: Date) {
+	const since = (days: number) => sql`day >= ${daysAgo(now, days)}`;
+
+	const [row] = (await db.execute(sql`
+		${activity(daysAgo(now, DAU_DAYS - 1))}
+		select
+			${counts('today', since(0))},
+			${counts('week', since(6))},
+			${counts('month', since(DAU_DAYS - 1))}
+		from act
+	`)) as Record<string, number>[];
+
+	return { today: pick(row!, 'today'), week: pick(row!, 'week'), month: pick(row!, 'month') };
+}
+
+async function getDaily(now: Date) {
+	// day::text so the date isn't turned into a utc-midnight Date and shifted
+	const rows = (await db.execute(sql`
+		${activity(daysAgo(now, DAU_DAYS - 1))}
+		select day::text as day, ${counts('n', sql`true`)}
+		from act
+		group by day
+	`)) as ({ day: string } & Record<string, number>)[];
+
+	// fill in days with no activity so the chart has a continuous axis
+	const byDay = new Map(rows.map((r) => [r.day, pick(r, 'n')]));
+	return Array.from({ length: DAU_DAYS }, (_, i) => {
+		const day = daysAgo(now, DAU_DAYS - 1 - i);
+		return { day, ...(byDay.get(day) ?? { either: 0, ssh: 0, web: 0 }) };
+	});
 }
 
 async function getFunnel(since: Date | null): Promise<Funnel> {
@@ -93,16 +146,10 @@ async function getMedianReviewHours(since: Date) {
 }
 
 export async function computeEngagementStats(now = new Date()): Promise<EngagementStats> {
-	const [dau, wau, mau, dailyRows, failureRows, funnelAll, funnel90, funnel30, medianReviewHours] =
+	const [active, daily, failureRows, funnelAll, funnel90, funnel30, medianReviewHours] =
 		await Promise.all([
-			distinctActive(daysAgo(now, 0)),
-			distinctActive(daysAgo(now, 6)),
-			distinctActive(daysAgo(now, DAU_DAYS - 1)),
-			db
-				.select({ day: schema.sshActivityTable.day, users: sql<number>`count(*)::int` })
-				.from(schema.sshActivityTable)
-				.where(gte(schema.sshActivityTable.day, daysAgo(now, DAU_DAYS - 1)))
-				.groupBy(schema.sshActivityTable.day),
+			getActive(now),
+			getDaily(now),
 			db
 				.select({
 					reason: schema.sshFailuresTable.reason,
@@ -117,17 +164,8 @@ export async function computeEngagementStats(now = new Date()): Promise<Engageme
 			getMedianReviewHours(new Date(now.getTime() - 30 * DAY))
 		]);
 
-	// fill in days with no logins so the chart has a continuous axis
-	const byDay = new Map(dailyRows.map((r) => [r.day, r.users]));
-	const daily = Array.from({ length: DAU_DAYS }, (_, i) => {
-		const day = daysAgo(now, DAU_DAYS - 1 - i);
-		return { day, users: byDay.get(day) ?? 0 };
-	});
-
 	return {
-		dau,
-		wau,
-		mau,
+		active,
 		daily,
 		failures: failureRows.sort((a, b) => b.count - a.count),
 		funnel: { all: funnelAll, '90d': funnel90, '30d': funnel30 },

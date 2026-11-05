@@ -1,0 +1,190 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "326a96a3-b669-44eb-a28a-bc637c309cc3",
+  "prevIds": [
+    "fb2c8459-0822-45ca-b617-b02f89d5934e"
+  ],
+  "footprints": [
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "web_activity"
+      ],
+      "writes": [
+        "s|tbl|public.web_activity",
+        "n|tbl|public.web_activity",
+        "e|tbl|public.web_activity",
+        "n|rel|public.web_activity",
+        "n|type|public.web_activity",
+        "n|rel|public.web_activity_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "web_activity",
+        "web_activity_day_idx"
+      ],
+      "writes": [
+        "s|idx|public.web_activity_day_idx",
+        "n|idx|public.web_activity_day_idx",
+        "e|idx|public.web_activity_day_idx",
+        "n|rel|public.web_activity_day_idx"
+      ],
+      "reads": [
+        "n|tbl|public.web_activity",
+        "n|sch|public",
+        "n|col|public.web_activity.day"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "web_activity"
+      ],
+      "writes": [
+        "s|fk|public.web_activity.web_activity_user_id_user_id_fkey",
+        "n|fk|public.web_activity.web_activity_user_id_user_id_fkey",
+        "e|fk|public.web_activity.web_activity_user_id_user_id_fkey",
+        "n|con|public.web_activity.web_activity_user_id_user_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.web_activity",
+        "n|sch|public",
+        "n|tbl|public.user",
+        "n|sch|public",
+        "n|col|public.web_activity.user_id",
+        "n|col|public.user.id",
+        "e|uniqueness|public.user.id"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "web_activity",
+        "isRlsEnabled": false,
+        "entityType": "tables"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "web_activity",
+        "name": "user_id",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "web_activity",
+        "name": "day",
+        "type": "date",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "web_activity",
+        "name": "first_at",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "web_activity",
+        "name": "web_activity_day_idx",
+        "nameExplicit": true,
+        "columns": [
+          {
+            "value": "day",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "web_activity",
+        "name": "web_activity_user_id_user_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "user_id"
+        ],
+        "schemaTo": "public",
+        "tableTo": "user",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "CASCADE",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "web_activity",
+        "name": "web_activity_pkey",
+        "columns": [
+          "user_id",
+          "day"
+        ],
+        "nameExplicit": false,
+        "entityType": "pks"
+      }
+    }
+  ]
+}
