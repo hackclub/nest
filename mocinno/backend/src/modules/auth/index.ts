@@ -114,7 +114,7 @@ export const auth = betterAuth({
 
 						const container = await db.query.containersTable.findFirst({
 							where: {
-								user_id: ctx.context.newSession?.user.id
+								user_id: session.userId
 							}
 						});
 
