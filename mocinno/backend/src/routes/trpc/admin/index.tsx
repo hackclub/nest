@@ -209,7 +209,7 @@ const adminRouter = router({
 							ip: { ilike: queryLike }
 						},
 						{
-							vmid: { ilike: queryLike }
+							RAW: (table) => sql`CAST(${table.vmid} AS TEXT) ILIKE ${queryLike}`
 						},
 						{
 							user: {
