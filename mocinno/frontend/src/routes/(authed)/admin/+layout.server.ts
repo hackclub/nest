@@ -3,7 +3,7 @@ import { redirect } from '@sveltejs/kit';
 
 import trpc from '#lib/server/trpc.js';
 
-const VIEWER_PATHS = ['/admin', '/admin/projects', '/admin/unified'];
+const VIEWER_PATHS = ['/admin', '/admin/projects', '/admin/unified', '/admin/engagement'];
 
 export const load: LayoutServerLoad = async ({ url }) => {
 	if (!(await trpc.isViewer.query())) {

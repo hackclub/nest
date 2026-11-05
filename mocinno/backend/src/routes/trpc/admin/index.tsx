@@ -23,6 +23,7 @@ import { buildNet0, ipv6ForVmid, syncContainerNetwork } from '@/network';
 import type { NodeLXCPost, NodeLXCStatusStop } from '@/types';
 import transporter from '@/mail';
 import { getUnifiedStats } from '@/unified';
+import { getEngagementStats } from '@/engagement';
 import { render } from 'react-email';
 import ApprovedEmail from '@email/approved';
 import RejectedEmail from '@email/rejected';
@@ -414,6 +415,9 @@ const adminRouter = router({
 		}),
 	getUnifiedStats: viewerProcedure.query(async () => {
 		return getUnifiedStats();
+	}),
+	getEngagementStats: viewerProcedure.query(async () => {
+		return getEngagementStats();
 	}),
 	getProjectStats: viewerProcedure.query(async () => {
 		const [projectRows, containerRows] = await Promise.all([

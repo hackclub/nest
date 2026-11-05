@@ -16,6 +16,7 @@ import {
 } from '@/env';
 import { isContainerSuspended } from '@/pve-utils'; // if you need to regenerate auth schema you'll have to comment this out - Laura
 import { additionalUserFields } from './profile-policy';
+import { recordWebVisit } from '@/web-activity';
 
 // better-auth 1.7 moved generic oauth callbacks to /callback/:id, keep the
 // /oauth2/callback/:id url that's registered with hca (see routes/index.ts)
@@ -138,6 +139,12 @@ export const auth = betterAuth({
 	hooks: {
 		after: createAuthMiddleware(async (ctx) => {
 			switch (true) {
+				// every dashboard page load resolves the session here, so it doubles as web DAU
+				case ctx.path === '/get-session': {
+					const userId = (ctx.context.session ?? ctx.context.newSession)?.user?.id;
+					if (userId) recordWebVisit(userId);
+					break;
+				}
 				case ctx.path.startsWith('/callback/'): {
 					if (!ctx.context.newSession) {
 						break;
