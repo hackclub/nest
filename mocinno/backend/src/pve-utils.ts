@@ -12,6 +12,7 @@ import {
 } from './types/pve';
 
 import * as env from './env';
+import * as files from './files';
 import { formatUptime } from './utils';
 
 export async function pveFetch<T>(
@@ -185,7 +186,7 @@ export async function getNodeStats(node: string) {
 }
 
 export async function getNextNode() {
-	const config = env.CONFIG;
+	const config = files.CONFIG;
 
 	const percentsAllocated = await Promise.all(
 		Object.entries(config.servers).map(async ([, { node, maxServers }]) => {

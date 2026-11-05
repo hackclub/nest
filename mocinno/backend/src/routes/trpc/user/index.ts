@@ -16,7 +16,7 @@ import {
 	getContainerPending
 } from '@/pve-utils';
 import { utils as sshutils } from 'ssh2';
-import { BASTION_PROXY_PUB_KEY } from '@/env';
+import { BASTION_PROXY_PUB_KEY } from '@/files';
 
 import type {
 	Backup,
@@ -42,7 +42,9 @@ const projectInput = z.object({
 const userRouter = router({
 	pending: authedProcedure.query(async ({ ctx }) => {
 		const container = await db.query.containersTable.findFirst({
-			where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+			where: {
+				user_id: ctx.user.id
+			}
 		});
 
 		if (!container) {
@@ -55,7 +57,9 @@ const userRouter = router({
 	}),
 	container: authedProcedure.query(async ({ ctx }) => {
 		const container = await db.query.containersTable.findFirst({
-			where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+			where: {
+				user_id: ctx.user.id
+			}
 		});
 
 		if (!container) {
@@ -81,7 +85,9 @@ const userRouter = router({
 	}),
 	domains: authedProcedure.query(async ({ ctx }) => {
 		const container = await db.query.containersTable.findFirst({
-			where: (container, { eq }) => eq(container.user_id, ctx.user.id),
+			where: {
+				user_id: ctx.user.id
+			},
 			with: {
 				domains: true
 			}
@@ -95,7 +101,9 @@ const userRouter = router({
 	}),
 	backups: authedProcedure.query(async ({ ctx }) => {
 		const container = await db.query.containersTable.findFirst({
-			where: (container, { eq }) => eq(container.user_id, ctx.user.id),
+			where: {
+				user_id: ctx.user.id
+			},
 			with: {
 				domains: true
 			}
@@ -109,7 +117,9 @@ const userRouter = router({
 	}),
 	start: authedProcedure.mutation(async ({ ctx }) => {
 		const container = await db.query.containersTable.findFirst({
-			where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+			where: {
+				user_id: ctx.user.id
+			}
 		});
 
 		if (!container) {
@@ -139,7 +149,9 @@ const userRouter = router({
 	}),
 	stop: authedProcedure.mutation(async ({ ctx }) => {
 		const container = await db.query.containersTable.findFirst({
-			where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+			where: {
+				user_id: ctx.user.id
+			}
 		});
 
 		if (!container) {
@@ -169,7 +181,9 @@ const userRouter = router({
 	}),
 	reboot: authedProcedure.mutation(async ({ ctx }) => {
 		const container = await db.query.containersTable.findFirst({
-			where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+			where: {
+				user_id: ctx.user.id
+			}
 		});
 
 		if (!container) {
@@ -199,7 +213,9 @@ const userRouter = router({
 	}),
 	delete: authedProcedure.mutation(async ({ ctx }) => {
 		const container = await db.query.containersTable.findFirst({
-			where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+			where: {
+				user_id: ctx.user.id
+			}
 		});
 
 		if (!container) {
@@ -288,7 +304,9 @@ const userRouter = router({
 		)
 		.mutation(async ({ ctx, input }) => {
 			const container = await db.query.containersTable.findFirst({
-				where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+				where: {
+					user_id: ctx.user.id
+				}
 			});
 
 			if (!container) {
@@ -350,7 +368,9 @@ const userRouter = router({
 		.input(z.object({ domain: domainString.trim().toLowerCase() }))
 		.mutation(async ({ ctx, input }) => {
 			const container = await db.query.containersTable.findFirst({
-				where: (container, { eq }) => eq(container.user_id, ctx.user.id),
+				where: {
+					user_id: ctx.user.id
+				},
 				with: {
 					domains: true
 				}
@@ -383,7 +403,9 @@ const userRouter = router({
 		}),
 	projects: authedProcedure.query(async ({ ctx }) => {
 		const container = await db.query.containersTable.findFirst({
-			where: (container, { eq }) => eq(container.user_id, ctx.user.id),
+			where: {
+				user_id: ctx.user.id
+			},
 			with: {
 				projects: true
 			}
@@ -397,7 +419,9 @@ const userRouter = router({
 	}),
 	addProject: authedProcedure.input(projectInput).mutation(async ({ ctx, input }) => {
 		const container = await db.query.containersTable.findFirst({
-			where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+			where: {
+				user_id: ctx.user.id
+			}
 		});
 
 		if (!container) {
@@ -434,7 +458,9 @@ const userRouter = router({
 		.input(projectInput.extend({ id: z.int().positive() }))
 		.mutation(async ({ ctx, input }) => {
 			const container = await db.query.containersTable.findFirst({
-				where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+				where: {
+					user_id: ctx.user.id
+				}
 			});
 
 			if (!container) {
@@ -472,7 +498,9 @@ const userRouter = router({
 		.input(z.object({ id: z.int().positive() }))
 		.mutation(async ({ ctx, input }) => {
 			const container = await db.query.containersTable.findFirst({
-				where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+				where: {
+					user_id: ctx.user.id
+				}
 			});
 
 			if (!container) {
@@ -504,7 +532,9 @@ const userRouter = router({
 		.input(z.object({ key: z.string().min(1) }))
 		.mutation(async ({ ctx, input }) => {
 			const container = await db.query.containersTable.findFirst({
-				where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+				where: {
+					user_id: ctx.user.id
+				}
 			});
 
 			if (!container) {
@@ -597,7 +627,9 @@ const userRouter = router({
 		.input(z.object({ key: z.string().min(1) }))
 		.mutation(async ({ ctx, input }) => {
 			const container = await db.query.containersTable.findFirst({
-				where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+				where: {
+					user_id: ctx.user.id
+				}
 			});
 
 			if (!container) {
@@ -663,7 +695,9 @@ const userRouter = router({
 		.input(z.object({ volId: z.string().min(1) }))
 		.mutation(async ({ ctx, input }) => {
 			const container = await db.query.containersTable.findFirst({
-				where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+				where: {
+					user_id: ctx.user.id
+				}
 			});
 
 			if (!container || !container.vmid) {
@@ -739,7 +773,9 @@ const userRouter = router({
 
 	email: authedProcedure.query(async ({ ctx }) => {
 		const container = await db.query.containersTable.findFirst({
-			where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+			where: {
+				user_id: ctx.user.id
+			}
 		});
 
 		if (!container) {
@@ -751,7 +787,9 @@ const userRouter = router({
 
 	createEmail: authedProcedure.mutation(async ({ ctx }) => {
 		const container = await db.query.containersTable.findFirst({
-			where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+			where: {
+				user_id: ctx.user.id
+			}
 		});
 
 		if (!container) {
@@ -783,7 +821,9 @@ const userRouter = router({
 
 	resetEmailPassword: authedProcedure.mutation(async ({ ctx }) => {
 		const container = await db.query.containersTable.findFirst({
-			where: (container, { eq }) => eq(container.user_id, ctx.user.id)
+			where: {
+				user_id: ctx.user.id
+			}
 		});
 
 		if (!container) return { success: false, message: 'No container found' };

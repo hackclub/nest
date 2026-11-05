@@ -1,6 +1,6 @@
 import { and, eq, isNotNull } from 'drizzle-orm';
 import { db, schema } from '@/db';
-import { CONFIG } from '@/env';
+import { CONFIG } from '@/files';
 import { getContainerConfig, pveFetch } from '@/pve-utils';
 
 type ServerConfig = (typeof CONFIG.servers)[number];

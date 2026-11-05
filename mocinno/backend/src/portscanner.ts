@@ -2,6 +2,7 @@ import * as db from './db-helpers';
 import { pveFetch, setContainerDescription } from './pve-utils';
 import type { NodeLXCIndex, NodeLXCInterfaces, NodeLXCStatusStop } from './types/pve';
 import * as env from './env';
+import * as files from './files';
 
 const WINDOW_MS = 5 * 60 * 1000;
 const SLOW_BIG_HIT_THRESHOLD = 100;
@@ -53,7 +54,7 @@ async function refreshIPMap() {
 		}
 	}
 
-	for (const server of Object.values(env.CONFIG.servers)) {
+	for (const server of Object.values(files.CONFIG.servers)) {
 		const node = server.node;
 		try {
 			const list = await pveFetch<{ data: NodeLXCIndex }>(`/nodes/${node}/lxc`);

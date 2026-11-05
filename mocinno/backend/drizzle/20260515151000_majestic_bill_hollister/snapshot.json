@@ -1,0 +1,86 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "15b3789a-515d-4ff0-bb0c-66f222530ccd",
+  "prevIds": [
+    "2a3a43bb-1542-4a76-beea-007d107a3552"
+  ],
+  "footprints": [
+    {
+      "statementType": "drop_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "applications",
+        "server"
+      ],
+      "writes": [
+        "s|col|public.applications.server",
+        "n|col|public.applications.server",
+        "e|col|public.applications.server"
+      ],
+      "reads": [
+        "n|tbl|public.applications",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "alter_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "domains",
+        "user_id"
+      ],
+      "writes": [
+        "s|colprop|public.domains.user_id.notNull"
+      ],
+      "reads": [
+        "n|tbl|public.domains",
+        "n|sch|public",
+        "n|col|public.domains.user_id"
+      ],
+      "sqlHash": "d6aa4cb2808bf3e4"
+    },
+    {
+      "statementType": "alter_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "domains",
+        "proxy"
+      ],
+      "writes": [
+        "s|colprop|public.domains.proxy.type",
+        "s|colprop|public.domains.proxy.default"
+      ],
+      "reads": [
+        "n|tbl|public.domains",
+        "n|sch|public",
+        "n|col|public.domains.proxy"
+      ],
+      "sqlHash": "be601846f0f157fe"
+    }
+  ],
+  "deltas": [
+    {
+      "op": "drop",
+      "key": "columns\u0000[\"public\",\"applications\",\"server\"]"
+    },
+    {
+      "op": "alter",
+      "key": "columns\u0000[\"public\",\"domains\",\"user_id\"]",
+      "set": {
+        "notNull": true
+      }
+    },
+    {
+      "op": "alter",
+      "key": "columns\u0000[\"public\",\"domains\",\"proxy\"]",
+      "set": {
+        "type": "integer"
+      }
+    }
+  ]
+}

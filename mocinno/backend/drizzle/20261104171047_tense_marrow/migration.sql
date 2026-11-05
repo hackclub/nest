@@ -1,0 +1,1 @@
+ALTER TABLE "user" ALTER COLUMN "verification_status" SET NOT NULL;

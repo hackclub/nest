@@ -1,6 +1,6 @@
 import * as db from './db-helpers.js';
-import config from '../../config.ts';
 import * as env from './env';
+import * as files from './files';
 import { pveFetch } from './pve-utils.js';
 import type { NodeLXCIndex } from './types/pve.js';
 
@@ -112,7 +112,7 @@ async function checkAllContainers() {
 		}
 	}
 
-	const nodes = Object.values(config.servers).map((s) => s.node);
+	const nodes = Object.values(files.CONFIG.servers).map((s) => s.node);
 	const liveVmids = new Set<number>();
 
 	await Promise.all(nodes.map((node) => checkNode(node, vmidToName, liveVmids)));

@@ -1,0 +1,135 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "2572150b-8080-44f5-8315-a23198237966",
+  "prevIds": [
+    "c5c0b7f3-a9b3-4e81-931b-6cb32d8ea9e1"
+  ],
+  "footprints": [
+    {
+      "statementType": "drop_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "domains"
+      ],
+      "writes": [
+        "s|fk|public.domains.domains_user_id_containers_id_fk",
+        "n|fk|public.domains.domains_user_id_containers_id_fk",
+        "e|fk|public.domains.domains_user_id_containers_id_fk",
+        "n|con|public.domains.domains_user_id_containers_id_fk"
+      ],
+      "reads": [
+        "n|tbl|public.domains",
+        "n|sch|public",
+        "e|col|public.domains.user_id"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "domains",
+        "container_id"
+      ],
+      "writes": [
+        "s|col|public.domains.container_id",
+        "n|col|public.domains.container_id",
+        "e|col|public.domains.container_id"
+      ],
+      "reads": [
+        "n|tbl|public.domains",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "drop_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "domains",
+        "user_id"
+      ],
+      "writes": [
+        "s|col|public.domains.user_id",
+        "n|col|public.domains.user_id",
+        "e|col|public.domains.user_id"
+      ],
+      "reads": [
+        "n|tbl|public.domains",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "domains"
+      ],
+      "writes": [
+        "s|fk|public.domains.domains_container_id_containers_id_fk",
+        "n|fk|public.domains.domains_container_id_containers_id_fk",
+        "e|fk|public.domains.domains_container_id_containers_id_fk",
+        "n|con|public.domains.domains_container_id_containers_id_fk"
+      ],
+      "reads": [
+        "n|tbl|public.domains",
+        "n|sch|public",
+        "n|tbl|public.containers",
+        "n|sch|public",
+        "n|col|public.domains.container_id",
+        "n|col|public.containers.id",
+        "e|uniqueness|public.containers.id"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "domains",
+        "name": "container_id",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "domains",
+        "name": "domains_container_id_containers_id_fk",
+        "nameExplicit": false,
+        "columns": [
+          "container_id"
+        ],
+        "schemaTo": "public",
+        "tableTo": "containers",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "CASCADE",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "drop",
+      "key": "columns\u0000[\"public\",\"domains\",\"user_id\"]"
+    },
+    {
+      "op": "drop",
+      "key": "fks\u0000[\"public\",\"domains\",\"domains_user_id_containers_id_fk\"]"
+    }
+  ]
+}

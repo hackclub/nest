@@ -1,6 +1,6 @@
 import { route } from '@/middleware';
 import { getNodeStats } from '@/pve-utils';
-import * as env from '@/env';
+import * as files from '@/files';
 import { db, schema } from '@/db';
 import { count } from 'drizzle-orm';
 
@@ -17,7 +17,7 @@ export let nodeStats: StatStructure | null = null;
 // requests every 3 minutes, clarification because cron expressions can be confusing
 Bun.cron('*/3 * * * *', async () => {
 	try {
-		const config = env.CONFIG;
+		const config = files.CONFIG;
 
 		const nodes = config.servers.map((s) => s.node);
 

@@ -17,6 +17,7 @@
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { getFlash } from 'sveltekit-flash-message';
 	import { page } from '$app/state';
+	import { untrack } from 'svelte';
 
 	const flash = getFlash(page);
 
@@ -36,13 +37,13 @@
 		};
 	};
 
-	const form = $derived.by(() =>
-		superForm(initialForm, {
+	const form = superForm(
+		untrack(() => initialForm),
+		{
 			validators: zod4Client(formSchema)
-		})
+		}
 	);
 
-	// svelte-ignore state_referenced_locally
 	const { form: formData, enhance, message, errors, submitting } = form;
 </script>
 
