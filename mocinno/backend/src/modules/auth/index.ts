@@ -173,7 +173,7 @@ export const auth = betterAuth({
 						verification_status: 'verified' | 'pending' | 'ineligible' | 'needs_submission';
 					};
 
-					ctx.context.internalAdapter.updateUser(ctx.context.newSession.user.id, {
+					await ctx.context.internalAdapter.updateUser(ctx.context.newSession.user.id, {
 						slack_id: userInfo.slack_id,
 						verification_status: userInfo.verification_status
 					});

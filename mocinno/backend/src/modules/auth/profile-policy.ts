@@ -8,7 +8,7 @@ export const additionalUserFields = {
 	},
 	verification_status: {
 		type: ['verified', 'pending', 'ineligible', 'needs_submission'],
-		required: true,
+		required: false,
 		input: false
 	},
 	theme: {
