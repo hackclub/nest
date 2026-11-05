@@ -167,7 +167,10 @@ export async function updateUserSSHKeys(sub: string, keys: string[]) {
 	return user ?? null;
 }
 
-export async function updateVerificationStatus(userId: string, status: string) {
+export async function updateVerificationStatus(
+	userId: string,
+	status: 'verified' | 'pending' | 'ineligible' | 'needs_submission'
+) {
 	const [updated] = await db
 		.update(user)
 		.set({ verification_status: status })
@@ -343,7 +346,9 @@ export async function getAllApplications() {
 
 export async function getApplicationById(id: number) {
 	const app = await db.query.applicationsTable.findFirst({
-		where: eq(applicationsTable.id, id),
+		where: {
+			id: id
+		},
 		with: {
 			user: true
 		}
