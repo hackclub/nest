@@ -11,7 +11,7 @@ export const user = pgTable("user", {
   updatedAt: timestamp("updated_at")
     .$onUpdate(() => new Date())
     .notNull(),
-  slack_id: text("slack_id").notNull(),
+  slack_id: text("slack_id"),
   verification_status: text("verification_status", {
     enum: ["verified", "pending", "ineligible", "needs_submission"],
   }).notNull(),

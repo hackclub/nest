@@ -13,24 +13,6 @@
         "column",
         "public",
         "user",
-        "slack_id"
-      ],
-      "writes": [
-        "s|colprop|public.user.slack_id.notNull"
-      ],
-      "reads": [
-        "n|tbl|public.user",
-        "n|sch|public",
-        "n|col|public.user.slack_id"
-      ],
-      "sqlHash": "b06f0ee9a656611a"
-    },
-    {
-      "statementType": "alter_column",
-      "statementTarget": [
-        "column",
-        "public",
-        "user",
         "verification_status"
       ],
       "writes": [
@@ -45,13 +27,6 @@
     }
   ],
   "deltas": [
-    {
-      "op": "alter",
-      "key": "columns\u0000[\"public\",\"user\",\"slack_id\"]",
-      "set": {
-        "notNull": true
-      }
-    },
     {
       "op": "alter",
       "key": "columns\u0000[\"public\",\"user\",\"verification_status\"]",
