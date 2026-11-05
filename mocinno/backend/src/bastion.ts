@@ -268,6 +268,10 @@ const server = new Server({ hostKeys: [files.BASTION_HOST_PRIV_KEY] }, (client) 
 			return ctx.reject(['publickey']);
 		}
 
+		if (!ctx.signature && ctx.key.algo === 'ssh-rsa' && ctx.hashAlgo) {
+			ctx.key.algo = ctx.hashAlgo === 'sha256' ? 'rsa-sha2-256' : 'rsa-sha2-512';
+		}
+
 		const special = specialHosts?.[username];
 		if (special) {
 			const keys = special.authorized_keys || [];
