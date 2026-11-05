@@ -1,6 +1,9 @@
 import { betterAuth } from 'better-auth/minimal';
 import { drizzleAdapter } from '@better-auth/drizzle-adapter/relations-v2';
-import { bearer, genericOAuth } from 'better-auth/plugins';
+import { bearer, genericOAuth, jwt } from 'better-auth/plugins';
+import { cimd } from '@better-auth/cimd';
+import { mcp } from '@better-auth/mcp';
+import { fetchClientMetadataResource } from '@better-auth/cimd/node';
 import { createAuthMiddleware } from 'better-auth/api';
 import { db, schema } from '@/db';
 import { eq } from 'drizzle-orm';
@@ -48,6 +51,7 @@ const legacyOAuthCallback = (): BetterAuthPlugin => {
 
 export const auth = betterAuth({
 	secret: ENCRYPTION_KEY,
+	disabledPaths: ['/token'],
 	baseURL: {
 		allowedHosts: ['dashboard.hackclub.app', 'nest.hackclub.com', APP_DOMAIN || ''],
 		protocol: APP_SECURE ? 'https' : 'http'
@@ -92,6 +96,16 @@ export const auth = betterAuth({
 					})
 				}
 			]
+		}),
+		jwt({ disableSettingJwtHeader: true }),
+		mcp({
+			loginPage: '/auth/login',
+			consentPage: '/auth/consent',
+			resource: `${APP_SECURE ? 'https' : 'http'}://${APP_DOMAIN}/api/mcp`
+		}),
+		cimd({
+			fetchClientMetadataResource,
+			metadataProfile: 'mcp-2026-07-28'
 		}),
 		legacyOAuthCallback()
 	],

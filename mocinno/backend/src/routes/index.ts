@@ -4,6 +4,7 @@ import { trpcServer } from '@hono/trpc-server';
 
 import publicRoutes from './public';
 import internalRoutes from './internal';
+import mcpRoutes from './mcp';
 
 import { appRouter } from './trpc';
 
@@ -45,5 +46,6 @@ app.use(
 
 app.route('/public', publicRoutes);
 app.route('/internal', internalRoutes);
+app.route('/mcp', mcpRoutes);
 
 export default app;

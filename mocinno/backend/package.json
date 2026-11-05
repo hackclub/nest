@@ -34,8 +34,12 @@
 		"typescript": "catalog:"
 	},
 	"dependencies": {
-		"@better-auth/drizzle-adapter": "1.7.16",
+		"@better-auth/cimd": "^1.7.17",
+		"@better-auth/drizzle-adapter": "1.7.17",
+		"@better-auth/mcp": "^1.7.17",
 		"@hono/trpc-server": "^0.4.2",
+		"@modelcontextprotocol/hono": "^2.0.2",
+		"@modelcontextprotocol/server": "^2.4.0",
 		"@trpc/client": "catalog:",
 		"@trpc/server": "catalog:",
 		"acme-client": "^5.4.0",
