@@ -2,6 +2,8 @@
 	import './layout.css';
 	import '#lib/theme.scss';
 	import { ModeWatcher } from 'mode-watcher';
+	import { browser } from '$app/env';
+	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import { onNavigate } from '$app/navigation';
 	import favicon from '#lib/assets/favicon.png';
 
@@ -18,10 +20,19 @@
 			});
 		});
 	});
+
+	const queryClient = new QueryClient({
+		defaultOptions: {
+			queries: {
+				enabled: browser
+			}
+		}
+	});
 </script>
 
 <svelte:head><link rel="icon" type="image/png" href={favicon} /></svelte:head>
 
 <ModeWatcher />
-
-{@render children?.()}
+<QueryClientProvider client={queryClient}>
+	{@render children?.()}
+</QueryClientProvider>
