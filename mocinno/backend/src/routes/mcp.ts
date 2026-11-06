@@ -37,25 +37,24 @@ function toChallengeResponse(
 const handler = createMcpHandler(() => {
 	const server = new McpServer({ name: 'nest', version: '1.0.0' });
 	server.registerTool(
-		'add-note',
+		'user-info',
 		{
-			description: 'Save a note',
-			inputSchema: z.object({ text: z.string() })
+			title: 'User Info',
+			description: 'Get user information'
 		},
-		async ({ text }) => ({ content: [{ type: 'text', text: `Saved: ${text}` }] })
+		async (ctx) => ({
+			content: [{ type: 'text', text: JSON.stringify(ctx.http?.authInfo?.extra?.user) }]
+		})
 	);
 	return server;
 });
 
 const app = createMcpHonoApp({
-	allowedHosts: ['nest.hackclub.com', APP_DOMAIN || '']
+	allowedHosts: [
+		'nest.hackclub.com',
+		new URL(`${APP_SECURE ? 'https' : 'http'}://${APP_DOMAIN}`).hostname
+	]
 });
-// handler.fetch(c.req.raw, { parsedBody: c.get('parsedBody') })
-
-const resourceHandler = async (req: Request, accessTokenClaims: JWTPayload): Promise<Response> => {
-	console.log('accessTokenClaims', accessTokenClaims);
-	return handler.fetch(req, { parsedBody: null });
-};
 
 app.all('/', async (c: Context) => {
 	try {
@@ -84,11 +83,34 @@ app.all('/', async (c: Context) => {
 				accessTokenVerificationOptions
 			);
 		} catch (error) {
+			console.error('Error verifying access token:', error);
 			return toChallengeResponse(error, resource);
 		}
+
+		let user: typeof auth.$Infer.Session.user | null = null;
+
 		try {
-			return await resourceHandler(c.req.raw, accessTokenClaims);
+			user = (await internalAdapter.findUserById(accessTokenClaims.sub as string)) as
+				typeof auth.$Infer.Session.user | null;
 		} catch (error) {
+			console.error('Error fetching user:', error);
+			return toChallengeResponse(error, resource);
+		}
+
+		try {
+			return handler.fetch(c.req.raw, {
+				parsedBody: c.get('parsedBody'),
+				authInfo: {
+					token: accessTokenClaims.jti!,
+					clientId: accessTokenClaims.client_id as string,
+					scopes: (accessTokenClaims.scope as string).split(' '),
+					extra: {
+						user
+					}
+				}
+			});
+		} catch (error) {
+			console.error('Error in resourceHandler:', error);
 			if (isInsufficientScopeError(error)) {
 				return toChallengeResponse(error, resource);
 			}

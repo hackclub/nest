@@ -53,6 +53,7 @@ export const oauthOptions: OAuthOptions<Scope[]> = {
 	loginPage: '/auth/login',
 	consentPage: '/auth/consent',
 	resources: [`${APP_SECURE ? 'https' : 'http'}://${APP_DOMAIN}/api/mcp`],
+	clientRegistrationDefaultResources: [`${APP_SECURE ? 'https' : 'http'}://${APP_DOMAIN}/api/mcp`],
 	scopes: ['openid', 'profile', 'email', 'offline_access']
 };
 
@@ -107,11 +108,7 @@ export const auth = betterAuth({
 		jwt({ disableSettingJwtHeader: true }),
 		oauthProvider(oauthOptions),
 		cimd({
-			fetchClientMetadataResource: (input, init) => {
-				const metadata = fetchClientMetadataResource(input, init);
-				console.log(metadata);
-				return metadata;
-			},
+			fetchClientMetadataResource,
 			metadataProfile: 'mcp-2026-07-28'
 		}),
 		legacyOAuthCallback()

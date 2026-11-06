@@ -4,6 +4,7 @@ import { route } from './middleware';
 import '@/proxy/index.ts';
 import routes from '@/routes';
 import { mount } from 'hono/mount';
+import { logger } from 'hono/logger';
 import { syncAllContainerNetworks } from '@/network';
 import { serverClient } from '@/modules/auth/client';
 import { auth } from '@/modules/auth';
@@ -12,18 +13,16 @@ import { DPOP_SIGNING_ALGORITHMS } from 'better-auth/oauth2';
 
 const app = route.createApp();
 
+app.use(logger());
+
 app.route('', routes);
-app.get(
-	'/.well-known/oauth-authorization-server/api/auth',
-	mount(oauthProviderAuthServerMetadata(auth))
-);
-app.get('/.well-known/oauth-protected-resource/*', async (c) => {
-	console.log(c.req.url);
+app.get('/.well-known/oauth-authorization-server/*', mount(oauthProviderAuthServerMetadata(auth)));
+app.get('/.well-known/oauth-protected-resource/api/mcp', async (c) => {
 	const url = new URL(c.req.url);
 	return c.json(
 		await serverClient.getProtectedResourceMetadata({
 			resource: `${url.origin}/api/mcp`,
-			authorization_servers: [`${url.origin}/.well-known/oauth-authorization-server/api/auth`],
+			authorization_servers: [`${url.origin}/api/auth`],
 			bearer_methods_supported: ['header'],
 			dpop_signing_alg_values_supported: [...DPOP_SIGNING_ALGORITHMS]
 		})
