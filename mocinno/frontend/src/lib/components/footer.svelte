@@ -56,6 +56,12 @@
 						class="text-lg font-medium text-primary/80 transition-colors hover:text-foreground"
 						>Finances</a
 					>
+					<span class="text-gray-500">|</span>
+					<a
+						href="/privacy.pdf"
+						class="text-lg font-medium text-primary/80 transition-colors hover:text-foreground"
+						>Privacy</a
+					>
 				</div>
 			</div>
 		</div>
