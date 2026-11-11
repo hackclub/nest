@@ -111,9 +111,7 @@ async function getFunnel(since: Date | null): Promise<Funnel> {
 				) as pending,
 				c.id is not null as approved,
 				(select count(*) from ssh_activity s where s.container_id = c.id) as ssh_days,
-				exists (
-					select 1 from unified_ships us where lower(trim(us.email)) = lower(trim(u.email))
-				) as shipped
+				exists (select 1 from unified_ships us where us.email = lower(trim(u.email))) as shipped
 			from "user" u
 			left join containers c on c.user_id = u.id
 			${cohort}

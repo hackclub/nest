@@ -20,7 +20,8 @@ export default defineConfig({
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true,
 				experimental: { async: true }
 			},
-			adapter: adapter(),
+			// bun's default of 10s drops pages whose server load is slow
+			adapter: adapter({ serverOptions: { idleTimeout: 35 } }),
 			experimental: {
 				remoteFunctions: true
 			}

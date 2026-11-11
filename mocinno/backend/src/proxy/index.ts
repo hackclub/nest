@@ -21,6 +21,8 @@ import * as db from '@/db-helpers';
 Bun.serve<WSData>({
 	port: process.env.PORT || 80,
 	hostname: '0.0.0.0',
+	// longer than proxyRequest's 30s upstream timeout, bun's default of 10s drops slow pages
+	idleTimeout: 35,
 	websocket: wsHandlers,
 
 	async fetch(req, server) {

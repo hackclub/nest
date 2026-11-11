@@ -226,6 +226,8 @@ export async function reloadProxy() {
 		proxyServer = Bun.serve<WSData>({
 			port: 443,
 			hostname: '0.0.0.0',
+			// longer than proxyRequest's 30s upstream timeout, bun's default of 10s drops slow pages
+			idleTimeout: 35,
 			tls: [
 				...Object.entries(serverNames).map(([domain, { cert, key }]) => ({
 					domain,
