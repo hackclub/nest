@@ -118,6 +118,16 @@
 								{/snippet}
 							</NavigationMenu.Link>
 						</NavigationMenu.Item>
+						<NavigationMenu.Item>
+							<NavigationMenu.Link>
+								{#snippet child()}
+									<a
+										href={resolve('/(authed)/admin/lifecycle')}
+										class={navigationMenuTriggerStyle()}>Lifecycle</a
+									>
+								{/snippet}
+							</NavigationMenu.Link>
+						</NavigationMenu.Item>
 					{/if}
 					<NavigationMenu.Item>
 						<NavigationMenu.Link>

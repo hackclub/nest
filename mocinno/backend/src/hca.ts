@@ -49,3 +49,17 @@ export async function exchangeCodeForProfile(
 
 	return profileResponse.ok ? ((await profileResponse.json()) as UserProfile) : null;
 }
+
+// verified_eligible, verified_but_over_18, not_found
+export async function checkHcaStatus(email: string): Promise<string> {
+	const res = await fetch(
+		`https://auth.hackclub.com/api/external/check?email=${encodeURIComponent(email)}`,
+		{
+			headers: { 'User-Agent': 'Nest/1.0 (+https://hackclub.app)' },
+			signal: AbortSignal.timeout(10 * 1000)
+		}
+	);
+
+	if (!res.ok) throw new Error(`HCA responded ${res.status}`);
+	return ((await res.json()) as { result: string }).result;
+}

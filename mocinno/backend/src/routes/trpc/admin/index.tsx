@@ -24,6 +24,7 @@ import type { NodeLXCPost, NodeLXCStatusStop } from '@/types';
 import transporter from '@/mail';
 import { getUnifiedStats } from '@/unified';
 import { getEngagementStats } from '@/engagement';
+import { getLifecycleLists } from '@/lifecycle';
 import { render } from 'react-email';
 import ApprovedEmail from '@email/approved';
 import RejectedEmail from '@email/rejected';
@@ -31,9 +32,9 @@ const { randomBytes } = await import('node:crypto');
 
 let nodeStats:
 	| {
-			name: string;
-			stats: Awaited<ReturnType<typeof getNodeStats>>;
-	  }[]
+		name: string;
+		stats: Awaited<ReturnType<typeof getNodeStats>>;
+	}[]
 	| null = null;
 
 async function requestNodeStats() {
@@ -419,6 +420,9 @@ const adminRouter = router({
 	getEngagementStats: viewerProcedure.query(async () => {
 		return getEngagementStats();
 	}),
+	getLifecycleLists: adminProcedure.query(async () => {
+		return getLifecycleLists();
+	}),
 	getProjectStats: viewerProcedure.query(async () => {
 		const [projectRows, containerRows] = await Promise.all([
 			db
@@ -641,7 +645,7 @@ const adminRouter = router({
 
 					const templateConfig = Array.isArray(serverConfig.templates)
 						? serverConfig.templates.find((t) => t.name === application.template) ||
-							serverConfig.templates[0]
+						serverConfig.templates[0]
 						: serverConfig.templates;
 
 					const password = randomBytes(12).toString('hex');

@@ -1,0 +1,161 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "f02fe8df-99cc-41c2-b2e4-61ae70e7ce13",
+  "prevIds": [
+    "326a96a3-b669-44eb-a28a-bc637c309cc3"
+  ],
+  "footprints": [
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "hca_status"
+      ],
+      "writes": [
+        "s|tbl|public.hca_status",
+        "n|tbl|public.hca_status",
+        "e|tbl|public.hca_status",
+        "n|rel|public.hca_status",
+        "n|type|public.hca_status",
+        "n|rel|public.hca_status_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "hca_status"
+      ],
+      "writes": [
+        "s|fk|public.hca_status.hca_status_container_id_containers_id_fkey",
+        "n|fk|public.hca_status.hca_status_container_id_containers_id_fkey",
+        "e|fk|public.hca_status.hca_status_container_id_containers_id_fkey",
+        "n|con|public.hca_status.hca_status_container_id_containers_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.hca_status",
+        "n|sch|public",
+        "n|tbl|public.containers",
+        "n|sch|public",
+        "n|col|public.hca_status.container_id",
+        "n|col|public.containers.id",
+        "e|uniqueness|public.containers.id"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "hca_status",
+        "isRlsEnabled": false,
+        "entityType": "tables"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "hca_status",
+        "name": "container_id",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "hca_status",
+        "name": "result",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "hca_status",
+        "name": "aged_out_at",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "hca_status",
+        "name": "checked_at",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "hca_status",
+        "name": "hca_status_container_id_containers_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "container_id"
+        ],
+        "schemaTo": "public",
+        "tableTo": "containers",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "CASCADE",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "hca_status",
+        "name": "hca_status_pkey",
+        "columns": [
+          "container_id"
+        ],
+        "nameExplicit": false,
+        "entityType": "pks"
+      }
+    }
+  ]
+}

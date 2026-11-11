@@ -156,4 +156,16 @@ export const webActivityTable = pgTable(
 	]
 );
 
+// periodically refreshed
+export const hcaStatusTable = pgTable('hca_status', {
+	container_id: integer('container_id')
+		.primaryKey()
+		.references(() => containersTable.id, {
+			onDelete: 'cascade'
+		}),
+	result: text('result').notNull(),
+	aged_out_at: timestamp('aged_out_at'),
+	checked_at: timestamp('checked_at').defaultNow().notNull()
+});
+
 export * from './auth-schema';
