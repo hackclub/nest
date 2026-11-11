@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "nest": {
+      "url": "http://localhost:5173/api/mcp",
+      "type": "http"
+    }
+  }
+}

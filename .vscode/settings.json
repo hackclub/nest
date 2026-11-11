@@ -1,0 +1,11 @@
+{
+  "chat.mcp.serverSampling": {
+    "hc-nest/.mcp.json: nest": {
+      "allowedModels": [
+        "copilot/auto",
+        "copilotcli/auto",
+        "agent-host-copilotcli:auto"
+      ]
+    }
+  }
+}

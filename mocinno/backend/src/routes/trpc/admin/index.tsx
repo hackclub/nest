@@ -20,7 +20,7 @@ import {
 } from '@/pve-utils';
 import * as dbHelpers from '@/db-helpers';
 import { buildNet0, ipv6ForVmid, syncContainerNetwork } from '@/network';
-import type { NodeLXCPost, NodeLXCStatusStop } from '@/types';
+import type { NodeLXCDelete, NodeLXCPost, NodeLXCStatusStop } from '@/types';
 import transporter from '@/mail';
 import { getUnifiedStats } from '@/unified';
 import { getEngagementStats } from '@/engagement';
@@ -730,6 +730,16 @@ const adminRouter = router({
 							await db
 								.delete(schema.containersTable)
 								.where(eq(schema.containersTable.id, container.id));
+
+							const deleteResult = await pveFetch<{ data: NodeLXCDelete }>(
+								`/nodes/${node}/lxc/${vmid}`,
+								'DELETE',
+								{
+									force: true
+								}
+							);
+
+							await waitForTask(container.node, deleteResult.data);
 						});
 
 					return {

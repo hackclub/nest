@@ -176,6 +176,13 @@
 					<Form.Button class="w-full sm:ms-auto sm:w-auto">Submit Application</Form.Button>
 				</Card.Footer>
 			</form>
+		{:else if application?.status === 'approved'}
+			<Card.Content class="text-center">
+				<h3 class="mb-2 text-lg font-semibold">Application Approved</h3>
+				<p class="mb-4 text-sm text-muted-foreground">
+					You have an approved application, you should not be able to access this page.
+				</p>
+			</Card.Content>
 		{:else if application?.status === 'pending'}
 			<Card.Content class="text-center">
 				<h3 class="mb-2 text-lg font-semibold">Application Pending Review</h3>
