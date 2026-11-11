@@ -262,3 +262,17 @@ export type BackupAttrs = {
 	notes: string;
 	protected: boolean;
 };
+
+export type ClusterResources = Array<{
+	type: string;
+	vmid: number;
+	status: string;
+	cpu?: number;
+	maxcpu?: number;
+	mem?: number;
+	maxmem?: number;
+	disk?: number;
+	maxdisk?: number;
+	netin?: number;
+	netout?: number;
+}>;

@@ -128,6 +128,15 @@
 								{/snippet}
 							</NavigationMenu.Link>
 						</NavigationMenu.Item>
+						<NavigationMenu.Item>
+							<NavigationMenu.Link>
+								{#snippet child()}
+									<a href={resolve('/(authed)/admin/usage')} class={navigationMenuTriggerStyle()}
+										>Usage</a
+									>
+								{/snippet}
+							</NavigationMenu.Link>
+						</NavigationMenu.Item>
 					{/if}
 					<NavigationMenu.Item>
 						<NavigationMenu.Link>

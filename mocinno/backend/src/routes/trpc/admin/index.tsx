@@ -25,6 +25,7 @@ import transporter from '@/mail';
 import { getUnifiedStats } from '@/unified';
 import { getEngagementStats } from '@/engagement';
 import { getLifecycleLists } from '@/lifecycle';
+import { getContainerUsage } from '@/container-usage';
 import { render } from 'react-email';
 import ApprovedEmail from '@email/approved';
 import RejectedEmail from '@email/rejected';
@@ -419,6 +420,9 @@ const adminRouter = router({
 	}),
 	getEngagementStats: viewerProcedure.query(async () => {
 		return getEngagementStats();
+	}),
+	getContainerUsage: adminProcedure.query(async () => {
+		return getContainerUsage();
 	}),
 	getLifecycleLists: adminProcedure.query(async () => {
 		return getLifecycleLists();

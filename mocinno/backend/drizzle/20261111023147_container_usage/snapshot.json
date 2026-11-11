@@ -1,0 +1,530 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "be7bea3b-1a64-441d-8862-fda658a249de",
+  "prevIds": [
+    "f02fe8df-99cc-41c2-b2e4-61ae70e7ce13"
+  ],
+  "footprints": [
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "container_usage_daily"
+      ],
+      "writes": [
+        "s|tbl|public.container_usage_daily",
+        "n|tbl|public.container_usage_daily",
+        "e|tbl|public.container_usage_daily",
+        "n|rel|public.container_usage_daily",
+        "n|type|public.container_usage_daily",
+        "n|rel|public.container_usage_daily_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "container_usage"
+      ],
+      "writes": [
+        "s|tbl|public.container_usage",
+        "n|tbl|public.container_usage",
+        "e|tbl|public.container_usage",
+        "n|rel|public.container_usage",
+        "n|type|public.container_usage",
+        "n|rel|public.container_usage_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "container_usage_daily",
+        "container_usage_daily_day_idx"
+      ],
+      "writes": [
+        "s|idx|public.container_usage_daily_day_idx",
+        "n|idx|public.container_usage_daily_day_idx",
+        "e|idx|public.container_usage_daily_day_idx",
+        "n|rel|public.container_usage_daily_day_idx"
+      ],
+      "reads": [
+        "n|tbl|public.container_usage_daily",
+        "n|sch|public",
+        "n|col|public.container_usage_daily.day"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "container_usage_daily"
+      ],
+      "writes": [
+        "s|fk|public.container_usage_daily.container_usage_daily_container_id_containers_id_fkey",
+        "n|fk|public.container_usage_daily.container_usage_daily_container_id_containers_id_fkey",
+        "e|fk|public.container_usage_daily.container_usage_daily_container_id_containers_id_fkey",
+        "n|con|public.container_usage_daily.container_usage_daily_container_id_containers_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.container_usage_daily",
+        "n|sch|public",
+        "n|tbl|public.containers",
+        "n|sch|public",
+        "n|col|public.container_usage_daily.container_id",
+        "n|col|public.containers.id",
+        "e|uniqueness|public.containers.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "container_usage"
+      ],
+      "writes": [
+        "s|fk|public.container_usage.container_usage_container_id_containers_id_fkey",
+        "n|fk|public.container_usage.container_usage_container_id_containers_id_fkey",
+        "e|fk|public.container_usage.container_usage_container_id_containers_id_fkey",
+        "n|con|public.container_usage.container_usage_container_id_containers_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.container_usage",
+        "n|sch|public",
+        "n|tbl|public.containers",
+        "n|sch|public",
+        "n|col|public.container_usage.container_id",
+        "n|col|public.containers.id",
+        "e|uniqueness|public.containers.id"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "container_usage_daily",
+        "isRlsEnabled": false,
+        "entityType": "tables"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "container_usage",
+        "isRlsEnabled": false,
+        "entityType": "tables"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage_daily",
+        "name": "container_id",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage_daily",
+        "name": "day",
+        "type": "date",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage_daily",
+        "name": "samples",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage_daily",
+        "name": "cpu_sum",
+        "type": "double precision",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage_daily",
+        "name": "cpu_max",
+        "type": "double precision",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage_daily",
+        "name": "mem_sum",
+        "type": "double precision",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage_daily",
+        "name": "mem_max",
+        "type": "bigint",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage_daily",
+        "name": "net_bytes",
+        "type": "bigint",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage",
+        "name": "container_id",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage",
+        "name": "status",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage",
+        "name": "cpu",
+        "type": "double precision",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage",
+        "name": "cpus",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage",
+        "name": "mem",
+        "type": "bigint",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage",
+        "name": "maxmem",
+        "type": "bigint",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage",
+        "name": "disk",
+        "type": "bigint",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage",
+        "name": "maxdisk",
+        "type": "bigint",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage",
+        "name": "netin",
+        "type": "bigint",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage",
+        "name": "netout",
+        "type": "bigint",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage",
+        "name": "sampled_at",
+        "type": "timestamp",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage_daily",
+        "name": "container_usage_daily_day_idx",
+        "nameExplicit": true,
+        "columns": [
+          {
+            "value": "day",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage_daily",
+        "name": "container_usage_daily_container_id_containers_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "container_id"
+        ],
+        "schemaTo": "public",
+        "tableTo": "containers",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "CASCADE",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage",
+        "name": "container_usage_container_id_containers_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "container_id"
+        ],
+        "schemaTo": "public",
+        "tableTo": "containers",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "CASCADE",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage_daily",
+        "name": "container_usage_daily_pkey",
+        "columns": [
+          "container_id",
+          "day"
+        ],
+        "nameExplicit": false,
+        "entityType": "pks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "container_usage",
+        "name": "container_usage_pkey",
+        "columns": [
+          "container_id"
+        ],
+        "nameExplicit": false,
+        "entityType": "pks"
+      }
+    }
+  ]
+}

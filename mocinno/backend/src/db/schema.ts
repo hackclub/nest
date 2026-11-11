@@ -1,5 +1,7 @@
 import {
+	bigint,
 	date,
+	doublePrecision,
 	index,
 	integer,
 	pgTable,
@@ -167,5 +169,45 @@ export const hcaStatusTable = pgTable('hca_status', {
 	aged_out_at: timestamp('aged_out_at'),
 	checked_at: timestamp('checked_at').defaultNow().notNull()
 });
+
+export const containerUsageTable = pgTable('container_usage', {
+	container_id: integer('container_id')
+		.primaryKey()
+		.references(() => containersTable.id, {
+			onDelete: 'cascade'
+		}),
+	status: text('status').notNull(),
+	cpu: doublePrecision('cpu').notNull(),
+	cpus: integer('cpus').notNull(),
+	mem: bigint('mem', { mode: 'number' }).notNull(),
+	maxmem: bigint('maxmem', { mode: 'number' }).notNull(),
+	disk: bigint('disk', { mode: 'number' }).notNull(),
+	maxdisk: bigint('maxdisk', { mode: 'number' }).notNull(),
+	netin: bigint('netin', { mode: 'number' }).notNull(),
+	netout: bigint('netout', { mode: 'number' }).notNull(),
+	sampled_at: timestamp('sampled_at').notNull()
+});
+
+export const containerUsageDailyTable = pgTable(
+	'container_usage_daily',
+	{
+		container_id: integer('container_id')
+			.notNull()
+			.references(() => containersTable.id, {
+				onDelete: 'cascade'
+			}),
+		day: date('day', { mode: 'string' }).notNull(),
+		samples: integer('samples').notNull(),
+		cpu_sum: doublePrecision('cpu_sum').notNull(),
+		cpu_max: doublePrecision('cpu_max').notNull(),
+		mem_sum: doublePrecision('mem_sum').notNull(),
+		mem_max: bigint('mem_max', { mode: 'number' }).notNull(),
+		net_bytes: bigint('net_bytes', { mode: 'number' }).notNull()
+	},
+	(table) => [
+		primaryKey({ columns: [table.container_id, table.day] }),
+		index('container_usage_daily_day_idx').on(table.day)
+	]
+);
 
 export * from './auth-schema';

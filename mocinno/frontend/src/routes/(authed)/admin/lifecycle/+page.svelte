@@ -9,9 +9,9 @@
 		neverShippedColumns,
 		neverShippedCsv,
 		staleColumns,
-		staleCsv,
-		toCsv
+		staleCsv
 	} from '#lib/components/tables/lifecycle-table.js';
+	import { downloadCsv } from '#lib/components/tables/csv.js';
 	import type { PaginationState } from '@tanstack/table-core';
 
 	let { data } = $props();
@@ -85,17 +85,6 @@
 		searchQuery = '';
 		pagination = { ...pagination, pageIndex: 0 };
 	}
-
-	function downloadCsv() {
-		const url = URL.createObjectURL(
-			new Blob([toCsv(active.csv, filteredRows)], { type: 'text/csv' })
-		);
-		const link = document.createElement('a');
-		link.href = url;
-		link.download = `nest-${active.fileName}-${new Date().toLocaleDateString('en-CA')}.csv`;
-		link.click();
-		URL.revokeObjectURL(url);
-	}
 </script>
 
 <Head title="Lifecycle" />
@@ -153,7 +142,11 @@
 	{/if}
 
 	<div class="flex justify-end">
-		<Button variant="outline" disabled={filteredRows.length === 0} onclick={downloadCsv}>
+		<Button
+			variant="outline"
+			disabled={filteredRows.length === 0}
+			onclick={() => downloadCsv(`nest-${active.fileName}`, active.csv, filteredRows)}
+		>
 			Download CSV
 		</Button>
 	</div>
