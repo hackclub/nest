@@ -70,6 +70,16 @@
 		)
 	);
 
+	const authGaps = $derived(
+		[
+			{ count: lists.notChecked, label: 'not checked on Hack Club Auth yet' },
+			{ count: lists.notFound, label: 'not found on Hack Club Auth' },
+			{ count: lists.noEmail, label: 'with no email on file' }
+		]
+			.filter((gap) => gap.count > 0)
+			.map((gap) => `${gap.count.toLocaleString()} ${gap.label}`)
+	);
+
 	function selectTab(id: typeof activeId) {
 		activeId = id;
 		searchQuery = '';
@@ -136,10 +146,9 @@
 		{/each}
 	</div>
 
-	{#if lists.unmatched > 0}
+	{#if authGaps.length > 0}
 		<p class="text-sm text-muted-foreground">
-			{lists.unmatched.toLocaleString()} container{lists.unmatched === 1 ? '' : 's'} couldn't be matched
-			to a Hack Club Auth account, so the aged-out list may be missing people.
+			The aged-out list may be missing containers: {authGaps.join(', ')}.
 		</p>
 	{/if}
 

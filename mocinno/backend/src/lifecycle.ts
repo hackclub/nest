@@ -143,8 +143,9 @@ export async function getLifecycleLists() {
 
 	return {
 		...buildLifecycleLists(members, shipRows, new Date()),
-		unmatched: members.filter((m) => !m.email || !m.hcaResult || m.hcaResult === 'not_found')
-			.length,
+		notChecked: members.filter((m) => m.email && !m.hcaResult).length,
+		notFound: members.filter((m) => m.hcaResult === 'not_found').length,
+		noEmail: members.filter((m) => !m.email).length,
 		lastChecked,
 		backfill,
 		checkError: lastError
