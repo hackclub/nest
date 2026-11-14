@@ -42,7 +42,10 @@ export function buildLifecycleLists(
 			lastShippedAt: latest !== undefined && Number.isFinite(latest) ? new Date(latest) : null
 		};
 
-		if (member.hcaResult === AGED_OUT_RESULT) lists.agedOut.push(row);
+		if (member.hcaResult === AGED_OUT_RESULT) {
+			lists.agedOut.push(row);
+			continue;
+		}
 
 		if (!member.email) continue;
 
