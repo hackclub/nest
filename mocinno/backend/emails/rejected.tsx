@@ -60,7 +60,8 @@ export const RejectedEmail = ({ username }: RejectedEmailProps) => (
 
 								<Text className="font-16 text-fg-2 mx-auto mt-0 mb-8 max-w-95 text-center font-sans">
 									Your Nest account was rejected, please contact the Nest team via #nest-help for
-									more information
+									more information. Most often, Nest accounts are rejected for having a username
+									that would cause confusion, or for a purpose that doesn't align with Nest policy.
 								</Text>
 							</Section>
 						</Section>
