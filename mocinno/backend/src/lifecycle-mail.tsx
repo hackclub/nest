@@ -113,11 +113,13 @@ async function runLifecycleEmails(
 			continue;
 		}
 
+		let delivered = false;
 		try {
 			const sentAt = new Date();
 			const { subject, html } = await renderEmail(current.kind, sentAt);
 
 			await transporter.sendMail({ from: SMTP_FROM, to: row.email, subject, html });
+			delivered = true;
 			await db
 				.update(table)
 				.set({ status: 'sent', sent_at: sentAt, updated_at: new Date() })
@@ -125,10 +127,16 @@ async function runLifecycleEmails(
 
 			current.sent++;
 		} catch (err) {
-			const error = err instanceof Error ? err.message : String(err);
-			console.error(`Failed to send ${current.kind} email to ${row.username}:`, error);
+			const detail = err instanceof Error ? err.message : String(err);
+			const error = delivered
+				? `Email accepted by SMTP, but recording the send failed: ${detail}. Do not retry without checking delivery.`
+				: detail;
+			console.error(`Lifecycle email error for ${current.kind} to ${row.username}:`, error);
 
-			await db.update(table).set({ status: 'failed', error, updated_at: new Date() }).where(where);
+			// Keep the claim non-retryable if SMTP already accepted the email.
+			if (!delivered) {
+				await db.update(table).set({ status: 'failed', error, updated_at: new Date() }).where(where);
+			}
 
 			current.failed.push({ email: row.email, error });
 		}
