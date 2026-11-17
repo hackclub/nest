@@ -1,3 +1,8 @@
+<script lang="ts" module>
+	// finishedAt of the last send the page has data for; undefined until the first status check
+	let lastFinishedAt: number | null | undefined = undefined;
+</script>
+
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Button, buttonVariants } from '#lib/components/ui/button/index.js';
@@ -36,40 +41,70 @@
 	const percent = $derived(ownJob?.total ? Math.round((done / ownJob.total) * 100) : 0);
 
 	let pollTimer: ReturnType<typeof setInterval> | undefined;
+	let destroyed = false;
 
 	const poll = async () => {
-		const wasRunning = job?.running;
-		job = await trpc.admin.getLifecycleEmailStatus.query();
+		const status = await trpc.admin.getLifecycleEmailStatus.query();
+		if (destroyed) return;
+
+		job = status;
 		if (!job?.running) {
 			clearInterval(pollTimer);
 			pollTimer = undefined;
-			if (wasRunning) onFinished?.();
+		}
+
+		// the controls remount on every tab switch, so this has to outlive them
+		const finishedAt = job && !job.running ? (job.finishedAt?.getTime() ?? null) : null;
+		if (lastFinishedAt === undefined) {
+			lastFinishedAt = finishedAt;
+		} else if (finishedAt !== null && finishedAt !== lastFinishedAt) {
+			lastFinishedAt = finishedAt;
+			onFinished?.();
 		}
 	};
 
 	const startPolling = () => {
-		if (!pollTimer) pollTimer = setInterval(poll, 2000);
+		if (!destroyed && !pollTimer) pollTimer = setInterval(poll, 2000);
 	};
 
 	onMount(() => {
 		poll().then(() => {
 			if (job?.running) startPolling();
 		});
-		return () => clearInterval(pollTimer);
+		return () => {
+			destroyed = true;
+			clearInterval(pollTimer);
+			pollTimer = undefined;
+		};
 	});
+
+	const errorMessage = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
 	const sendTest = async () => {
 		testing = true;
-		const result = await trpc.admin.sendLifecycleTestEmail.mutate({ kind });
-		$flash = { message: result.message, type: result.success ? 'success' : 'error' };
-		testing = false;
+		try {
+			const result = await trpc.admin.sendLifecycleTestEmail.mutate({ kind });
+			$flash = { message: result.message, type: result.success ? 'success' : 'error' };
+		} catch (err) {
+			$flash = { message: `Failed to send test email: ${errorMessage(err)}`, type: 'error' };
+		} finally {
+			testing = false;
+		}
 	};
 
 	const start = async () => {
 		starting = true;
-		const result = await trpc.admin.sendLifecycleEmails.mutate({ kind });
+		let result;
+		try {
+			result = await trpc.admin.sendLifecycleEmails.mutate({ kind });
+		} catch (err) {
+			$flash = { message: `Failed to start sending: ${errorMessage(err)}`, type: 'error' };
+			return;
+		} finally {
+			starting = false;
+		}
+
 		$flash = { message: result.message, type: result.success ? 'success' : 'error' };
-		starting = false;
 		if (result.success) {
 			await poll();
 			startPolling();

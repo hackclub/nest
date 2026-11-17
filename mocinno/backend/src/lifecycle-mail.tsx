@@ -135,7 +135,10 @@ async function runLifecycleEmails(
 
 			// Keep the claim non-retryable if SMTP already accepted the email.
 			if (!delivered) {
-				await db.update(table).set({ status: 'failed', error, updated_at: new Date() }).where(where);
+				await db
+					.update(table)
+					.set({ status: 'failed', error, updated_at: new Date() })
+					.where(where);
 			}
 
 			current.failed.push({ email: row.email, error });
