@@ -210,4 +210,20 @@ export const containerUsageDailyTable = pgTable(
 	]
 );
 
+export const lifecycleEmailsTable = pgTable(
+	'lifecycle_emails',
+	{
+		email: text('email').notNull(),
+		kind: text('kind').notNull(),
+		container_id: integer('container_id'),
+		username: text('username').notNull(),
+		status: text('status').notNull(),
+		error: text('error'),
+		sent_by: text('sent_by').notNull(),
+		sent_at: timestamp('sent_at'),
+		updated_at: timestamp('updated_at').defaultNow().notNull()
+	},
+	(table) => [primaryKey({ columns: [table.email, table.kind] })]
+);
+
 export * from './auth-schema';

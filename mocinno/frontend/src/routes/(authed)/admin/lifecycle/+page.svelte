@@ -9,10 +9,15 @@
 		neverShippedColumns,
 		neverShippedCsv,
 		staleColumns,
-		staleCsv
+		staleCsv,
+		toWarnColumns,
+		toWarnCsv,
+		type LifecycleRow
 	} from '#lib/components/tables/lifecycle-table.js';
 	import { downloadCsv } from '#lib/components/tables/csv.js';
 	import type { PaginationState } from '@tanstack/table-core';
+	import { invalidateAll } from '$app/navigation';
+	import EmailControls from './email-controls.svelte';
 
 	let { data } = $props();
 
@@ -26,7 +31,8 @@
 			rows: lists.agedOut,
 			columns: agedOutColumns,
 			csv: agedOutCsv,
-			fileName: 'aged-out'
+			fileName: 'aged-out',
+			email: { kind: 'aged_out', label: 'alum' }
 		},
 		{
 			id: 'neverShipped',
@@ -36,6 +42,16 @@
 			columns: neverShippedColumns,
 			csv: neverShippedCsv,
 			fileName: 'never-shipped'
+		},
+		{
+			id: 'toWarn',
+			title: 'Suspension warning',
+			detail: 'No approved projects, on Nest for over 2 months',
+			rows: lists.toWarn,
+			columns: toWarnColumns,
+			csv: toWarnCsv,
+			fileName: 'suspension-warning',
+			email: { kind: 'never_shipped', label: 'suspension warning' }
 		},
 		{
 			id: 'stale',
@@ -53,6 +69,15 @@
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
 	const active = $derived(tabs.find((tab) => tab.id === activeId)!);
+
+	const backfillDone = $derived(!!lists.backfill?.startsWith('finished'));
+
+	const pendingCount = (rows: LifecycleRow[]) =>
+		new Set(
+			rows
+				.filter((row) => row.email && (!row.emailed || row.emailed.status === 'failed'))
+				.map((row) => row.email!.trim().toLowerCase())
+		).size;
 
 	const filteredRows = $derived.by(() => {
 		const query = searchQuery.trim().toLowerCase();
@@ -117,7 +142,7 @@
 		</p>
 	{/if}
 
-	<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+	<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
 		{#each tabs as tab (tab.id)}
 			<button
 				type="button"
@@ -141,7 +166,20 @@
 		</p>
 	{/if}
 
-	<div class="flex justify-end">
+	<div class="flex flex-wrap items-center justify-end gap-2">
+		{#if 'email' in active && active.email}
+			{#key active.id}
+				<EmailControls
+					kind={active.email.kind}
+					label={active.email.label}
+					pending={pendingCount(active.rows)}
+					blocked={active.email.kind === 'never_shipped' && !backfillDone
+						? 'Sending is disabled until the Unified backfill finishes.'
+						: undefined}
+					onFinished={invalidateAll}
+				/>
+			{/key}
+		{/if}
 		<Button
 			variant="outline"
 			disabled={filteredRows.length === 0}

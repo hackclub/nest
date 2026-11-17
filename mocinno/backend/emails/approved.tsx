@@ -10,7 +10,6 @@ import {
 	Heading,
 	Html,
 	Img,
-	Link,
 	Preview,
 	Row,
 	Section,
@@ -64,16 +63,13 @@ export const ApprovedEmail = ({ username, url, domain }: ApprovedEmailProps) => 
 								</Section>
 
 								<Text className="font-16 text-fg-2 mx-auto mt-0 mb-8 max-w-95 text-center font-sans">
-									Your Nest account has been approved, you can login using{' '}
+									Your Nest account has been approved! You can log in with{' '}
 									<CodeInline>
-										{username.toLowerCase()}@{domain}
+										ssh {username.toLowerCase()}@{domain}
 									</CodeInline>
-									<br />
-									By default you have 2GB of RAM, 2 CPU cores and 16GB of storage, but you can
-									request more resources{' '}
-									<Link href="https://forms.hackclub.com/nest-resources">through this form</Link>
-									<br />
-									From the button below you can manage your ssh keys and domains
+									. By default, you have 2GB of RAM, 2 CPU cores, and 16 GB of storage. You can
+									manage your SSH keys and domains below. If you have any questions, please ask in
+									#nest-help!
 								</Text>
 
 								<Section className="mb-6 text-center">
