@@ -25,6 +25,12 @@ import transporter from '@/mail';
 import { getUnifiedStats } from '@/unified';
 import { getEngagementStats } from '@/engagement';
 import { getLifecycleLists } from '@/lifecycle';
+import { LIFECYCLE_EMAIL_KINDS } from '@/lifecycle-lists';
+import {
+	getLifecycleEmailJob,
+	sendLifecycleTestEmail,
+	startLifecycleEmails
+} from '@/lifecycle-mail';
 import { getContainerUsage } from '@/container-usage';
 import { render } from 'react-email';
 import ApprovedEmail from '@email/approved';
@@ -427,6 +433,25 @@ const adminRouter = router({
 	getLifecycleLists: adminProcedure.query(async () => {
 		return getLifecycleLists();
 	}),
+	getLifecycleEmailStatus: adminProcedure.query(() => getLifecycleEmailJob()),
+	sendLifecycleEmails: adminProcedure
+		.input(z.object({ kind: z.enum(LIFECYCLE_EMAIL_KINDS) }))
+		.mutation(async ({ ctx, input }) => {
+			return startLifecycleEmails(input.kind, ctx.user.email);
+		}),
+	sendLifecycleTestEmail: adminProcedure
+		.input(z.object({ kind: z.enum(LIFECYCLE_EMAIL_KINDS) }))
+		.mutation(async ({ ctx, input }) => {
+			try {
+				await sendLifecycleTestEmail(input.kind, ctx.user.email);
+				return { success: true, message: `Test email sent to ${ctx.user.email}` };
+			} catch (err) {
+				return {
+					success: false,
+					message: `Failed to send test email: ${err instanceof Error ? err.message : String(err)}`
+				};
+			}
+		}),
 	getProjectStats: viewerProcedure.query(async () => {
 		const [projectRows, containerRows] = await Promise.all([
 			db
@@ -649,7 +674,7 @@ const adminRouter = router({
 
 					const templateConfig = Array.isArray(serverConfig.templates)
 						? serverConfig.templates.find((t) => t.name === application.template) ||
-						serverConfig.templates[0]
+							serverConfig.templates[0]
 						: serverConfig.templates;
 
 					const password = randomBytes(12).toString('hex');

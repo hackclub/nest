@@ -3,7 +3,15 @@ import { eq, sql } from 'drizzle-orm';
 import { db, schema } from '@/db';
 import { getSetting, setSetting } from '@/db-helpers';
 import { checkHcaStatus } from '@/hca';
-import { AGED_OUT_RESULT, buildLifecycleLists, type LifecycleMember } from '@/lifecycle-lists';
+import {
+	AGED_OUT_RESULT,
+	buildLifecycleLists,
+	normalizeEmail,
+	suspendAfter,
+	type LifecycleEmailKind,
+	type LifecycleMember,
+	type LifecycleRow
+} from '@/lifecycle-lists';
 import { getBackfillStatus } from '@/unified-sync';
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -128,8 +136,34 @@ export function checkHcaStatuses({ force = false } = {}): Promise<void> {
 	return running;
 }
 
+type EmailRecord = typeof schema.lifecycleEmailsTable.$inferSelect;
+
+function withEmailRecords(
+	rows: LifecycleRow[],
+	kind: LifecycleEmailKind | null,
+	records: Map<string, EmailRecord>
+) {
+	return rows.map((row) => {
+		const record =
+			kind && row.email ? records.get(`${kind}:${normalizeEmail(row.email)}`) : undefined;
+
+		return {
+			...row,
+			emailed: record
+				? {
+						status: record.status,
+						error: record.error,
+						sentAt: record.sent_at,
+						suspendAfter:
+							kind === 'never_shipped' && record.sent_at ? suspendAfter(record.sent_at) : null
+					}
+				: null
+		};
+	});
+}
+
 export async function getLifecycleLists() {
-	const [members, shipRows, lastChecked, backfill] = await Promise.all([
+	const [members, shipRows, lastChecked, backfill, emailRows] = await Promise.all([
 		loadMembers(),
 		db
 			.select({
@@ -138,11 +172,18 @@ export async function getLifecycleLists() {
 			})
 			.from(schema.unifiedShipsTable),
 		getSetting(CHECKED_KEY),
-		getBackfillStatus()
+		getBackfillStatus(),
+		db.select().from(schema.lifecycleEmailsTable)
 	]);
 
+	const lists = buildLifecycleLists(members, shipRows, new Date());
+	const records = new Map(emailRows.map((row) => [`${row.kind}:${row.email}`, row]));
+
 	return {
-		...buildLifecycleLists(members, shipRows, new Date()),
+		agedOut: withEmailRecords(lists.agedOut, 'aged_out', records),
+		neverShipped: withEmailRecords(lists.neverShipped, 'never_shipped', records),
+		toWarn: withEmailRecords(lists.toWarn, 'never_shipped', records),
+		stale: withEmailRecords(lists.stale, null, records),
 		notChecked: members.filter((m) => m.email && !m.hcaResult).length,
 		notFound: members.filter((m) => m.hcaResult === 'not_found').length,
 		noEmail: members.filter((m) => !m.email).length,

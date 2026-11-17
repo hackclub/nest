@@ -79,3 +79,6 @@ export const barebonesBoxedTailwindConfig: TailwindConfig = {
 		}
 	}
 };
+
+export const formatDay = (date: Date) =>
+	date.toLocaleDateString('en-US', { dateStyle: 'long', timeZone: 'UTC' });

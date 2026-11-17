@@ -37,16 +37,38 @@ const lastShipped = columnHelper.accessor('lastShippedAt', {
 	header: 'Last shipped'
 });
 
+const emailedLabel = (emailed: LifecycleRow['emailed']) => {
+	if (!emailed) return 'No';
+	if (emailed.status === 'sent') return emailed.sentAt?.toDateString() ?? 'Yes';
+	if (emailed.status === 'failed') return 'Failed';
+	// claimed but never confirmed, so it may or may not have gone out
+	return 'Unconfirmed';
+};
+
+const emailed = columnHelper.accessor('emailed', {
+	cell: (info) => emailedLabel(info.getValue()),
+	header: 'Emailed'
+});
+
+const suspendAfter = columnHelper.accessor((row) => row.emailed?.suspendAfter ?? null, {
+	id: 'suspendAfter',
+	cell: (info) => info.getValue()?.toDateString() ?? '',
+	header: 'Suspend after'
+});
+
 export const agedOutColumns = columnHelper.columns([
 	...person,
 	columnHelper.accessor('agedOutAt', {
 		cell: (info) => info.getValue()?.toDateString() ?? 'Unknown',
 		header: 'First seen aged out'
 	}),
-	lastSsh
+	lastSsh,
+	emailed
 ]);
 
 export const neverShippedColumns = columnHelper.columns([...person, lastSsh]);
+
+export const toWarnColumns = columnHelper.columns([...person, lastSsh, emailed, suspendAfter]);
 
 export const staleColumns = columnHelper.columns([...person, lastShipped, lastSsh]);
 
@@ -67,13 +89,26 @@ const lastSshCsv: LifecycleCsvColumn = {
 	value: (row) => isoDay(row.lastSshAt)
 };
 
+const emailedCsv: LifecycleCsvColumn[] = [
+	{ header: 'Email status', value: (row) => row.emailed?.status },
+	{ header: 'Emailed', value: (row) => isoDay(row.emailed?.sentAt) }
+];
+
 export const agedOutCsv: LifecycleCsvColumn[] = [
 	...personCsv,
 	{ header: 'First seen aged out', value: (row) => isoDay(row.agedOutAt) },
-	lastSshCsv
+	lastSshCsv,
+	...emailedCsv
 ];
 
 export const neverShippedCsv: LifecycleCsvColumn[] = [...personCsv, lastSshCsv];
+
+export const toWarnCsv: LifecycleCsvColumn[] = [
+	...personCsv,
+	lastSshCsv,
+	...emailedCsv,
+	{ header: 'Suspend after', value: (row) => isoDay(row.emailed?.suspendAfter) }
+];
 
 export const staleCsv: LifecycleCsvColumn[] = [
 	...personCsv,
