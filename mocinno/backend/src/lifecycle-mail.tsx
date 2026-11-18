@@ -35,20 +35,20 @@ let job: LifecycleEmailJob | null = null;
 
 export const getLifecycleEmailJob = () => job;
 
-async function renderEmail(kind: LifecycleEmailKind, sentAt: Date) {
+async function renderEmail(kind: LifecycleEmailKind, sentAt: Date, email: string) {
 	switch (kind) {
 		case 'aged_out':
-			return { subject: agedOutSubject, html: await render(<AgedOutEmail />) };
+			return { subject: agedOutSubject, html: await render(<AgedOutEmail email={email} />) };
 		case 'never_shipped':
 			return {
 				subject: neverShippedSubject,
-				html: await render(<NeverShippedEmail deadline={suspendAfter(sentAt)} />)
+				html: await render(<NeverShippedEmail deadline={suspendAfter(sentAt)} email={email} />)
 			};
 	}
 }
 
 export async function sendLifecycleTestEmail(kind: LifecycleEmailKind, to: string) {
-	const { subject, html } = await renderEmail(kind, new Date());
+	const { subject, html } = await renderEmail(kind, new Date(), to);
 
 	await transporter.sendMail({ from: SMTP_FROM, to, subject: `[TEST] ${subject}`, html });
 }
@@ -116,7 +116,7 @@ async function runLifecycleEmails(
 		let delivered = false;
 		try {
 			const sentAt = new Date();
-			const { subject, html } = await renderEmail(current.kind, sentAt);
+			const { subject, html } = await renderEmail(current.kind, sentAt, row.email);
 
 			await transporter.sendMail({ from: SMTP_FROM, to: row.email, subject, html });
 			delivered = true;

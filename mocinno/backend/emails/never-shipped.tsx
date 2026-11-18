@@ -21,11 +21,12 @@ export const subject = 'Ship a project to keep your Nest container';
 
 interface NeverShippedEmailProps {
 	deadline: Date;
+	email: string;
 }
 
 const paragraph = 'font-16 text-fg-2 mt-0 mb-4 text-left font-sans';
 
-export const NeverShippedEmail = ({ deadline }: NeverShippedEmailProps) => (
+export const NeverShippedEmail = ({ deadline, email }: NeverShippedEmailProps) => (
 	<Tailwind config={barebonesBoxedTailwindConfig}>
 		<Html>
 			<Head></Head>
@@ -80,7 +81,9 @@ export const NeverShippedEmail = ({ deadline }: NeverShippedEmailProps) => (
 									We are aware that often programs can have delayed review times - if you’re
 									approaching the deadline & are unsure if you’ll be able to make it, please fill
 									out this form:{' '}
-									<Link href="https://forms.hackclub.com/shipped-nest">
+									<Link
+										href={`https://forms.hackclub.com/shipped-nest?email=${encodeURIComponent(email)}`}
+									>
 										https://forms.hackclub.com/shipped-nest
 									</Link>{' '}
 									and we’ll make sure to check with the program in question.
@@ -97,8 +100,8 @@ export const NeverShippedEmail = ({ deadline }: NeverShippedEmailProps) => (
 
 								<Text className={`${paragraph} mb-0`}>
 									If you have any questions, feel free to DM me{' '}
-									<Link href="https://hackclub.enterprise.slack.com/team/U08PUHSMW4V">@sahil</Link> on Slack or email{' '}
-									<Link href="mailto:nest@hackclub.com">nest@hackclub.com</Link>!
+									<Link href="https://hackclub.enterprise.slack.com/team/U08PUHSMW4V">@sahil</Link>{' '}
+									on Slack or email <Link href="mailto:nest@hackclub.com">nest@hackclub.com</Link>!
 								</Text>
 							</Section>
 						</Section>
@@ -110,7 +113,8 @@ export const NeverShippedEmail = ({ deadline }: NeverShippedEmailProps) => (
 );
 
 NeverShippedEmail.PreviewProps = {
-	deadline: new Date('2026-12-16')
+	deadline: new Date('2026-12-16'),
+	email: 'orpheus@hackclub.com'
 } satisfies NeverShippedEmailProps;
 
 export default NeverShippedEmail;

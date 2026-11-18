@@ -19,9 +19,13 @@ import { barebonesBoxedTailwindConfig } from './theme';
 
 export const subject = 'Your Nest container after Hack Club';
 
+interface AgedOutEmailProps {
+	email: string;
+}
+
 const paragraph = 'font-16 text-fg-2 mt-0 mb-4 text-left font-sans';
 
-export const AgedOutEmail = () => (
+export const AgedOutEmail = ({ email }: AgedOutEmailProps) => (
 	<Tailwind config={barebonesBoxedTailwindConfig}>
 		<Html>
 			<Head></Head>
@@ -78,7 +82,9 @@ export const AgedOutEmail = () => (
 
 								<Text className={paragraph}>
 									No matter which choice you pick, please fill out this form{' '}
-									<Link href="https://forms.hackclub.com/nest-alums">
+									<Link
+										href={`https://forms.hackclub.com/nest-alums?email=${encodeURIComponent(email)}`}
+									>
 										https://forms.hackclub.com/nest-alums
 									</Link>{' '}
 									with your pick as soon as possible. If we haven’t heard from you by March 1st,
@@ -87,8 +93,8 @@ export const AgedOutEmail = () => (
 
 								<Text className={`${paragraph} mb-0`}>
 									Questions or extenuating circumstances? DM me on Slack{' '}
-									<Link href="https://hackclub.enterprise.slack.com/team/U08PUHSMW4V">@sahil</Link> or email{' '}
-									<Link href="mailto:nest@hackclub.com">nest@hackclub.com</Link>.
+									<Link href="https://hackclub.enterprise.slack.com/team/U08PUHSMW4V">@sahil</Link>{' '}
+									or email <Link href="mailto:nest@hackclub.com">nest@hackclub.com</Link>.
 								</Text>
 							</Section>
 						</Section>
@@ -98,5 +104,9 @@ export const AgedOutEmail = () => (
 		</Html>
 	</Tailwind>
 );
+
+AgedOutEmail.PreviewProps = {
+	email: 'orpheus@hackclub.com'
+} satisfies AgedOutEmailProps;
 
 export default AgedOutEmail;
