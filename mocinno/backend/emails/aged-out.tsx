@@ -62,7 +62,7 @@ export const AgedOutEmail = () => (
 								</Section>
 
 								<Text className={paragraph}>
-									Hi folks! If you’re receiving this email, you’re a current Nest user who’s 19 or
+									Hello! You're receiving this email because you’re a current Nest user who’s 19 or
 									older. Seeing as you’ve currently aged out of Hack Club & Nest resources are
 									limited, we can’t indefinitely provide support for your container. Going forward,
 									you have two options:
@@ -86,7 +86,8 @@ export const AgedOutEmail = () => (
 								</Text>
 
 								<Text className={`${paragraph} mb-0`}>
-									Questions or extenuating circumstances? DM me on Slack @sahil or email{' '}
+									Questions or extenuating circumstances? DM me on Slack{' '}
+									<Link href="https://hackclub.enterprise.slack.com/team/U08PUHSMW4V">@sahil</Link> or email{' '}
 									<Link href="mailto:nest@hackclub.com">nest@hackclub.com</Link>.
 								</Text>
 							</Section>

@@ -67,12 +67,12 @@ export const NeverShippedEmail = ({ deadline }: NeverShippedEmailProps) => (
 								</Section>
 
 								<Text className={paragraph}>
-									Hi folks! If you’re receiving this email, you’re a user of Nest who’s had an
+									Hello! You're receiving this email because you are a user of Nest who’s had an
 									account for at least 2 months & have never shipped a project to Hack Club.
-									Resources on Nest are limited, and to make sure you’re building projects with
-									Nest, you’ll be required to build and ship any project to a Hack Club program to
-									keep your container. In one month, on <strong>{formatDay(deadline)}</strong>, if
-									you haven’t shipped a project to any program, your container will be suspended
+									Resources on Nest are limited, and to make sure resources can go to active
+									builders, you’ll be required to build and ship any project to a Hack Club program
+									to keep your container. In one month, on <strong>{formatDay(deadline)}</strong>,
+									if you haven’t shipped a project to any program, your container will be suspended
 									until you do so.
 								</Text>
 
@@ -96,7 +96,8 @@ export const NeverShippedEmail = ({ deadline }: NeverShippedEmailProps) => (
 								</Text>
 
 								<Text className={`${paragraph} mb-0`}>
-									If you have any questions, feel free to DM me @sahil on Slack or email{' '}
+									If you have any questions, feel free to DM me{' '}
+									<Link href="https://hackclub.enterprise.slack.com/team/U08PUHSMW4V">@sahil</Link> on Slack or email{' '}
 									<Link href="mailto:nest@hackclub.com">nest@hackclub.com</Link>!
 								</Text>
 							</Section>
