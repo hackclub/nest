@@ -9,6 +9,7 @@
 	import trpc from '#lib/trpc.js';
 	import { getUserContext } from '#lib/user.js';
 	import authClient from '#lib/auth.js';
+	import { createQuery } from '@tanstack/svelte-query';
 	import { refreshAll } from '$app/navigation';
 	import { getFlash } from 'sveltekit-flash-message';
 	import { page } from '$app/state';
@@ -17,7 +18,17 @@
 
 	type Container = RouterOutput['user']['container'];
 
-	let { container }: { container: Container } = $props();
+	let { container: containerInitial }: { container: Container } = $props();
+
+	const containerQuery = createQuery(() => ({
+		queryKey: ['container'],
+		queryFn: async () => {
+			const data = await trpc.user.container.query();
+			return data;
+		},
+		initialData: containerInitial,
+		refetchInterval: 10000
+	}));
 
 	let buttonState = $state<{
 		stop: boolean;
@@ -64,6 +75,7 @@
 		buttonState.stop = true;
 		await trpc.user.stop.mutate();
 		await refreshAll();
+		containerQuery.refetch();
 		buttonState.stop = false;
 	};
 
@@ -71,6 +83,7 @@
 		buttonState.start = true;
 		await trpc.user.start.mutate();
 		await refreshAll();
+		containerQuery.refetch();
 		buttonState.start = false;
 	};
 
@@ -78,6 +91,7 @@
 		buttonState.reboot = true;
 		await trpc.user.reboot.mutate();
 		await refreshAll();
+		containerQuery.refetch();
 		buttonState.reboot = false;
 	};
 </script>
@@ -94,105 +108,113 @@
 	<h2 class="text-2xl font-bold tracking-tight">Your Nest container</h2>
 	<p class="mt-1 text-muted-foreground">From here you may check on the status of your container.</p>
 	<Separator class="my-4" />
-	{#if container?.vmid}
-		<Table.Root class="rounded-lg bg-muted/25">
-			<Table.Body>
-				<Table.Row>
-					<Table.Cell class="font-medium">Username</Table.Cell>
-					<Table.Cell>{container?.username}</Table.Cell>
-				</Table.Row>
-				<Table.Row>
-					<Table.Cell class="font-medium">VMID</Table.Cell>
-					<Table.Cell>{container?.vmid}</Table.Cell>
-				</Table.Row>
-				<Table.Row>
-					<Table.Cell class="font-medium">Private IPv4</Table.Cell>
-					<Table.Cell>{container?.ip}</Table.Cell>
-				</Table.Row>
-				<Table.Row>
-					<Table.Cell class="font-medium">IPv6</Table.Cell>
-					<Table.Cell>{container?.ipv6}</Table.Cell>
-				</Table.Row>
-				<Table.Row>
-					<Table.Cell class="font-medium">Status</Table.Cell>
-					<Table.Cell>{container?.status?.status}</Table.Cell>
-				</Table.Row>
-				<Table.Row>
-					<Table.Cell class="font-medium">Hostname</Table.Cell>
-					<Table.Cell>{container?.status?.name}</Table.Cell>
-				</Table.Row>
-				<Table.Row>
-					<Table.Cell class="font-medium">CPU</Table.Cell>
-					<Table.Cell>{container?.status?.cpus}</Table.Cell>
-				</Table.Row>
-				<Table.Row>
-					<Table.Cell class="font-medium">Memory</Table.Cell>
-					<Table.Cell
-						>{Math.floor((container?.status?.mem || 0) / 1048576)} / {(container?.status?.maxmem ||
-							0) / 1048576} MB</Table.Cell
-					>
-				</Table.Row>
-			</Table.Body>
-		</Table.Root>
+	{#if containerQuery.isPending}
+		<p>Loading...</p>
+	{:else if containerQuery.isError}
+		<p>Error: {containerQuery.error.message}</p>
+	{:else if containerQuery.isSuccess}
+		{#if containerQuery.data?.vmid}
+			<Table.Root class="rounded-lg bg-muted/25">
+				<Table.Body>
+					<Table.Row>
+						<Table.Cell class="font-medium">Username</Table.Cell>
+						<Table.Cell>{containerQuery.data?.username}</Table.Cell>
+					</Table.Row>
+					<Table.Row>
+						<Table.Cell class="font-medium">VMID</Table.Cell>
+						<Table.Cell>{containerQuery.data?.vmid}</Table.Cell>
+					</Table.Row>
+					<Table.Row>
+						<Table.Cell class="font-medium">Private IPv4</Table.Cell>
+						<Table.Cell>{containerQuery.data?.ip}</Table.Cell>
+					</Table.Row>
+					<Table.Row>
+						<Table.Cell class="font-medium">IPv6</Table.Cell>
+						<Table.Cell>{containerQuery.data?.ipv6}</Table.Cell>
+					</Table.Row>
+					<Table.Row>
+						<Table.Cell class="font-medium">Status</Table.Cell>
+						<Table.Cell>{containerQuery.data?.status?.status}</Table.Cell>
+					</Table.Row>
+					<Table.Row>
+						<Table.Cell class="font-medium">Hostname</Table.Cell>
+						<Table.Cell>{containerQuery.data?.status?.name}</Table.Cell>
+					</Table.Row>
+					<Table.Row>
+						<Table.Cell class="font-medium">CPU</Table.Cell>
+						<Table.Cell>{containerQuery.data?.status?.cpus}</Table.Cell>
+					</Table.Row>
+					<Table.Row>
+						<Table.Cell class="font-medium">Memory</Table.Cell>
+						<Table.Cell
+							>{Math.floor((containerQuery.data?.status?.mem || 0) / 1048576)} / {(containerQuery
+								.data?.status?.maxmem || 0) / 1048576} MB</Table.Cell
+						>
+					</Table.Row>
+				</Table.Body>
+			</Table.Root>
 
-		<div class="flex items-center justify-between rounded-xl border bg-muted/25 p-5 shadow-sm">
-			<div>
-				<span class="font-medium">SSH Access:</span>
-				<code class="rounded-md border border-border px-2.5 py-1.5 font-mono text-sm"
-					>ssh {container?.username}@hackclub.app</code
+			<div class="flex items-center justify-between rounded-xl border bg-muted/25 p-5 shadow-sm">
+				<div>
+					<span class="font-medium">SSH Access:</span>
+					<code class="rounded-md border border-border px-2.5 py-1.5 font-mono text-sm"
+						>ssh {containerQuery.data?.username}@hackclub.app</code
+					>
+				</div>
+			</div>
+			<div class="mt-4 flex gap-x-3 border-t border-border pt-6">
+				{#if containerQuery.data?.status?.status === 'running'}
+					<Button
+						size="lg"
+						variant="secondary"
+						class="cursor-pointer"
+						disabled={buttonState.stop || containerQuery.data?.suspended}
+						onclick={() => stopContainer()}
+						>{#if buttonState.stop}<Spinner />{/if}Stop Container</Button
+					>
+					<Button
+						size="lg"
+						class="cursor-pointer"
+						disabled={buttonState.reboot || containerQuery.data?.suspended}
+						onclick={() => rebootContainer()}
+						>{#if buttonState.reboot}<Spinner />{/if}Restart Container</Button
+					>
+				{:else}
+					<Button
+						size="lg"
+						class="cursor-pointer"
+						disabled={buttonState.start || containerQuery.data?.suspended}
+						onclick={() => startContainer()}
+						>{#if buttonState.start}<Spinner />{/if}Start Container</Button
+					>
+				{/if}
+				<div class="flex-1"></div>
+				{#if session().session.sudo && !containerQuery.data?.suspended}
+					<Button size="lg" class="cursor-pointer" onclick={() => exitSudo()}>Exit sudo</Button>
+				{/if}
+				<Button
+					size="lg"
+					variant="destructive"
+					class="cursor-pointer"
+					disabled={buttonState.delete || containerQuery.data?.suspended}
+					onclick={() => {
+						if (session().session.sudo) {
+							deleteConfirmOpen = true;
+						} else {
+							requestSudo();
+						}
+					}}
+					>{#if buttonState.delete}<Spinner />{/if}Delete Container</Button
 				>
 			</div>
-		</div>
-		<div class="mt-4 flex gap-x-3 border-t border-border pt-6">
-			{#if container?.status?.status === 'running'}
-				<Button
-					size="lg"
-					variant="secondary"
-					class="cursor-pointer"
-					disabled={buttonState.stop || container?.suspended}
-					onclick={() => stopContainer()}
-					>{#if buttonState.stop}<Spinner />{/if}Stop Container</Button
-				>
-				<Button
-					size="lg"
-					class="cursor-pointer"
-					disabled={buttonState.reboot || container?.suspended}
-					onclick={() => rebootContainer()}
-					>{#if buttonState.reboot}<Spinner />{/if}Restart Container</Button
-				>
-			{:else}
-				<Button
-					size="lg"
-					class="cursor-pointer"
-					disabled={buttonState.start || container?.suspended}
-					onclick={() => startContainer()}
-					>{#if buttonState.start}<Spinner />{/if}Start Container</Button
-				>
-			{/if}
-			<div class="flex-1"></div>
-			{#if session().session.sudo && !container?.suspended}
-				<Button size="lg" class="cursor-pointer" onclick={() => exitSudo()}>Exit sudo</Button>
-			{/if}
-			<Button
-				size="lg"
-				variant="destructive"
-				class="cursor-pointer"
-				disabled={buttonState.delete || container?.suspended}
-				onclick={() => {
-					if (session().session.sudo) {
-						deleteConfirmOpen = true;
-					} else {
-						requestSudo();
-					}
-				}}
-				>{#if buttonState.delete}<Spinner />{/if}Delete Container</Button
+		{:else}
+			<Alert.Root
+				class="mb-4 self-start rounded-xl border border-primary/40 bg-primary/10 shadow-sm"
 			>
-		</div>
-	{:else}
-		<Alert.Root class="mb-4 self-start rounded-xl border border-primary/40 bg-primary/10 shadow-sm">
-			<Alert.Description class="flex flex-row items-center gap-2 font-medium">
-				Your container is currently being provisioned, check back in a bit
-			</Alert.Description>
-		</Alert.Root>
+				<Alert.Description class="flex flex-row items-center gap-2 font-medium">
+					Your container is currently being provisioned, check back in a bit
+				</Alert.Description>
+			</Alert.Root>
+		{/if}
 	{/if}
 </div>

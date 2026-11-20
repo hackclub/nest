@@ -4,6 +4,7 @@ import { trpcServer } from '@hono/trpc-server';
 
 import publicRoutes from './public';
 import internalRoutes from './internal';
+import mcpRoutes from './mcp';
 
 import { appRouter } from './trpc';
 
@@ -11,6 +12,7 @@ const app = route.createApp().basePath('/api');
 
 app.use('/trpc/*', authMiddleware);
 app.use('/auth/*', authMiddleware);
+app.use('/mcp', authMiddleware);
 
 app.on(['POST', 'GET'], '/auth/*', (c) => {
 	const url = new URL(c.req.url);
@@ -45,5 +47,6 @@ app.use(
 
 app.route('/public', publicRoutes);
 app.route('/internal', internalRoutes);
+app.route('/mcp', mcpRoutes);
 
 export default app;

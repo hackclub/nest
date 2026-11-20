@@ -1,6 +1,9 @@
 import { betterAuth } from 'better-auth/minimal';
 import { drizzleAdapter } from '@better-auth/drizzle-adapter/relations-v2';
-import { bearer, genericOAuth } from 'better-auth/plugins';
+import { bearer, genericOAuth, jwt } from 'better-auth/plugins';
+import { cimd } from '@better-auth/cimd';
+import { oauthProvider, type OAuthOptions, type Scope } from '@better-auth/oauth-provider';
+import { fetchClientMetadataResource } from '@better-auth/cimd/node';
 import { createAuthMiddleware } from 'better-auth/api';
 import { db, schema } from '@/db';
 import { eq } from 'drizzle-orm';
@@ -46,10 +49,19 @@ const legacyOAuthCallback = (): BetterAuthPlugin => {
 	};
 };
 
+export const oauthOptions: OAuthOptions<Scope[]> = {
+	loginPage: '/auth/login',
+	consentPage: '/auth/consent',
+	resources: [`${APP_SECURE ? 'https' : 'http'}://${APP_DOMAIN}/api/mcp`],
+	clientRegistrationDefaultResources: [`${APP_SECURE ? 'https' : 'http'}://${APP_DOMAIN}/api/mcp`],
+	scopes: ['openid', 'profile', 'email', 'offline_access']
+};
+
 export const auth = betterAuth({
 	secret: ENCRYPTION_KEY,
+	disabledPaths: ['/token'],
 	baseURL: {
-		allowedHosts: ['dashboard.hackclub.app', 'nest.hackclub.com', APP_DOMAIN || ''],
+		allowedHosts: ['nest.hackclub.com', APP_DOMAIN || ''],
 		protocol: APP_SECURE ? 'https' : 'http'
 	},
 	database: drizzleAdapter(db, {
@@ -92,6 +104,12 @@ export const auth = betterAuth({
 					})
 				}
 			]
+		}),
+		jwt({ disableSettingJwtHeader: true }),
+		oauthProvider(oauthOptions),
+		cimd({
+			fetchClientMetadataResource,
+			metadataProfile: 'mcp-2026-07-28'
 		}),
 		legacyOAuthCallback()
 	],

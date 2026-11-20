@@ -33,6 +33,9 @@ export default defineConfig({
 		proxy: {
 			'/api': {
 				target: `http://localhost:${process.env.MOCINNO_PORT}`
+			},
+			'/.well-known': {
+				target: `http://localhost:${process.env.MOCINNO_PORT}`
 			}
 		}
 	}
