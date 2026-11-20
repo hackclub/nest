@@ -34,6 +34,7 @@ export const columns = columnHelper.columns([
 			return renderComponent(ApplicationsTableActions, {
 				id: row.original.id,
 				reviewer: row.original.reviewer ?? row.original.reviewed_by,
+				rejectionReason: row.original.rejection_reason,
 				status: row.original.status as 'pending' | 'approved' | 'rejected'
 			});
 		},

@@ -35,13 +35,14 @@ import { getContainerUsage } from '@/container-usage';
 import { render } from 'react-email';
 import ApprovedEmail from '@email/approved';
 import RejectedEmail from '@email/rejected';
+import { applicationReviewSchema } from '@/application-review';
 const { randomBytes } = await import('node:crypto');
 
 let nodeStats:
 	| {
-		name: string;
-		stats: Awaited<ReturnType<typeof getNodeStats>>;
-	}[]
+			name: string;
+			stats: Awaited<ReturnType<typeof getNodeStats>>;
+	  }[]
 	| null = null;
 
 async function requestNodeStats() {
@@ -632,12 +633,7 @@ const adminRouter = router({
 			}
 		}),
 	processApplication: adminProcedure
-		.input(
-			z.object({
-				id: z.int(),
-				action: z.enum(['approve', 'reject'])
-			})
-		)
+		.input(applicationReviewSchema)
 		.mutation(async ({ ctx, input }) => {
 			const application = await db.query.applicationsTable.findFirst({
 				where: {
@@ -765,14 +761,21 @@ const adminRouter = router({
 				case 'reject': {
 					await db
 						.update(schema.applicationsTable)
-						.set({ status: 'rejected', reviewed_by: ctx.user.id, reviewed_at: new Date() })
+						.set({
+							status: 'rejected',
+							reviewed_by: ctx.user.id,
+							reviewed_at: new Date(),
+							rejection_reason: input.reason
+						})
 						.where(eq(schema.applicationsTable.id, application.id));
 
 					await transporter.sendMail({
 						from: SMTP_FROM,
 						to: application.user?.email ?? application.email!,
 						subject: 'Nest account rejected',
-						html: await render(<RejectedEmail username={application.username} />)
+						html: await render(
+							<RejectedEmail username={application.username} reason={input.reason} />
+						)
 					});
 
 					return { success: true, message: 'Application rejected' };

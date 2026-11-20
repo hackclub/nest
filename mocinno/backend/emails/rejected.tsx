@@ -18,9 +18,10 @@ import { barebonesBoxedTailwindConfig } from './theme';
 
 interface RejectedEmailProps {
 	username: string;
+	reason: string;
 }
 
-export const RejectedEmail = ({ username }: RejectedEmailProps) => (
+export const RejectedEmail = ({ username, reason }: RejectedEmailProps) => (
 	<Tailwind config={barebonesBoxedTailwindConfig}>
 		<Html>
 			<Head></Head>
@@ -59,9 +60,17 @@ export const RejectedEmail = ({ username }: RejectedEmailProps) => (
 								</Section>
 
 								<Text className="font-16 text-fg-2 mx-auto mt-0 mb-8 max-w-95 text-center font-sans">
-									Your Nest account was rejected, please contact the Nest team via #nest-help for
-									more information. Most often, Nest accounts are rejected for having a username
-									that would cause confusion, or for a purpose that doesn't align with Nest policy.
+									Your Nest application for {username} was rejected for the following reason:
+								</Text>
+								<Text
+									className="font-16 text-fg mx-auto mb-8 max-w-95 text-left font-sans"
+									style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}
+								>
+									{reason}
+								</Text>
+								<Text className="font-16 text-fg-2 mx-auto mb-8 max-w-95 text-center font-sans">
+									If you have questions, please ask in #nest-help in Slack. You may submit
+									a new application after addressing the reason above.
 								</Text>
 							</Section>
 						</Section>
@@ -73,7 +82,8 @@ export const RejectedEmail = ({ username }: RejectedEmailProps) => (
 );
 
 RejectedEmail.PreviewProps = {
-	username: 'quetzal'
+	username: 'quetzal',
+	reason: 'Please don\'t use "admin" as a username (feel free to use your own!)'
 } satisfies RejectedEmailProps;
 
 export default RejectedEmail;

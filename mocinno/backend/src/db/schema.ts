@@ -71,6 +71,7 @@ export const applicationsTable = pgTable('applications', {
 	status: text('status').notNull().default('pending'),
 	reviewed_by: text('reviewed_by'),
 	reviewed_at: timestamp('reviewed_at'),
+	rejection_reason: text('rejection_reason'),
 	created_at: timestamp('created_at').defaultNow()
 });
 

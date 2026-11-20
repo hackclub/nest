@@ -56,9 +56,12 @@
 		<Card.Root
 			class="mb-6 rounded-xl border border-destructive/40 bg-destructive/10 font-medium text-destructive shadow-sm"
 		>
-			<Card.Content
-				>Your previous application was rejected. You may submit a new one below.</Card.Content
-			>
+			<Card.Content>
+				<p>Your previous application was rejected. You may submit a new one below.</p>
+				{#if application.rejection_reason}
+					<p class="mt-2 whitespace-pre-wrap">Reason: {application.rejection_reason}</p>
+				{/if}
+			</Card.Content>
 		</Card.Root>
 	{/if}
 	<Card.Root

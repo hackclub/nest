@@ -1,0 +1,47 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "15776098-b017-4fda-8067-ca06adae2193",
+  "prevIds": [
+    "c3ce0ceb-e3e3-4ed6-aa90-46f2dc7b9b7e"
+  ],
+  "footprints": [
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "applications",
+        "rejection_reason"
+      ],
+      "writes": [
+        "s|col|public.applications.rejection_reason",
+        "n|col|public.applications.rejection_reason",
+        "e|col|public.applications.rejection_reason"
+      ],
+      "reads": [
+        "n|tbl|public.applications",
+        "n|sch|public"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "applications",
+        "name": "rejection_reason",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    }
+  ]
+}
