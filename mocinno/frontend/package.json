@@ -32,6 +32,7 @@
 		"bits-ui": "^2.20.2",
 		"clsx": "^2.1.1",
 		"formsnap": "^2.1.0",
+		"layerchart": "^2.13.0",
 		"sass-embedded": "^1.106.1",
 		"shadcn-svelte": "^1.7.1",
 		"superjson": "catalog:",

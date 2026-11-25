@@ -10,13 +10,14 @@ const FAILURE_DAYS = 7;
 
 export type FunnelRange = '30d' | '90d' | 'all';
 
-// each stage counts users who also meet every earlier stage, except `shipped`,
-// which only requires `approved` (ssh tracking is newer than most ships)
 export type Funnel = {
 	signedUp: number;
 	eligible: number;
 	applied: number;
+	appliedWithoutSignup: number;
 	approved: number;
+	legacy: number;
+	containerOwners: number;
 	pending: number;
 	sshed: number;
 	returned: number;
@@ -99,33 +100,60 @@ async function getDaily(now: Date) {
 }
 
 async function getFunnel(since: Date | null): Promise<Funnel> {
-	const cohort = since ? sql`where u.created_at >= ${since}` : sql``;
+	const inWindow = (date: SQL) => (since ? sql`${date} >= ${since}` : sql`true`);
 
 	const rows = (await db.execute(sql`
-		with u as (
-			select
+		with identity_links as (
+			select account_id as sub, user_id from account where provider_id = 'hackclub'
+			union all select sub, user_id from containers
+			union all select sub, user_id from applications
+		), known_users as (
+			select sub, min(user_id) as user_id from identity_links
+			where sub <> '' and user_id is not null
+			group by sub having count(distinct user_id) = 1
+		), application_records as (
+			select a.*, coalesce('u:' || a.user_id, 'u:' || k.user_id, 'sub:' || nullif(a.sub, '')) as who
+			from applications a left join known_users k on k.sub = a.sub
+		), applicants as (
+			select who, min(created_at) as first_application, bool_or(status = 'pending') as pending
+			from application_records where who is not null group by who
+		), owners as (
+			select c.*, coalesce('u:' || c.user_id, 'u:' || k.user_id, 'sub:' || nullif(c.sub, ''),
+				'c:' || c.id::text) as who
+			from containers c left join known_users k on k.sub = c.sub
+		), people as (
+			select who, u.id is not null and ${inWindow(sql`u.created_at`)} as signed_up,
 				u.verification_status = 'verified' as verified,
-				exists (select 1 from applications a where a.user_id = u.id) as applied,
-				exists (
-					select 1 from applications a where a.user_id = u.id and a.status = 'pending'
-				) as pending,
-				c.id is not null as approved,
-				(select count(*) from ssh_activity s where s.container_id = c.id) as ssh_days,
-				exists (select 1 from unified_ships us where us.email = lower(trim(u.email))) as shipped
-			from "user" u
-			left join containers c on c.user_id = u.id
-			${cohort}
+				a.who is not null and ${inWindow(sql`coalesce(u.created_at, a.first_application, c.created_at)`)} as applied,
+				a.pending, c.id as container_id,
+				c.id is not null and case when a.who is null then ${inWindow(sql`c.created_at`)}
+					else ${inWindow(sql`coalesce(u.created_at, a.first_application, c.created_at)`)} end as has_container,
+				coalesce(u.email, (
+					select r.email from application_records r where r.who = c.who and r.email <> ''
+					order by r.created_at desc nulls last, r.id desc limit 1
+				)) as email
+			from (select *, 'u:' || id as who from "user") u
+			full join applicants a using (who)
+			full join owners c using (who)
 		)
 		select
-			count(*)::int as "signedUp",
-			count(*) filter (where verified or applied)::int as "eligible",
-			count(*) filter (where applied)::int as "applied",
-			count(*) filter (where applied and approved)::int as "approved",
-			count(*) filter (where applied and not approved and pending)::int as "pending",
-			count(*) filter (where applied and approved and ssh_days > 0)::int as "sshed",
-			count(*) filter (where applied and approved and ssh_days > 1)::int as "returned",
-			count(*) filter (where applied and approved and shipped)::int as "shipped"
-		from u
+			count(*) filter (where signed_up)::int as "signedUp",
+			count(*) filter (where signed_up and (verified or applied))::int as eligible,
+			count(*) filter (where applied)::int as applied,
+			count(*) filter (where applied and not signed_up)::int as "appliedWithoutSignup",
+			count(*) filter (where has_container and applied)::int as approved,
+			count(*) filter (where has_container and not applied)::int as legacy,
+			count(*) filter (where has_container)::int as "containerOwners",
+			count(*) filter (where applied and pending and container_id is null)::int as pending,
+			count(*) filter (where has_container and ssh_days > 0)::int as sshed,
+			count(*) filter (where has_container and ssh_days > 1)::int as returned,
+			count(*) filter (where has_container and exists (
+				select 1 from unified_ships us where us.email = lower(trim(people.email))
+			))::int as shipped
+		from people
+		left join (
+			select container_id, count(*) as ssh_days from ssh_activity group by container_id
+		) ssh using (container_id)
 	`)) as Funnel[];
 
 	return rows[0]!;

@@ -5,6 +5,7 @@ import { defineConfig } from 'vite';
 import { sentrySvelteKit } from '@sentry/sveltekit/vite';
 
 export default defineConfig({
+	ssr: { noExternal: ['layerchart', /^@layerstack\//] },
 	plugins: [
 		sentrySvelteKit({
 			org: 'hack-club',

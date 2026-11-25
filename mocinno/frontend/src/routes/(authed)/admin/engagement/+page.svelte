@@ -71,7 +71,7 @@
 
 	<div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
 		<div class="rounded-md border border-border p-4 lg:col-span-2">
-			<EngagementFunnel funnel={stats.funnel} medianReviewHours={stats.medianReviewHours} />
+			<EngagementFunnel funnel={stats.funnel} />
 		</div>
 
 		<div class="rounded-md border border-border p-4">
