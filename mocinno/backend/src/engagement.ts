@@ -138,7 +138,7 @@ async function getFunnel(since: Date | null): Promise<Funnel> {
 		)
 		select
 			count(*) filter (where signed_up)::int as "signedUp",
-			count(*) filter (where signed_up and (verified or applied))::int as eligible,
+			count(*) filter (where (signed_up and verified) or applied)::int as eligible,
 			count(*) filter (where applied)::int as applied,
 			count(*) filter (where applied and not signed_up)::int as "appliedWithoutSignup",
 			count(*) filter (where has_container and applied)::int as approved,

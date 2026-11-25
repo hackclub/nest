@@ -26,7 +26,7 @@
 
 	const STAGES: { key: StageKey; label: string; hint: string }[] = [
 		{ key: 'signedUp', label: 'Signed up', hint: 'Logged in to Nest' },
-		{ key: 'eligible', label: 'Eligible', hint: 'Verified, or has an invite' },
+		{ key: 'eligible', label: 'Eligible', hint: 'Verified account or a recorded application' },
 		{ key: 'applied', label: 'Applied', hint: 'Submitted an application' },
 		{ key: 'containerOwners', label: 'Has a container', hint: 'Owners from both paths' },
 		{ key: 'sshed', label: 'SSHed in', hint: 'Through the bastion, at least once' },
@@ -136,7 +136,7 @@
 				<li class="flex flex-col items-center gap-0.5 px-0.5" title={row.hint}>
 					<span class="text-xs leading-tight text-muted-foreground">{row.label}</span>
 					<strong class="text-sm tabular-nums">{row.value.toLocaleString()}</strong>
-					{#if i > 0 && row.key !== 'containerOwners' && !(row.key === 'applied' && data.appliedWithoutSignup)}
+					{#if i > 0 && row.key !== 'containerOwners' && !(row.key === 'eligible' && data.appliedWithoutSignup)}
 						<span class="text-xs text-muted-foreground" title="Share of the previous stage">
 							{pct(row.step)}
 						</span>
